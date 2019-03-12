@@ -1,0 +1,26 @@
+{
+    "env": {
+      "browser": true,
+      "jest": true,
+      "node": true
+    },
+    "extends": "airbnb",
+    "settings": {
+      "react": {
+        "pragma": "React",
+        "version": "^16.4.2"
+      },
+      "import/resolver": {
+        "node": {
+          "paths": ["client", "server"]
+        }
+      }
+    },
+    "parser": "babel-eslint",
+    "plugins": [
+      "react"
+    ],
+    "rules": {
+      "react/jsx-filename-extension": 0
+    }
+  }
