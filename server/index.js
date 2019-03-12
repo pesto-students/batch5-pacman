@@ -1,4 +1,5 @@
 const express = require('express');
+
 const app = express();
 
 const config = require('./config/config');
@@ -10,4 +11,5 @@ require('./middleware/appMiddleware')(app);
 
 app.use('/api', routes);
 
+// eslint-disable-next-line no-console
 app.listen(config.port, () => console.log(`Server listening on PORT: ${config.port}`));
