@@ -1,0 +1,13 @@
+{
+  "name": "Pacman",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "author": "Batch 5 Pesto",
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
