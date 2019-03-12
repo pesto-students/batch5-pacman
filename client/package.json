@@ -2,8 +2,10 @@
   "name": "Pacman",
   "version": "0.1.0",
   "dependencies": {
+    "konva": "^3.2.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-konva": "^16.8.4",
     "react-scripts": "2.1.8"
   },
   "scripts": {
