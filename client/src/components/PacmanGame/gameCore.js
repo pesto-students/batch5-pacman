@@ -1,32 +1,38 @@
-export // const column = new Array(cols).fill(0);
-// return new Array(rows).fill(column);
-const initGridState = (rows, cols) => Array(rows).fill().map(() => Array(cols).fill(0));
+export const initSquareGridState = edge => Array(edge).fill().map(() => Array(edge).fill(0));
 export const getFoods = () => [[15, 9], [14, 9], [13, 9], [12, 9], [11, 9], [10, 9]];
 
 const wallGenerator = (numberofCells) => {
   const wall = [];
   const int = num => parseInt(num, 10);
 
-  for (let col = 0; col < numberofCells; col += 1) {
-    const topRow = [col, 0];
-    const bottomRow = [col, numberofCells - 1];
-    if (col % 2 === 0) {
-      const middleRow = [col, int((numberofCells - 1) / 2)];
-      wall.push(middleRow);
+  const generateVerticalWalls = () => {
+    for (let row = 0; row < numberofCells; row += 1) {
+      const leftColCell = [0, row];
+      const rightColCell = [numberofCells - 1, row];
+      if (row % 2 === 0) {
+        const middleRow = [int((numberofCells - 1) / 2), row];
+        wall.push(middleRow);
+      }
+      wall.push(leftColCell);
+      wall.push(rightColCell);
     }
-    wall.push(topRow);
-    wall.push(bottomRow);
-  }
-  for (let row = 0; row < numberofCells; row += 1) {
-    const leftCol = [0, row];
-    const rightCol = [numberofCells - 1, row];
-    if (row % 2 === 0) {
-      const middleRow = [int((numberofCells - 1) / 2), row];
-      wall.push(middleRow);
+  };
+
+  const generateHorizontalWalls = () => {
+    for (let col = 0; col < numberofCells; col += 1) {
+      const topRowCell = [col, 0];
+      const bottomRowCell = [col, numberofCells - 1];
+      if (col % 2 === 0) {
+        const middleRowCell = [col, int((numberofCells - 1) / 2)];
+        wall.push(middleRowCell);
+      }
+      wall.push(topRowCell);
+      wall.push(bottomRowCell);
     }
-    wall.push(leftCol);
-    wall.push(rightCol);
-  }
+  };
+
+  generateHorizontalWalls();
+  generateVerticalWalls();
   return wall;
 };
 
@@ -38,16 +44,13 @@ export const getGhosts = () => [[23, 5], [19, 1], [1, 19], [1, 13]];
 
 export const getPacman = () => [[43, 5]];
 
-export const entityApplier = (gridState, entityLocations, entityCode) => {
-  const newState = [...gridState];
-  // console.log(entityLocation);
-  entityLocations.map(([x, y]) => {
-    newState[x][y] = entityCode;
-    return null;
-  });
-
-  return newState;
-};
+export const entityApplier = (gridState,
+  entityLocations,
+  entityCode) => entityLocations.reduce((prevGridState, [x, y]) => {
+  const newGridState = prevGridState;
+  newGridState[x][y] = entityCode;
+  return newGridState;
+}, [...gridState]);
 
 
 export const codeToEntity = (code) => {
@@ -73,5 +76,3 @@ export const entityToCode = (entity) => {
   };
   return entityMap[entity];
 };
-
-// export const
