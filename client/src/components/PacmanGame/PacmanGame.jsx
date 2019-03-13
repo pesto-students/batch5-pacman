@@ -1,59 +1,45 @@
 import React, { Component } from 'react';
-// import Konva from 'konva';
-// import { Stage, Layer, Text, Circle, Line, Rect } from 'react-konva';
+import PropTypes from 'prop-types';
 
-import { initGridState, getFoods, getGhosts, getPacman, getWalls, getEnergizers, entityToCode } from './gameCore';
+import {
+  initGridState, getFoods, getGhosts,
+  getPacman, getWalls, getEnergizers,
+  entityToCode, entityApplier,
+} from './gameCore';
 
-import { PacmanBoard } from './PacmanBoard';
+import PacmanBoard from './PacmanBoard';
 
 class PacmanGame extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      gridState: '',
-    };
-  }
+  state = {
+    gridState: '',
+    gridSize: '',
+  };
 
   componentDidMount() {
-    const canvasWidth = this.props.width;
-    const cellsInEachRow = this.props.numberofCells;
+    const { width, numberofCells } = this.props;
+    const canvasWidth = width;
+    const cellsInEachRow = numberofCells;
     const gridSize = canvasWidth / cellsInEachRow;
-    let gridState = initGridState(cellsInEachRow, cellsInEachRow);
+    const gridState = initGridState(cellsInEachRow, cellsInEachRow);
 
-    const entityApplier = (entityLocations, entityCode) => {
-      for (const [x, y] of entityLocations) {
-        gridState[x][y] = entityCode;
-      }
-      // return gridState;
-    };
+    entityApplier(gridState, getFoods(), entityToCode('food'));
+    entityApplier(gridState, getPacman(), entityToCode('pacman'));
+    entityApplier(gridState, getWalls(cellsInEachRow), entityToCode('wall'));
+    entityApplier(gridState, getGhosts(), entityToCode('ghost'));
+    entityApplier(gridState, getEnergizers(), entityToCode('energizer'));
 
-
-    // apply entities duummy data
-    entityApplier(getFoods(), entityToCode('food'));
-    entityApplier(getPacman(), entityToCode('pacman'));
-    console.log((gridState[43][5]));
-    // console.log(gridState[43])
-    entityApplier(getWalls(cellsInEachRow), entityToCode('wall'));
-    entityApplier(getGhosts(), entityToCode('ghost'));
-    console.log((gridState[43][5]));
-    entityApplier(getEnergizers(), entityToCode('energizer'));
-
-    this.setState({ 'gridState': gridState });
-    this.setState({ 'gridSize': gridSize });
-
-    console.log(getPacman());
-    console.log((gridState[43][5]));
-    console.log('food', (gridState[15][9]));
-
-    // console.log('food', getFoods());
-    console.log('pacman', getPacman());
-    // console.log(getWalls());
-    console.log('ghost', getGhosts());
-
+    this.setState({ gridState, gridSize });
   }
+
   render() {
-    return <PacmanBoard gridSize={this.state.gridSize} gridState={this.state.gridState} />
+    const { gridSize, gridState } = this.state;
+    return <PacmanBoard gridSize={gridSize} gridState={gridState} />;
   }
 }
+
+PacmanGame.propTypes = {
+  width: PropTypes.number.isRequired,
+  numberofCells: PropTypes.number.isRequired,
+};
 
 export default PacmanGame;
