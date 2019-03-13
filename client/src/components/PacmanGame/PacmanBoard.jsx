@@ -8,6 +8,7 @@ import Ghost from './entities/Ghost';
 import Food from './entities/Food';
 import Pacman from './entities/Pacman';
 import Free from './entities/Free';
+import Energizer from './entities/Energizer';
 
 function PacmanBoard({ gridState, gridSize }) {
   if (gridState === '') {
@@ -33,7 +34,9 @@ function PacmanBoard({ gridState, gridSize }) {
         case 'pacman':
           game.push(<Pacman key={`${row * 100}${col * 100}`} x={col} y={row} gridSize={gridSize} />);
           break;
-
+        case 'energizer':
+          game.push(<Energizer key={`${row * 100}${col * 100}`} x={col} y={row} gridSize={gridSize} />);
+          break;
         default:
           game.push(<Free key={`${row * 100}${col * 100}`} x={col} y={row} gridSize={gridSize} />);
           break;
