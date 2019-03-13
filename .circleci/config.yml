@@ -16,6 +16,17 @@ jobs:
         name: Code Linting
         command: yarn lint
 
+  client-test:
+    docker:
+    - image: circleci/node:8.11.1
+    steps:
+    - checkout
+    - run:
+        name: install packages
+        command: |
+          cd client && yarn
+          yarn test
+
   deploy-server:
     docker:
     - image: buildpack-deps:trusty
@@ -38,11 +49,14 @@ workflows:
   pacman-build:
     jobs:
     - build
+    - client-test
     - deploy-server:
         requires:
         - build
+        - client-test
         filters:
           branches:
             only:
               - master
               - production
+          
