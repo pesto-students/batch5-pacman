@@ -1,7 +1,7 @@
 const config = {
-  port: 9000,
+  port: process.env.PORT || 9000,
   db: {
-    url: 'mongodb://localhost/pacman',
+    url: 'mongodb://admin:#Password123@ds135255.mlab.com:35255/pacman',
   },
 };
 

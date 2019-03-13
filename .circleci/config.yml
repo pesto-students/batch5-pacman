@@ -1,0 +1,48 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: circleci/node:8.11.1
+    steps:
+    - checkout
+    - run:
+        name: install packages
+        command: |
+          yarn
+          cd client && yarn
+          cd ../server && yarn
+          cd ..
+    - run:
+        name: Code Linting
+        command: yarn lint
+
+  deploy-server:
+    docker:
+    - image: buildpack-deps:trusty
+    steps:
+    - checkout
+    - run:
+        name: Deploy Master to Heroku
+        command: 
+          if [ $CIRCLE_BRANCH = 'master' ]
+          then
+            HEROKU_APP_NAME=$STAGING_HEROKU_APP_NAME
+          else
+            HEROKU_APP_NAME=$PRODUCTION_HEROKU_APP_NAME 
+          fi
+          HEROKU=https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
+          git push --force $HEROKU `git subtree split --prefix server HEAD`:master
+
+workflows:
+  version: 2
+  pacman-build:
+    jobs:
+    - build
+    - deploy-server:
+        requires:
+        - build
+        filters:
+          branches:
+            only:
+              - master
+              - production
