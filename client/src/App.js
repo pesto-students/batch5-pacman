@@ -7,7 +7,7 @@ import PacmanGame from './components/PacmanGame/PacmanGame';
 class App extends Component {
   render() {
     return (
-      <PacmanGame numberofCells={50} />
+      <PacmanGame width={500} numberofCells={50} />
     );
   }
 }
