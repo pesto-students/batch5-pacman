@@ -4,8 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node index",
-    "serve": "./node_modules/nodemon/bin/nodemon.js index"
+    "start": "./node_modules/nodemon/bin/nodemon.js index"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
