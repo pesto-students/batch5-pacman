@@ -27,7 +27,7 @@ jobs:
     - checkout
     - run:
         name: Deploy Master to Heroku
-        command: 
+        command: |
           if [ $CIRCLE_BRANCH = 'master' ]
           then
             HEROKU_APP_NAME=$STAGING_HEROKU_APP_NAME
@@ -36,6 +36,8 @@ jobs:
           fi
           HEROKU=https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
           git push --force $HEROKU `git subtree split --prefix server HEAD`:master
+
+
 
 workflows:
   version: 2
