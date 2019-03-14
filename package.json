@@ -5,7 +5,10 @@
   "author": "Batch 5 Pesto",
   "scripts": {
     "lint": "eslint .",
-    "lintfix": "eslint . --fix"
+    "lintfix": "eslint . --fix",
+    "postinstall": "yarn install:client && yarn install:server",
+    "install:client": "cd client && yarn",
+    "install:server": "cd server && yarn"
   },
   "husky": {
     "hooks": {
@@ -23,15 +26,13 @@
     "eslint-plugin-react": "^7.12.4",
     "husky": "^1.3.1",
     "lint-staged": "^8.1.5",
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "eslint-plugin-import": "^2.16.0"
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "dependencies": {
-    "eslint-plugin-import": "^2.16.0"
-  }
+  ]
 }
