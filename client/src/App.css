@@ -1,5 +1,4 @@
 body{
-  width: 100vw;
   height: 100vh;
   position: relative;
   background: lightgrey;
@@ -10,3 +9,17 @@ body{
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.App {
+  text-align: center;
+}
+
+.container {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
