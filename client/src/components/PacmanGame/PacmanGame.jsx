@@ -11,8 +11,8 @@ import PacmanBoard from './PacmanBoard';
 
 class PacmanGame extends Component {
   state = {
-    gridState: '',
-    gridSize: '',
+    gridState: [],
+    gridSize: 0,
   };
 
   componentDidMount() {

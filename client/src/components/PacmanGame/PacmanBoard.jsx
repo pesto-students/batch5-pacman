@@ -11,7 +11,7 @@ import Free from './entities/Free';
 import Energizer from './entities/Energizer';
 
 function PacmanBoard({ gridState, gridSize }) {
-  if (gridState === '' || gridSize === '') {
+  if (gridState === [] || gridSize === 0) {
     return null;
   }
 
@@ -45,7 +45,8 @@ function PacmanBoard({ gridState, gridSize }) {
 }
 
 PacmanBoard.propTypes = {
-  gridState: PropTypes.number.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  gridState: PropTypes.array.isRequired,
   gridSize: PropTypes.number.isRequired,
 };
 
