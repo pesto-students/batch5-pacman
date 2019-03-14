@@ -27,7 +27,7 @@ jobs:
     - checkout
     - run:
         name: Deploy Master to Heroku
-        command: 
+        command: |
           if [ $CIRCLE_BRANCH = 'master' ]
           then
             HEROKU_APP_NAME=$STAGING_HEROKU_APP_NAME
