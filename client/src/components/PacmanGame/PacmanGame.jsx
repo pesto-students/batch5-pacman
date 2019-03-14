@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-// import Konva from 'konva';
-// import { Stage, Layer, Text, Circle, Line, Rect } from 'react-konva';
-
-import { initGridState, getFoods, getGhosts, getPacman, getWalls, getEnergizers, entityToCode } from './gameCore';
-
+import { borderWalls, initGridState, getFoods, getGhosts, getPacman, getEnergizers, entityToCode, entityApplier } from './gameCore';
 import { PacmanBoard } from './PacmanBoard';
 
 class PacmanGame extends Component {
@@ -12,43 +8,35 @@ class PacmanGame extends Component {
     this.state = {
       gridState: '',
     };
+  };
+
+  entitiesApplier = (gridState, entitiesObjectWithLocations) => {
+    for (const [key, value] of Object.entries(entitiesObjectWithLocations)) {
+      for (const [x, y] of value) {
+        gridState[x][y] = entityToCode(key);
+      }
+    }
   }
 
   componentDidMount() {
+    
     const canvasWidth = this.props.width;
     const cellsInEachRow = this.props.numberofCells;
     const gridSize = canvasWidth / cellsInEachRow;
-    let gridState = initGridState(cellsInEachRow, cellsInEachRow);
+    const gridState = initGridState(cellsInEachRow, cellsInEachRow);
 
-    const entityApplier = (entityLocations, entityCode) => {
-      for (const [x, y] of entityLocations) {
-        gridState[x][y] = entityCode;
-      }
-      // return gridState;
-    };
+    entityApplier(gridState, borderWalls(cellsInEachRow), entityToCode('wall'));
 
+    const entityLocations = [getFoods(), getPacman(), getGhosts(), getEnergizers()];
+    const entities = ['food', 'pacman', 'ghost', 'energizer'];
 
-    // apply entities duummy data
-    entityApplier(getFoods(), entityToCode('food'));
-    entityApplier(getPacman(), entityToCode('pacman'));
-    console.log((gridState[43][5]));
-    // console.log(gridState[43])
-    entityApplier(getWalls(cellsInEachRow), entityToCode('wall'));
-    entityApplier(getGhosts(), entityToCode('ghost'));
-    console.log((gridState[43][5]));
-    entityApplier(getEnergizers(), entityToCode('energizer'));
+    const entitiesObjectWithLocations = {};
+    entities.forEach((entity, index) => entitiesObjectWithLocations[entity] = entityLocations[index]);
+
+    this.entitiesApplier(gridState, entitiesObjectWithLocations);
 
     this.setState({ 'gridState': gridState });
     this.setState({ 'gridSize': gridSize });
-
-    console.log(getPacman());
-    console.log((gridState[43][5]));
-    console.log('food', (gridState[15][9]));
-
-    // console.log('food', getFoods());
-    console.log('pacman', getPacman());
-    // console.log(getWalls());
-    console.log('ghost', getGhosts());
 
   }
   render() {

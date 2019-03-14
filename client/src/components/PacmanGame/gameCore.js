@@ -1,42 +1,19 @@
 export const initGridState = (rows, cols) => {
-  // const column = new Array(cols).fill(0);
-  // return new Array(rows).fill(column);
-  return Array(rows).fill().map(() => Array(cols).fill(0))
+  return Array(rows).fill(Array(cols).fill(0)).map(arr => arr.slice());
 };
 
-
+export const borderWalls = numofCells => {
+  const cellsArray = [...Array(numofCells).keys()];
+  const topRow = cellsArray.map(col => [col, 0]);
+  const bottomRow = cellsArray.map(col => [col, numofCells - 1]);
+  const leftColumn = cellsArray.map(row => [0, row]);
+  const rightColumn = cellsArray.map(row => [numofCells - 1 , row]);
+  const wall = [...topRow,...bottomRow,...leftColumn,...rightColumn];
+  return wall;
+}
 
 
 export const getFoods = () => [[15, 9], [14, 9], [13, 9], [12, 9], [11, 9], [10, 9]];
-
-const wallGenerator = numberofCells => {
-  const wall = [];
-  const int = num => parseInt(num, 10);
-
-  for (let col = 0; col < numberofCells; col++) {
-    const topRow = [col, 0];
-    const bottomRow = [col, numberofCells - 1];
-    if (col % 2 === 0) {
-      const middleRow = [col, int((numberofCells - 1) / 2)];
-      wall.push(middleRow);
-    }
-    wall.push(topRow);
-    wall.push(bottomRow);
-  }
-  for (let row = 0; row < numberofCells; row++) {
-    const leftCol = [0, row];
-    const rightCol = [numberofCells - 1, row];
-    if (row % 2 === 0) {
-      const middleRow = [int((numberofCells - 1) / 2), row];
-      wall.push(middleRow);
-    }
-    wall.push(leftCol);
-    wall.push(rightCol);
-  }
-  return wall;
-};
-
-export const getWalls = (cellsInEachRow) => wallGenerator(cellsInEachRow);
 
 export const getEnergizers = () => [[4, 6], [9, 1], [1, 9], [13, 13]];
 
@@ -48,7 +25,6 @@ export const entityApplier = (gridState, entityLocations, entityCode) => {
   for (const [x, y] of entityLocations) {
     gridState[x][y] = entityCode;
   }
-  // return gridState;
 };
 
 

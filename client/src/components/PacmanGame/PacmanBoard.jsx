@@ -1,6 +1,5 @@
 import React from 'react';
-// import Konva from 'konva';
-import { Stage, Layer, Circle } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 import { codeToEntity } from './gameCore';
 
 import Wall from './entities/Wall';
@@ -14,9 +13,17 @@ function PacmanBoard({ gridState, gridSize }) {
   if (gridState === '') {
     return null;
   }
-  console.log(gridSize);
-  console.log(codeToEntity(gridState[43][5]));
   let game = [];
+
+  const flattenArray = (inputArray) => {
+    const flattenedArray = [];
+    for (let i=0; i < inputArray.length; ++i) {
+        for (let j=0; j< inputArray[i].length; ++j)
+            flattenedArray.push(inputArray[i][j]);
+    return flattenedArray
+  }
+  }
+
   for (let row = 0; row < gridState.length; row++) {
     const column = gridState[row];
     for (let col = 0; col < column.length; col++) {
@@ -31,9 +38,6 @@ function PacmanBoard({ gridState, gridSize }) {
         case 'ghost':
           game.push(<Ghost key={`${row * 100}${col * 100}`} x={col} y={row} gridSize={gridSize} />);
           break;
-        case 'pacman':
-          game.push(<Pacman key={`${row * 100}${col * 100}`} x={col} y={row} gridSize={gridSize} />);
-          break;
         case 'energizer':
           game.push(<Energizer key={`${row * 100}${col * 100}`} x={col} y={row} gridSize={gridSize} />);
           break;
@@ -45,13 +49,13 @@ function PacmanBoard({ gridState, gridSize }) {
     }
   }
 
-  // console.log(game);
+  console.log(game[10]);
 
 
   return <Stage width={500} height={500}>
     <Layer>
       {game}
-      {/* <Pacman key={`${23 * 100}${12 * 100}`} x={43} y={5} gridSize={gridSize} /> */}
+      <Pacman key={`${23 * 100}${12 * 100}`} x={20} y={5} gridSize={gridSize} />
     </Layer>
   </Stage>
 }
