@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  initGridState, getFoods, getGhosts,
+  initSquareGridState, getFoods, getGhosts,
   getPacman, getWalls, getEnergizers,
   entityToCode, entityApplier,
 } from './gameCore';
@@ -20,13 +20,21 @@ class PacmanGame extends Component {
     const canvasWidth = width;
     const cellsInEachRow = numberofCells;
     const gridSize = canvasWidth / cellsInEachRow;
-    const gridState = initGridState(cellsInEachRow, cellsInEachRow);
+    const gridState = initSquareGridState(cellsInEachRow);
 
-    entityApplier(gridState, getFoods(), entityToCode('food'));
-    entityApplier(gridState, getPacman(), entityToCode('pacman'));
-    entityApplier(gridState, getWalls(cellsInEachRow), entityToCode('wall'));
-    entityApplier(gridState, getGhosts(), entityToCode('ghost'));
-    entityApplier(gridState, getEnergizers(), entityToCode('energizer'));
+    const entitiesLocation = {
+      food: getFoods(),
+      pacman: getPacman(),
+      wall: getWalls(cellsInEachRow),
+      ghost: getGhosts(),
+      energizer: getEnergizers(),
+    };
+
+    const entitiesName = Object.keys(entitiesLocation);
+
+    entitiesName.map(entityName => entityApplier(gridState,
+      entitiesLocation[entityName],
+      entityToCode(entityName)));
 
     this.setState({ gridState, gridSize });
   }
