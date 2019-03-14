@@ -40,3 +40,6 @@ Build the Multiplayer PacMan game which would work smoothly with various fun fea
 - Database: Mongodb (mlab)
 - CI/CD: CircleCI
 
+### URLS: 
+
+- Game-staging: https://5c89a982fb0eb10008c6c763--youthful-dubinsky-b46f9a.netlify.com/
