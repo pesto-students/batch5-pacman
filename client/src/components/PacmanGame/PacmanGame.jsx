@@ -2,35 +2,39 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  initSquareGridState, getFoods, getGhosts,
-  getPacman, getWalls, getEnergizers,
-  entityToCode, entityApplier,
+  initSquareGridState,
+  getFoods,
+  getGhosts,
+  getPacman,
+  getWalls,
+  getEnergizers,
+  entityToCode,
+  entityApplier,
 } from './gameCore';
 import PacmanBoard from './PacmanBoard';
 
 class PacmanGame extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      pacman: {
-        x: 0,
-        y: 5,
-      },
-      direction: 'RIGHT',
-      score: 0,
-      gridState: [],
-      config: {
-        refreshRate: 50
-      }
-    };
+  state = {
+    pacman: {
+      x: 0,
+      y: 5,
+    },
+    direction: 'RIGHT',
+    score: 0,
+    gridState: [],
+    config: {
+      refreshRate: 50,
+    },
+  }
+
+  componentDidMount() {
+    this.setInitialGameState();
   }
 
   setInitialGameState = () => {
     const { width, numberofCells } = this.props;
     const canvasWidth = width;
     const cellsInEachRow = numberofCells;
-    // const canvasWidth = this.props.width;
-    // const cellsInEachRow = this.props.numberofCells;
     const gridSize = canvasWidth / cellsInEachRow;
     const gridState = initSquareGridState(cellsInEachRow);
 
@@ -44,31 +48,36 @@ class PacmanGame extends Component {
 
     const entitiesName = Object.keys(entitiesLocation);
 
-    entitiesName.map(entityName => entityApplier(gridState,
+    entitiesName.map(entityName => entityApplier(
+      gridState,
       entitiesLocation[entityName],
-      entityToCode(entityName)));
+      entityToCode(entityName),
+    ));
 
     this.setState({ gridState, gridSize });
 
-    let walls = [];
+    const walls = [];
     gridState.forEach((rowArray, rowIndex) => {
       rowArray.forEach((cell, columnIndex) => {
         if (cell === 4) {
           walls.push([rowIndex, columnIndex]);
         }
-      })
+      });
     });
     this.setState({ walls });
-  }
+  };
+
   startGame = () => {
+    const { config } = this.state;
     this.animationHandler = setInterval(
       this.animateGame,
-      this.state.config.refreshRate
+      config.refreshRate,
     );
     document.addEventListener('keydown', this.setDirection);
-  }
+  };
+
   checkCollision = ({ x, y }) => {
-    let walls = this.state.walls;
+    const { walls } = this.state;
     let hasCollision = false;
 
     walls.forEach((wall) => {
@@ -77,29 +86,30 @@ class PacmanGame extends Component {
       }
     });
     return hasCollision;
-  }
+  };
+
   animateGame = () => {
-    const initialLocation = this.state.pacman;
+    const { pacman: initialLocation, direction } = this.state;
     const newLocation = { ...initialLocation };
 
-    const direction = this.state.direction;
     if (direction === 'RIGHT') {
-      newLocation['x'] = initialLocation['x'] + 1;
+      newLocation.x = initialLocation.x + 1;
     } else if (direction === 'LEFT') {
-      newLocation['x'] = initialLocation['x'] - 1;
+      newLocation.x = initialLocation.x - 1;
     } else if (direction === 'UP') {
-      newLocation['y'] = initialLocation['y'] - 1;
+      newLocation.y = initialLocation.y - 1;
     } else if (direction === 'DOWN') {
-      newLocation['y'] = initialLocation['y'] + 1;
+      newLocation.y = initialLocation.y + 1;
     }
     if (!this.checkCollision(newLocation)) {
       this.setState({
-        pacman: newLocation
+        pacman: newLocation,
       });
     }
-  }
+  };
+
   setDirection = ({ which: keycode }) => {
-    const oldDirection = this.state.direction;
+    const { direction: oldDirection } = this.state;
     let dir;
     if (keycode === 37 && oldDirection !== 'RIGHT') dir = 'LEFT';
     if (keycode === 38 && oldDirection !== 'DOWN') dir = 'UP';
@@ -107,25 +117,30 @@ class PacmanGame extends Component {
     if (keycode === 40 && oldDirection !== 'UP') dir = 'DOWN';
 
     this.setState({
-      direction: dir
+      direction: dir,
     });
-  }
-  componentDidMount() {
-    this.setInitialGameState();
-  }
+  };
+
   render() {
+    const { gridSize, gridState, pacman } = this.state;
     return (
       <div>
-        <button className="" onClick={this.startGame}>Start</button>
-        <PacmanBoard gridSize={this.state.gridSize} gridState={this.state.gridState} pacman={this.state.pacman} />
+        <button type="button" className="" onClick={this.startGame}>
+          Start
+        </button>
+        <PacmanBoard
+          gridSize={gridSize}
+          gridState={gridState}
+          pacman={pacman}
+        />
       </div>
-    )
+    );
   }
 }
 
 PacmanGame.propTypes = {
   width: PropTypes.number.isRequired,
-  numberofCells: PropTypes.number.isRequired,
+  numberOfCells: PropTypes.number.isRequired,
 };
 
 export default PacmanGame;
