@@ -42,15 +42,15 @@ export const getEnergizers = () => [[4, 6], [9, 1], [1, 9], [13, 13]];
 
 export const getGhosts = () => [[23, 5], [19, 1], [1, 19], [1, 13]];
 
-export const getPacman = () => [[43, 5]];
+export const getPacman = () => [[1, 5]];
 
 export const entityApplier = (gridState,
   entityLocations,
   entityCode) => entityLocations.reduce((prevGridState, [x, y]) => {
-  const newGridState = prevGridState;
-  newGridState[x][y] = entityCode;
-  return newGridState;
-}, [...gridState]);
+    const newGridState = prevGridState;
+    newGridState[x][y] = entityCode;
+    return newGridState;
+  }, [...gridState]);
 
 
 export const codeToEntity = (code) => {

@@ -13,9 +13,6 @@ const Cell = ({
     energizer: 'cyan',
   };
   let color = colorCode[entity] || 'black';
-  if (hasPacman) {
-    color = 'yellow';
-  }
   return (
     <Rect
       x={x * gridSize}

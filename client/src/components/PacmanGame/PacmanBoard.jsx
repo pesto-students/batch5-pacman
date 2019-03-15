@@ -8,33 +8,22 @@ const PacmanBoard = ({ gridState, gridSize, pacman }) => (
   <Stage width={500} height={500}>
     <Layer>
       {
-        gridState.map((row, rowIndex) => (
-          row.map((column, columnIndex) => {
-            const entity = codeToEntity(gridState[rowIndex][columnIndex]);
-            let hasPacman = false;
-            if (pacman.x === columnIndex && pacman.y === rowIndex) {
-              hasPacman = true;
-            }
-            return (
-              <Cell
-                // eslint-disable-next-line react/no-array-index-key
-                key={`row-${rowIndex}-col-${columnIndex}`}
-                x={columnIndex}
-                y={rowIndex}
-                gridSize={gridSize}
-                entity={entity}
-                hasPacman={hasPacman}
-              />
-            );
-          })
-        ))
+        gridState.map((row, rowIndex) => {
+          return (
+            row.map((column, columnIndex) => {
+              const entity = codeToEntity(gridState[rowIndex][columnIndex]);
+              return (
+                <Cell key={`row-${rowIndex}-col-${columnIndex}`} y={columnIndex} x={rowIndex} gridSize={gridSize} entity={entity} />
+              )
+            })
+          )
+        })
       }
     </Layer>
   </Stage>
 );
 
 PacmanBoard.propTypes = {
-  gridState: PropTypes.number.isRequired,
   gridSize: PropTypes.number.isRequired,
   pacman: PropTypes.arrayOf(
     PropTypes.shape({
