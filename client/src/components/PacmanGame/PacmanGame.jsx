@@ -15,7 +15,6 @@ import {
 import PacmanBoard from './PacmanBoard';
 
 class PacmanGame extends Component {
-
   state = {
     pacman: {
       x: 1,
@@ -121,8 +120,14 @@ class PacmanGame extends Component {
           );
           break;
       }
-      const randomBlockIndex = Math.floor((Math.random() * 10) % availableBlocks.length);
-      const newLocation = availableBlocks[randomBlockIndex];
+      const possibleBlocks = availableBlocks.reduce((acc, block) => {
+        if (this.checkCollision(block)) {
+          return acc;
+        }
+        return [...acc, block];
+      }, []);
+      const randomBlockIndex = Math.floor((Math.random() * 10) % possibleBlocks.length);
+      const newLocation = possibleBlocks[randomBlockIndex];
       const { gridState } = this.state;
       gridState[x][y] = entityToCode('free');
       gridState[newLocation.x][newLocation.y] = entityToCode('ghost');
@@ -201,10 +206,20 @@ class PacmanGame extends Component {
     const { gridSize, gridState, pacman, score, status } = this.state;
     return (
       <div>
-        <button className="" onClick={this.startGame}>Start</button>
-        <div>Score: {score}</div>
-        <div>Status: {status === 2 ? 'GAME OVER' : status}</div>
-        <PacmanBoard gridSize={gridSize} gridState={gridState} pacman={pacman} />
+        <button className="" onClick={this.startGame}>
+          Start
+          </button>
+        <div>
+          Score: {score}
+        </div>
+        <div>
+          Status: {status === 2 ? 'GAME OVER' : status}
+        </div>
+        <PacmanBoard
+          gridSize={gridSize}
+          gridState={gridState}
+          pacman={pacman}
+        />
       </div>
     );
   }
