@@ -13,7 +13,13 @@ const PacmanBoard = ({ gridState, gridSize, pacman }) => (
             row.map((column, columnIndex) => {
               const entity = codeToEntity(gridState[rowIndex][columnIndex]);
               return (
-                <Cell key={`row-${rowIndex}-col-${columnIndex}`} y={columnIndex} x={rowIndex} gridSize={gridSize} entity={entity} />
+                <Cell
+                  key={`row-${rowIndex}-col-${columnIndex}`}
+                  y={columnIndex}
+                  x={rowIndex}
+                  gridSize={gridSize}
+                  entity={entity}
+                />
               )
             })
           )
