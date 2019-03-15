@@ -2,27 +2,14 @@ import React from 'react';
 import { Rect } from 'react-konva';
 
 const Cell = ({ x, y, gridSize, entity, hasPacman }) => {
-  let color;
-  switch (entity) {
-    case 'pacman':
-      color = 'yellow';
-      break;
-    case 'food':
-      color = 'green';
-      break;
-    case 'ghost':
-      color = 'red';
-      break;
-    case 'wall':
-      color = 'brown';
-      break;
-    case 'energizer':
-      color = 'cyan';
-      break;
-    default:
-      color = 'black';
-      break;
-  }
+  const colorCode = {
+    pacman: 'yellow',
+    food: 'green',
+    ghost: 'red',
+    wall: 'brown',
+    energizer: 'cyan',
+  };
+  let color = colorCode[entity] || 'black';
   if (hasPacman) {
     color = 'yellow';
   }
