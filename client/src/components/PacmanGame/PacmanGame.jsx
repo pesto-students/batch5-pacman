@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 
 import {
   initSquareGridState,
@@ -13,6 +17,16 @@ import {
   entityApplier,
 } from './gameCore';
 import PacmanBoard from './PacmanBoard';
+import ScoreCard from '../UI/ScoreCard';
+
+const styles = theme => ({
+  root: {
+    ...theme.mixins.gutters(),
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2,
+    width: '96%',
+  },
+});
 
 class PacmanGame extends Component {
   state = {
@@ -204,23 +218,34 @@ class PacmanGame extends Component {
   }
   render() {
     const { gridSize, gridState, pacman, score, status } = this.state;
+    const { classes } = this.props;
     return (
-      <div>
-        <button className="" onClick={this.startGame}>
-          Start
-          </button>
-        <div>
+      <React.Fragment>
+        <Paper className={classes.root} elevation={1}>
+          <Grid container spacing={16}>
+            <Grid item xs={3} />
+            <Grid item xs={6}>
+            <Button variant="outlined" size="medium" color="primary" onClick={this.startGame}>
+            Start
+            </Button>
+              <div>
           Score: {score}
         </div>
         <div>
           Status: {status === 2 ? 'GAME OVER' : status}
         </div>
-        <PacmanBoard
-          gridSize={gridSize}
-          gridState={gridState}
-          pacman={pacman}
-        />
-      </div>
+              <PacmanBoard
+                gridSize={gridSize}
+                gridState={gridState}
+                pacman={pacman}
+              />
+            </Grid>
+            <Grid item xs={3} sm container>
+              <ScoreCard />
+            </Grid>
+          </Grid>
+        </Paper>
+      </React.Fragment>
     );
   }
 }
@@ -228,6 +253,7 @@ class PacmanGame extends Component {
 PacmanGame.propTypes = {
   width: PropTypes.number.isRequired,
   numberofCells: PropTypes.number.isRequired,
+  classes: PropTypes.shape().isRequired,
 };
 
-export default PacmanGame;
+export default withStyles(styles)(PacmanGame);
