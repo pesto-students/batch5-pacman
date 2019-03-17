@@ -20,7 +20,6 @@ class PacmanGame extends Component {
       y: 5,
     },
     direction: 'RIGHT',
-    score: 0,
     gridState: [],
     config: {
       refreshRate: 50,
@@ -34,14 +33,13 @@ class PacmanGame extends Component {
   setInitialGameState = () => {
     const { width, numberofCells } = this.props;
     const canvasWidth = width;
-    const cellsInEachRow = numberofCells;
-    const gridSize = canvasWidth / cellsInEachRow;
-    const gridState = initSquareGridState(cellsInEachRow);
+    const gridSize = canvasWidth / numberofCells;
+    const gridState = initSquareGridState(numberofCells);
 
     const entitiesLocation = {
       food: getFoods(),
       pacman: getPacman(),
-      wall: getWalls(cellsInEachRow),
+      wall: getWalls(numberofCells),
       ghost: getGhosts(),
       energizer: getEnergizers(),
     };
@@ -140,7 +138,7 @@ class PacmanGame extends Component {
 
 PacmanGame.propTypes = {
   width: PropTypes.number.isRequired,
-  numberOfCells: PropTypes.number.isRequired,
+  numberofCells: PropTypes.number.isRequired,
 };
 
 export default PacmanGame;

@@ -4,7 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import PropTypes, { object } from 'prop-types';
+import PropTypes from 'prop-types';
 
 
 const styles = {
@@ -13,7 +13,7 @@ const styles = {
   },
   grow: {
     flexGrow: 1,
-  }
+  },
 };
 
 const ButtonAppBar = ({ classes, isLoggedIn }) => (
