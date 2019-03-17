@@ -36,6 +36,13 @@ const PacmanBoard = ({ gridState, gridSize, pacman }) => (
 PacmanBoard.propTypes = {
   gridState: PropTypes.number.isRequired,
   gridSize: PropTypes.number.isRequired,
+  pacman: PropTypes.arrayOf(
+    PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+    }),
+  ).isRequired,
+
 };
 
 export default PacmanBoard;
