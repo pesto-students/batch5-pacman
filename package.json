@@ -1,11 +1,11 @@
 {
-  "name": "Pacman",
+  "name": "pacman",
   "version": "0.1.0",
   "license": "MIT",
   "author": "Batch 5 Pesto",
   "scripts": {
-    "lint": "eslint .",
-    "lintfix": "eslint . --fix",
+    "lint": "eslint . --ext js,jsx",
+    "lintfix": "eslint . --ext js,jsx --fix",
     "postinstall": "yarn install:client && yarn install:server",
     "install:client": "cd client && yarn",
     "install:server": "cd server && yarn"
@@ -16,7 +16,9 @@
     }
   },
   "lint-staged": {
-    "!(*.test).js": ["eslint"]
+    "*.{js,jsx}": [
+      "yarn lint"
+    ]
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
