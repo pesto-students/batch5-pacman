@@ -37,7 +37,7 @@ const ButtonAppBar = ({ classes, isLoggedIn }) => (
 
 ButtonAppBar.propTypes = {
   classes: PropTypes.shape().isRequired,
-  isLoggedIn: PropTypes.number.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 
