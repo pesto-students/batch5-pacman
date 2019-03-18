@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
+import pathfinding from 'pathfinding';
 
 import {
   initSquareGridState,
@@ -169,6 +170,58 @@ class PacmanGame extends Component {
       this.setState({ status: 2 });
     }
   }
+
+  getGridwithWeights = (grid) => {
+    const gridwithWeights = [];
+    grid.forEach((array) => {
+      const newArray = [];
+      array.forEach((element) => {
+        let weight = element;
+        if (weight === 4) {
+          weight = 1;
+        }
+        if (weight !== 1) {
+          weight = 0;
+        }
+        newArray.push(weight);
+      });
+      gridwithWeights.push(newArray);
+    });
+    return gridwithWeights;
+  };
+
+  moveBlinky = () => {
+    const { blinky, gridState, pacman } = this.state;
+    const { x1, y1 } = blinky;
+    const { x, y } = pacman;
+    const gridwithWeights = this.getGridwithWeights(gridState);
+    const graph = new pathfinding.Grid(gridwithWeights);
+    const finder = new pathfinding.AStarFinder();
+    const path = finder.findPath(x1, y1, x, y, graph);
+    const gridChange = (position) => {
+      gridState[position[0]][position[1]] = entityToCode('blinky');
+      this.setState({
+        gridState,
+        blinky: {
+          x1: position[0],
+          y1: position[1],
+        },
+      });
+    };
+    path.forEach((position) => {
+      setInterval(() => gridChange(position), 50);
+    });
+    gridState[x1][y1] = entityToCode('free');
+    gridState[path[0][0]][path[0][1]] = entityToCode('blinky');
+    const newBlinky = {
+      x1: path[0][0],
+      y1: path[0][1],
+    };
+    this.setState({
+      gridState,
+      blinky: newBlinky,
+    });
+  };
 
   animateGame = () => {
     try {
