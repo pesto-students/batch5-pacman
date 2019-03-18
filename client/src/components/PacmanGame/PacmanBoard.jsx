@@ -13,6 +13,7 @@ const PacmanBoard = ({ gridState, gridSize }) => (
             const entity = codeToEntity(gridState[rowIndex][columnIndex]);
             return (
               <Cell
+                // eslint-disable-next-line react/no-array-index-key
                 key={`row-${rowIndex}-col-${columnIndex}`}
                 y={columnIndex}
                 x={rowIndex}

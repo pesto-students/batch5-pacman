@@ -39,31 +39,36 @@ class PacmanGame extends Component {
       {
         direction: 'RIGHT',
         x: 19,
-        y: 1
+        y: 1,
       },
       {
         direction: 'UP',
         x: 1,
-        y: 19
+        y: 19,
       },
       {
         direction: 'DOWN',
         x: 23,
-        y: 5
+        y: 5,
       },
       {
         direction: 'LEFT',
         x: 23,
-        y: 23
-      }
+        y: 23,
+      },
     ],
     score: 0,
     status: 0, // 0 - Not-started, 1 - Progress, 2 - Finished, 3 - Paused
     gridState: [],
     config: {
-      refreshRate: 50
-    }
+      refreshRate: 50,
+    },
   }
+
+  componentDidMount() {
+    this.setInitialGameState();
+  }
+
   setInitialGameState = () => {
     const { width: canvasWidth, numberofCells: cellsInEachRow } = this.props;
     const gridSize = canvasWidth / cellsInEachRow;
@@ -87,6 +92,7 @@ class PacmanGame extends Component {
 
     this.setState({ gridState, gridSize });
   }
+
   startGame = () => {
     const { config } = this.state;
     this.animationHandler = setInterval(
@@ -100,37 +106,39 @@ class PacmanGame extends Component {
     const { gridState } = this.state;
     return Boolean(gridState[x][y] === entityToCode('wall'));
   }
+
   moveGhosts = () => {
     const { ghosts } = this.state;
     const ghostUpdated = ghosts.map(({ x, y, direction }) => {
       const availableBlocks = [];
+      // eslint-disable-next-line default-case
       switch (direction) {
         case 'RIGHT':
           availableBlocks.push(
             { x: x + 1, y, direction: 'RIGHT' },
             { x, y: y - 1, direction: 'UP' },
-            { x, y: y + 1, direction: 'DOWN' }
+            { x, y: y + 1, direction: 'DOWN' },
           );
           break;
         case 'LEFT':
           availableBlocks.push(
             { x: x - 1, y, direction: 'LEFT' },
             { x, y: y - 1, direction: 'UP' },
-            { x, y: y + 1, direction: 'DOWN' }
+            { x, y: y + 1, direction: 'DOWN' },
           );
           break;
         case 'UP':
           availableBlocks.push(
             { x, y: y + 1, direction: 'UP' },
             { x: x - 1, y, direction: 'LEFT' },
-            { x: x + 1, y, direction: 'RIGHT' }
+            { x: x + 1, y, direction: 'RIGHT' },
           );
           break;
         case 'DOWN':
           availableBlocks.push(
             { x, y: y - 1, direction: 'DOWN' },
             { x: x - 1, y, direction: 'LEFT' },
-            { x: x + 1, y, direction: 'RIGHT' }
+            { x: x + 1, y, direction: 'RIGHT' },
           );
           break;
       }
@@ -146,12 +154,12 @@ class PacmanGame extends Component {
       gridState[x][y] = entityToCode('free');
       gridState[newLocation.x][newLocation.y] = entityToCode('ghost');
       this.setState({
-        gridState
+        gridState,
       });
       return newLocation;
     });
     this.setState({
-      ghosts: ghostUpdated
+      ghosts: ghostUpdated,
     });
   }
 
@@ -161,27 +169,30 @@ class PacmanGame extends Component {
       this.setState({ status: 2 });
     }
   }
+
   animateGame = () => {
     try {
       this.moveGhosts();
-      const { x, y, direction } = this.state.pacman;
+      const {
+        gridState, pacman, pacman: { x, y, direction },
+      } = this.state;
+      let { score } = this.state;
       const newLocation = { x, y };
 
       if (direction === 'RIGHT') {
-        newLocation['x'] = x + 1;
+        newLocation.x = x + 1;
       } else if (direction === 'LEFT') {
-        newLocation['x'] = x - 1;
+        newLocation.x = x - 1;
       } else if (direction === 'UP') {
-        newLocation['y'] = y - 1;
+        newLocation.y = y - 1;
       } else if (direction === 'DOWN') {
-        newLocation['y'] = y + 1;
+        newLocation.y = y + 1;
       }
       if (!this.checkCollision(newLocation)) {
-        let { gridState, score } = this.state;
         const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
 
         if (entityInCell === 'food') {
-          score++;
+          score += 1;
         } else if (entityInCell === 'ghost') {
           this.setGameStatus('finish');
         }
@@ -191,16 +202,16 @@ class PacmanGame extends Component {
         this.setState({
           gridState,
           score,
-          pacman: { ...this.state.pacman, ...newLocation }
+          pacman: { ...pacman, ...newLocation },
         });
       }
     } catch (e) {
-      console.log(e);
       clearInterval(this.animationHandler);
     }
   }
 
   setDirection = ({ which: keycode }) => {
+    const { pacman } = this.state;
     let newDirection;
     if (keycode === 37) newDirection = 'LEFT';
     if (keycode === 38) newDirection = 'UP';
@@ -209,15 +220,16 @@ class PacmanGame extends Component {
 
     if (newDirection) {
       this.setState({
-        pacman: { ...this.state.pacman, direction: newDirection }
+        pacman: { ...pacman, direction: newDirection },
       });
     }
   }
-  componentDidMount() {
-    this.setInitialGameState();
-  }
+
+
   render() {
-    const { gridSize, gridState, pacman, score, status } = this.state;
+    const {
+      gridSize, gridState, pacman, score, status,
+    } = this.state;
     const { classes } = this.props;
     return (
       <React.Fragment>
@@ -225,15 +237,17 @@ class PacmanGame extends Component {
           <Grid container spacing={16}>
             <Grid item xs={3} />
             <Grid item xs={6}>
-            <Button variant="outlined" size="medium" color="primary" onClick={this.startGame}>
+              <Button variant="outlined" size="medium" color="primary" onClick={this.startGame}>
             Start
-            </Button>
+              </Button>
               <div>
-          Score: {score}
-        </div>
-        <div>
-          Status: {status === 2 ? 'GAME OVER' : status}
-        </div>
+          Score:
+                {score}
+              </div>
+              <div>
+          Status:
+                {status === 2 ? 'GAME OVER' : status}
+              </div>
               <PacmanBoard
                 gridSize={gridSize}
                 gridState={gridState}
