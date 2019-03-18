@@ -173,8 +173,7 @@ class PacmanGame extends Component {
 
   getGridwithWeights = (grid) => {
     const gridwithWeights = grid.map((array) => {
-      const newArray = [];
-      array.forEach((element) => {
+      const newArray = array.map((element) => {
         let weight = element;
         if (weight === 4) {
           weight = 1;
@@ -182,7 +181,7 @@ class PacmanGame extends Component {
         if (weight !== 1) {
           weight = 0;
         }
-        newArray.push(weight);
+        return weight;
       });
       return newArray;
     });
