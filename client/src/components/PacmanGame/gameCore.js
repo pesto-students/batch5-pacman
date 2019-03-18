@@ -47,10 +47,10 @@ export const getPacman = () => [[1, 5]];
 export const entityApplier = (gridState,
   entityLocations,
   entityCode) => entityLocations.reduce((prevGridState, [x, y]) => {
-    const newGridState = prevGridState;
-    newGridState[x][y] = entityCode;
-    return newGridState;
-  }, [...gridState]);
+  const newGridState = prevGridState;
+  newGridState[x][y] = entityCode;
+  return newGridState;
+}, [...gridState]);
 
 
 export const codeToEntity = (code) => {

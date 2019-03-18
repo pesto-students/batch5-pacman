@@ -3,7 +3,7 @@ import { Rect } from 'react-konva';
 import PropTypes from 'prop-types';
 
 const Cell = ({
-  x, y, gridSize, entity, hasPacman,
+  x, y, gridSize, entity,
 }) => {
   const colorCode = {
     pacman: 'yellow',
@@ -12,7 +12,7 @@ const Cell = ({
     wall: 'brown',
     energizer: 'cyan',
   };
-  let color = colorCode[entity] || 'black';
+  const color = colorCode[entity] || 'black';
   return (
     <Rect
       x={x * gridSize}
@@ -29,7 +29,6 @@ Cell.propTypes = {
   y: PropTypes.number.isRequired,
   gridSize: PropTypes.number.isRequired,
   entity: PropTypes.number.isRequired,
-  hasPacman: PropTypes.bool.isRequired,
 };
 
 export default Cell;
