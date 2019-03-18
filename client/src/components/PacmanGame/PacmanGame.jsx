@@ -172,8 +172,7 @@ class PacmanGame extends Component {
   }
 
   getGridwithWeights = (grid) => {
-    const gridwithWeights = [];
-    grid.forEach((array) => {
+    const gridwithWeights = grid.map((array) => {
       const newArray = [];
       array.forEach((element) => {
         let weight = element;
@@ -185,7 +184,7 @@ class PacmanGame extends Component {
         }
         newArray.push(weight);
       });
-      gridwithWeights.push(newArray);
+      return newArray;
     });
     return gridwithWeights;
   };
