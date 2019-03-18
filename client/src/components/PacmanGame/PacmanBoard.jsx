@@ -9,12 +9,12 @@ const PacmanBoard = ({ gridState, gridSize }) => (
     <Layer>
       {
         gridState.map((row, rowIndex) => (
-          row.map((column, columnIndex) => {
+          row.map((_, columnIndex) => {
             const entity = codeToEntity(gridState[rowIndex][columnIndex]);
+            const uniqueKey = `row-${rowIndex}-col-${columnIndex}-entity${entity}`;
             return (
               <Cell
-                // eslint-disable-next-line react/no-array-index-key
-                key={`row-${rowIndex}-col-${columnIndex}`}
+                key={uniqueKey}
                 y={columnIndex}
                 x={rowIndex}
                 gridSize={gridSize}
