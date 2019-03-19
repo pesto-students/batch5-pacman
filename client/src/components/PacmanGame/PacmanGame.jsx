@@ -62,17 +62,16 @@ class PacmanGame extends Component {
     status: 0, // 0 - Not-started, 1 - Progress, 2 - Finished, 3 - Paused
     gridState: [],
     config: {
-      refreshRate: 50,
+      refreshRate: 200,
     },
-  }
+  };
 
   componentDidMount() {
     this.setInitialGameState();
   }
 
   setInitialGameState = () => {
-    const { width: canvasWidth, numberofCells: cellsInEachRow } = this.props;
-    const gridSize = canvasWidth / cellsInEachRow;
+    const { numberofCells: cellsInEachRow } = this.props;
     const gridState = initSquareGridState(cellsInEachRow);
 
     const entitiesLocation = {
@@ -91,7 +90,7 @@ class PacmanGame extends Component {
       entityToCode(entityName),
     ));
 
-    this.setState({ gridState, gridSize });
+    this.setState({ gridState });
   }
 
   startGame = () => {
@@ -278,8 +277,10 @@ class PacmanGame extends Component {
 
 
   render() {
+    const { width: canvasWidth, numberofCells: cellsInEachRow } = this.props;
+    const gridSize = canvasWidth / cellsInEachRow;
     const {
-      gridSize, gridState, pacman, score, status,
+      gridState, pacman, score, status,
     } = this.state;
     const { classes } = this.props;
     return (
@@ -289,14 +290,14 @@ class PacmanGame extends Component {
             <Grid item xs={3} />
             <Grid item xs={6}>
               <Button variant="outlined" size="medium" color="primary" onClick={this.startGame}>
-            Start
+                Start
               </Button>
               <div>
-          Score:
+                Score:
                 {score}
               </div>
               <div>
-          Status:
+                Status:
                 {status === 2 ? 'GAME OVER' : status}
               </div>
               <PacmanBoard
