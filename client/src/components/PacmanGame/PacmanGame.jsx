@@ -13,6 +13,8 @@ import {
   getEnergizers,
   entityToCode,
   entityApplier,
+  isWall,
+  getRandomAdjacentAvailableCell,
 } from './gameCore';
 import PacmanBoard from './PacmanBoard';
 
@@ -23,28 +25,7 @@ class PacmanGame extends Component {
       y: 5,
       direction: 'RIGHT',
     },
-    ghosts: [
-      {
-        direction: 'RIGHT',
-        x: 19,
-        y: 1,
-      },
-      {
-        direction: 'UP',
-        x: 1,
-        y: 19,
-      },
-      {
-        direction: 'DOWN',
-        x: 23,
-        y: 5,
-      },
-      {
-        direction: 'LEFT',
-        x: 23,
-        y: 23,
-      },
-    ],
+    ghosts: [],
     score: 0,
     status: 0, // 0 - Not-started, 1 - Progress, 2 - Finished, 3 - Paused
     gridState: [],
@@ -69,6 +50,11 @@ class PacmanGame extends Component {
       energizer: getEnergizers(),
     };
 
+    const ghostsArray = entitiesLocation.ghost.map(([x, y, direction]) => ({
+      x, y, direction,
+    }));
+
+
     const entitiesName = Object.keys(entitiesLocation);
 
     entitiesName.map(entityName => entityApplier(
@@ -77,7 +63,7 @@ class PacmanGame extends Component {
       entityToCode(entityName),
     ));
 
-    this.setState({ gridState });
+    this.setState({ gridState, ghosts: ghostsArray });
   }
 
   startGame = () => {
@@ -89,57 +75,15 @@ class PacmanGame extends Component {
     document.addEventListener('keydown', this.setDirection);
   };
 
-  checkCollision = ({ x, y }) => {
-    const { gridState } = this.state;
-    return Boolean(gridState[x][y] === entityToCode('wall'));
-  }
-
   moveGhosts = () => {
     const { ghosts } = this.state;
-    const ghostUpdated = ghosts.map(({ x, y, direction }) => {
-      const availableBlocks = [];
-      // eslint-disable-next-line default-case
-      switch (direction) {
-        case 'RIGHT':
-          availableBlocks.push(
-            { x: x + 1, y, direction: 'RIGHT' },
-            { x, y: y - 1, direction: 'UP' },
-            { x, y: y + 1, direction: 'DOWN' },
-          );
-          break;
-        case 'LEFT':
-          availableBlocks.push(
-            { x: x - 1, y, direction: 'LEFT' },
-            { x, y: y - 1, direction: 'UP' },
-            { x, y: y + 1, direction: 'DOWN' },
-          );
-          break;
-        case 'UP':
-          availableBlocks.push(
-            { x, y: y + 1, direction: 'UP' },
-            { x: x - 1, y, direction: 'LEFT' },
-            { x: x + 1, y, direction: 'RIGHT' },
-          );
-          break;
-        case 'DOWN':
-          availableBlocks.push(
-            { x, y: y - 1, direction: 'DOWN' },
-            { x: x - 1, y, direction: 'LEFT' },
-            { x: x + 1, y, direction: 'RIGHT' },
-          );
-          break;
-      }
-      const possibleBlocks = availableBlocks.reduce((acc, block) => {
-        if (this.checkCollision(block)) {
-          return acc;
-        }
-        return [...acc, block];
-      }, []);
-      const randomBlockIndex = Math.floor((Math.random() * 10) % possibleBlocks.length);
-      const newLocation = possibleBlocks[randomBlockIndex];
+    const ghostUpdated = ghosts.map(({ x, y }) => {
       const { gridState } = this.state;
+      const newLocation = getRandomAdjacentAvailableCell(gridState, { x, y });
+
       gridState[x][y] = entityToCode('free');
       gridState[newLocation.x][newLocation.y] = entityToCode('ghost');
+
       this.setState({
         gridState,
       });
@@ -225,7 +169,7 @@ class PacmanGame extends Component {
       } else if (direction === 'DOWN') {
         newLocation.y = y + 1;
       }
-      if (!this.checkCollision(newLocation)) {
+      if (!isWall(gridState, newLocation)) {
         const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
 
         if (entityInCell === 'food') {
