@@ -75,22 +75,18 @@ class PacmanGame extends Component {
   };
 
   moveGhosts = () => {
-    const { ghosts } = this.state;
+    const { ghosts, gridState } = this.state;
     const ghostUpdated = ghosts.map(({ x, y }) => {
-      const { gridState } = this.state;
       const newLocation = getRandomAdjacentAvailableCell(gridState, { x, y });
 
       gridState[x][y] = entityToCode('free');
       gridState[newLocation.x][newLocation.y] = entityToCode('ghost');
 
-      this.setState({
-        gridState,
-      });
       return newLocation;
     });
-    this.setState({
-      ghosts: ghostUpdated,
-    });
+    return {
+      gridState, ghosts: ghostUpdated,
+    };
   }
 
   setGameStatus = (status) => {
@@ -102,12 +98,12 @@ class PacmanGame extends Component {
 
   animateGame = () => {
     try {
-      this.moveGhosts();
+      const { gridState, ghosts } = this.moveGhosts();
       const {
-        gridState, pacman, pacman: { x, y, direction },
+        pacman, pacman: { x, y, direction },
       } = this.state;
       let { score } = this.state;
-      const newLocation = { x, y };
+      let newLocation = { x, y };
 
       if (direction === 'RIGHT') {
         newLocation.x = x + 1;
@@ -129,12 +125,15 @@ class PacmanGame extends Component {
 
         gridState[x][y] = entityToCode('free');
         gridState[newLocation.x][newLocation.y] = entityToCode('pacman');
-        this.setState({
-          gridState,
-          score,
-          pacman: { ...pacman, ...newLocation },
-        });
+      } else {
+        newLocation = {};
       }
+      this.setState({
+        gridState,
+        score,
+        ghosts,
+        pacman: { ...pacman, ...newLocation },
+      });
     } catch (e) {
       clearInterval(this.animationHandler);
     }
