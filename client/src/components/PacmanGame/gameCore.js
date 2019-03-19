@@ -40,7 +40,7 @@ export const getWalls = cellsInEachRow => wallGenerator(cellsInEachRow);
 
 export const getEnergizers = () => [[4, 6], [9, 1], [1, 9], [13, 13]];
 
-export const getGhosts = () => [[23, 5], [19, 1], [1, 19], [1, 13]];
+export const getGhosts = () => [[23, 5, 'RIGHT'], [19, 1, 'LEFT'], [1, 19, 'DOWN'], [1, 13, 'UP']];
 
 export const getPacman = () => [[1, 5]];
 
@@ -75,4 +75,26 @@ export const entityToCode = (entity) => {
     pacman: 5,
   };
   return entityMap[entity];
+};
+
+export const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
+
+export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
+  const choices = [
+    [0, -1],
+    [0, 1],
+    [1, 0],
+    [-1, 0],
+  ];
+
+  const randomIndexInChoice = parseInt(Math.random() * choices.length, 10);
+  const randomAdjacentCell = {
+    x: currentLocation.x + choices[randomIndexInChoice][0],
+    y: currentLocation.y + choices[randomIndexInChoice][1],
+  };
+
+  if (!isWall(gridState, randomAdjacentCell)) {
+    return randomAdjacentCell;
+  }
+  return getRandomAdjacentAvailableCell(gridState, currentLocation);
 };
