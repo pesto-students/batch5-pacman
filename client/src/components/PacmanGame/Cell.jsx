@@ -28,7 +28,7 @@ Cell.propTypes = {
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired,
   gridSize: PropTypes.number.isRequired,
-  entity: PropTypes.number.isRequired,
+  entity: PropTypes.string.isRequired,
 };
 
 export default Cell;
