@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import socketConnection from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 
 import {
@@ -35,6 +36,8 @@ class PacmanGame extends Component {
   };
 
   componentDidMount() {
+    // eslint-disable-next-line no-console
+    socketConnection(() => { console.log('successfully connected'); });
     this.setInitialGameState();
   }
 
