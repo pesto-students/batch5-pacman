@@ -25,9 +25,7 @@ const ButtonAppBar = ({ classes, isLoggedIn }) => (
         </Typography>
         {isLoggedIn
           ? (
-            <>
-              <Button color="inherit">Lead Board</Button>
-            </>
+            <Button color="inherit">Leader Board</Button>
           )
           : <Button color="inherit" href="/auth/signin">login</Button>}
       </Toolbar>
