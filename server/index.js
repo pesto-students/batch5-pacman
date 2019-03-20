@@ -10,6 +10,7 @@ const io = socketIo(server);
 const config = require('./config/config');
 const routes = require('./api/api.js');
 const authRoutes = require('./api/auth.js');
+const gameController = require('./api/gameController');
 
 require('mongoose').connect(config.db.url, { useNewUrlParser: true });
 
@@ -23,7 +24,32 @@ app.use((req, res, next) => {
   next(createError(404));
 });
 
+const games = {};
+
 io.on('connection', (socket) => {
+  socket.on('joinGame', (playerInfo) => {
+    const availableGame = Object.values(games);
+    const openGame = availableGame.find(game => game.freeToJoin === true);
+    if (openGame) {
+      openGame.pacmanTwo = playerInfo;
+      openGame.freeToJoin = false;
+      // eslint-disable-next-line no-param-reassign
+      socket.room = openGame.roomId;
+      socket.join(openGame.roomId);
+    } else {
+      const newGame = gameController(playerInfo);
+      games.roomId = newGame;
+      // eslint-disable-next-line no-param-reassign
+      socket.room = newGame.roomId;
+      socket.join(newGame.roomId);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    delete games[socket.room];
+    socket.leave(socket.room);
+  });
+
   socket.emit('connected');
 });
 

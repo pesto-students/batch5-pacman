@@ -7,4 +7,12 @@ const socketConnection = (cb) => {
   socket.emit('connection');
 };
 
-export default socketConnection;
+const joinGame = (playerInfo) => {
+  socket.emit('joinGame', playerInfo);
+};
+
+const leaveGame = () => {
+  socket.emit('disconnect');
+};
+
+export { socketConnection, joinGame, leaveGame };
