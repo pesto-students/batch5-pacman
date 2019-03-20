@@ -117,14 +117,14 @@ export const entityToCode = (entity) => {
 
 export const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
 
-export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
-  const choices = [
-    [0, -1],
-    [0, 1],
-    [1, 0],
-    [-1, 0],
-  ];
+const choices = [
+  [0, -1, 'TOP'],
+  [0, 1, 'DOWN'],
+  [1, 0, 'RIGHT'],
+  [-1, 0, 'LEFT'],
+];
 
+export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
   const randomIndexInChoice = parseInt(Math.random() * choices.length, 10);
   const randomAdjacentCell = {
     x: currentLocation.x + choices[randomIndexInChoice][0],
@@ -158,4 +158,18 @@ export const moveBlinky = (gridState, blinky, pacman) => {
   const finder = new pathfinding.AStarFinder();
   const path = finder.findPath(x1, y1, x, y, graph);
   return path;
+};
+
+export const moveInDirection = ({ x, y, direction }) => {
+  const directionLocation = choices
+    .reduce((acc, value) => (
+      { ...acc, [value[2]]: [...value.slice(0, 2)] }
+    ), {});
+
+  const newLocation = {
+    x: x + directionLocation[direction][0],
+    y: y + directionLocation[direction][1],
+  };
+
+  return newLocation;
 };

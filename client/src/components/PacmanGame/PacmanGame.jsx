@@ -14,6 +14,7 @@ import {
   entityApplier,
   isWall,
   getRandomAdjacentAvailableCell,
+  moveInDirection,
 } from './gameCore';
 import PacmanBoard from './PacmanBoard';
 
@@ -45,11 +46,10 @@ class PacmanGame extends Component {
       food: getFoods(),
       pacman: getPacman(),
       wall: getWalls(cellsInEachRow),
-      ghost: getGhosts(),
       energizer: getEnergizers(),
     };
 
-    const ghostsArray = entitiesLocation.ghost.map(([x, y, direction]) => ({
+    const ghostsArray = getGhosts().map(([x, y, direction]) => ({
       x, y, direction,
     }));
     Object.entries(entitiesLocation).forEach(
@@ -77,12 +77,9 @@ class PacmanGame extends Component {
   moveGhosts = () => {
     const { ghosts, gridState } = this.state;
     const ghostUpdated = ghosts.map(({ x, y }) => {
-      const newLocation = getRandomAdjacentAvailableCell(gridState, { x, y });
+      const newGhostLocation = getRandomAdjacentAvailableCell(gridState, { x, y });
 
-      gridState[x][y] = entityToCode('free');
-      gridState[newLocation.x][newLocation.y] = entityToCode('ghost');
-
-      return newLocation;
+      return newGhostLocation;
     });
     return {
       gridState, ghosts: ghostUpdated,
@@ -96,43 +93,45 @@ class PacmanGame extends Component {
     }
   }
 
+  movePacman = ({ gridState }) => {
+    const gridStateAfterPacmanMove = gridState;
+    const {
+      pacman, pacman: { x, y, direction },
+    } = this.state;
+    let { score } = this.state;
+
+    let newLocation = moveInDirection({ x, y, direction });
+    if (!isWall(gridState, newLocation)) {
+      const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
+
+      if (entityInCell === 'food') {
+        score += 1;
+      } else if (entityInCell === 'ghost') {
+        this.setGameStatus('finish');
+      }
+
+      gridStateAfterPacmanMove[x][y] = entityToCode('free');
+      gridStateAfterPacmanMove[newLocation.x][newLocation.y] = entityToCode('pacman');
+    } else {
+      newLocation = {};
+    }
+    return {
+      pacman: { ...pacman, ...newLocation }, gridStateAfterPacmanMove, score,
+    };
+  }
+
   animateGame = () => {
     try {
       const { gridState, ghosts } = this.moveGhosts();
       const {
-        pacman, pacman: { x, y, direction },
-      } = this.state;
-      let { score } = this.state;
-      let newLocation = { x, y };
+        pacman, gridStateAfterPacmanMove, score,
+      } = this.movePacman({ gridState });
 
-      if (direction === 'RIGHT') {
-        newLocation.x = x + 1;
-      } else if (direction === 'LEFT') {
-        newLocation.x = x - 1;
-      } else if (direction === 'UP') {
-        newLocation.y = y - 1;
-      } else if (direction === 'DOWN') {
-        newLocation.y = y + 1;
-      }
-      if (!isWall(gridState, newLocation)) {
-        const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
-
-        if (entityInCell === 'food') {
-          score += 1;
-        } else if (entityInCell === 'ghost') {
-          this.setGameStatus('finish');
-        }
-
-        gridState[x][y] = entityToCode('free');
-        gridState[newLocation.x][newLocation.y] = entityToCode('pacman');
-      } else {
-        newLocation = {};
-      }
       this.setState({
-        gridState,
+        gridState: gridStateAfterPacmanMove,
         score,
         ghosts,
-        pacman: { ...pacman, ...newLocation },
+        pacman,
       });
     } catch (e) {
       clearInterval(this.animationHandler);
@@ -143,7 +142,7 @@ class PacmanGame extends Component {
     const { pacman } = this.state;
     let newDirection;
     if (keycode === 37) newDirection = 'LEFT';
-    if (keycode === 38) newDirection = 'UP';
+    if (keycode === 38) newDirection = 'TOP';
     if (keycode === 39) newDirection = 'RIGHT';
     if (keycode === 40) newDirection = 'DOWN';
 
@@ -159,7 +158,7 @@ class PacmanGame extends Component {
     const { width: canvasWidth, numberofCells: cellsInEachRow } = this.props;
     const gridSize = canvasWidth / cellsInEachRow;
     const {
-      gridState, pacman, score, status,
+      gridState, pacman, score, status, ghosts,
     } = this.state;
     return (
       <GamePage
@@ -171,6 +170,7 @@ class PacmanGame extends Component {
             gridSize={gridSize}
             gridState={gridState}
             pacman={pacman}
+            ghosts={ghosts}
           />
         )}
       />
