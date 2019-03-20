@@ -44,14 +44,20 @@ class PacmanGame extends Component {
 
     const entitiesLocation = {
       food: getFoods(),
-      pacman: getPacman(),
       wall: getWalls(cellsInEachRow),
       energizer: getEnergizers(),
+    };
+
+    const [pacmanX, pacmanY, pacmanDirection] = getPacman();
+    const pacman = {
+      x: pacmanX, y: pacmanY, direction: pacmanDirection,
     };
 
     const ghostsArray = getGhosts().map(([x, y, direction]) => ({
       x, y, direction,
     }));
+
+
     Object.entries(entitiesLocation).forEach(
       ([entityName, entityFunction]) => {
         entityApplier(
@@ -62,7 +68,7 @@ class PacmanGame extends Component {
       },
     );
 
-    this.setState({ gridState, ghosts: ghostsArray });
+    this.setState({ gridState, pacman, ghosts: ghostsArray });
   }
 
   startGame = () => {
@@ -93,42 +99,59 @@ class PacmanGame extends Component {
     }
   }
 
+  ifAtGhosts = (newLocation) => {
+    const { ghosts } = this.state;
+    return ghosts.some(({ x, y }) => (x === newLocation.x && y === newLocation.y));
+  };
+
   movePacman = ({ gridState }) => {
     const gridStateAfterPacmanMove = gridState;
     const {
       pacman, pacman: { x, y, direction },
     } = this.state;
-    let { score } = this.state;
 
     let newLocation = moveInDirection({ x, y, direction });
-    if (!isWall(gridState, newLocation)) {
-      const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
 
-      if (entityInCell === 'food') {
-        score += 1;
-      } else if (entityInCell === 'ghost') {
-        this.setGameStatus('finish');
-      }
-
-      gridStateAfterPacmanMove[x][y] = entityToCode('free');
-      gridStateAfterPacmanMove[newLocation.x][newLocation.y] = entityToCode('pacman');
-    } else {
-      newLocation = {};
-    }
+    newLocation = isWall(gridState, newLocation) ? {} : moveInDirection({ x, y, direction });
     return {
-      pacman: { ...pacman, ...newLocation }, gridStateAfterPacmanMove, score,
+      pacman: { ...pacman, ...newLocation }, gridStateAfterPacmanMove,
     };
+  }
+
+  eatFood = ({ pacman: newLocation, gridStateAfterPacmanMove }) => {
+    const gridState = gridStateAfterPacmanMove;
+    const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
+    let { score } = this.state;
+    if (entityInCell === 'food') {
+      score += 1;
+    } else if (entityInCell === 'energizer') {
+      score += 5;
+    }
+    gridState[newLocation.x][newLocation.y] = entityToCode('free');
+    return { score, gridState };
+  }
+
+  dieIfGhost = (newLocation) => {
+    if (this.ifAtGhosts(newLocation)) {
+      this.setGameStatus('finish');
+    }
   }
 
   animateGame = () => {
     try {
-      const { gridState, ghosts } = this.moveGhosts();
+      const { ghosts, gridState } = this.moveGhosts();
       const {
-        pacman, gridStateAfterPacmanMove, score,
+        pacman, gridStateAfterPacmanMove,
       } = this.movePacman({ gridState });
 
+      const {
+        score,
+        gridState: gridStateAfterEating,
+      } = this.eatFood({ pacman, gridStateAfterPacmanMove });
+      this.dieIfGhost(pacman);
+
       this.setState({
-        gridState: gridStateAfterPacmanMove,
+        gridState: gridStateAfterEating,
         score,
         ghosts,
         pacman,
