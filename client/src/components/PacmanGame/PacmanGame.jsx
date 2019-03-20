@@ -53,15 +53,15 @@ class PacmanGame extends Component {
     const ghostsArray = entitiesLocation.ghost.map(([x, y, direction]) => ({
       x, y, direction,
     }));
-
-
-    const entitiesName = Object.keys(entitiesLocation);
-
-    entitiesName.map(entityName => entityApplier(
-      gridState,
-      entitiesLocation[entityName],
-      entityToCode(entityName),
-    ));
+    Object.entries(entitiesLocation).forEach(
+      ([entityName, entityFunction]) => {
+        entityApplier(
+          gridState,
+          entityFunction,
+          entityToCode(entityName),
+        );
+      },
+    );
 
     this.setState({ gridState, ghosts: ghostsArray });
   }

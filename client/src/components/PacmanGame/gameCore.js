@@ -1,48 +1,84 @@
-export const initSquareGridState = edge => Array(edge).fill().map(() => Array(edge).fill(0));
-export const getFoods = () => [[15, 9], [14, 9], [13, 9], [12, 9], [11, 9], [10, 9]];
+export const initSquareGridState = edge => Array(edge).fill(Array(edge).fill(0))
+  .map(arr => arr.slice());
 
-const wallGenerator = (numberofCells) => {
-  const wall = [];
-  const int = num => parseInt(num, 10);
+export const getFoods = () => [[15, 8], [17, 10], [20, 37], [36, 17], [5, 37], [10, 39]];
 
-  const generateVerticalWalls = () => {
-    for (let row = 0; row < numberofCells; row += 1) {
-      const leftColCell = [0, row];
-      const rightColCell = [numberofCells - 1, row];
-      if (row % 2 === 0) {
-        const middleRow = [int((numberofCells - 1) / 2), row];
-        wall.push(middleRow);
-      }
-      wall.push(leftColCell);
-      wall.push(rightColCell);
-    }
-  };
-
-  const generateHorizontalWalls = () => {
-    for (let col = 0; col < numberofCells; col += 1) {
-      const topRowCell = [col, 0];
-      const bottomRowCell = [col, numberofCells - 1];
-      if (col % 2 === 0) {
-        const middleRowCell = [col, int((numberofCells - 1) / 2)];
-        wall.push(middleRowCell);
-      }
-      wall.push(topRowCell);
-      wall.push(bottomRowCell);
-    }
-  };
-
-  generateHorizontalWalls();
-  generateVerticalWalls();
+const borderWalls = (numofCells) => {
+  const cellsArray = [...Array(numofCells).keys()];
+  const topRow = cellsArray.map(col => [col, 0]);
+  const bottomRow = cellsArray.map(col => [col, numofCells - 1]);
+  const leftColumn = cellsArray.map(row => [0, row]);
+  const rightColumn = cellsArray.map(row => [numofCells - 1, row]);
+  const wall = [...topRow, ...bottomRow, ...leftColumn, ...rightColumn];
   return wall;
 };
 
+const range = (start, end) => (new Array(end - start + 1)).fill(0).map((_, i) => i + start);
+
+const borderTouchingWalls = (num) => {
+  const variablesList = [num / 2, Math.floor(num / 4), Math.floor(3 * num / 4)];
+  const padding = [1, 2, num - 3, num - 2];
+  const topDownWalls = [[num / 2, 1], [num / 2, 2], [num / 2, 47], [num / 2, 48]];
+  const walls = [...topDownWalls];
+  variablesList.forEach((variable) => {
+    padding.forEach((pad) => {
+      walls.push([pad, variable]);
+    });
+  });
+  return walls;
+};
+
+const singleWalls = (num) => {
+  const walls = [];
+  const yaxisArray = range((num / 2 - 4), (num / 2 + 4));
+  const xaxisArray = range((num / 2 - 7), (num / 2 + 6));
+  yaxisArray.forEach((value) => {
+    walls.push([(Math.floor(num / 4) + 1), value]);
+    walls.push([(Math.floor(3 * num / 4) - 1), value]);
+  });
+  xaxisArray.forEach((value) => {
+    walls.push([value, (num / 2 - 9)]);
+    walls.push([value, (num / 2 + 9)]);
+  });
+  return walls;
+};
+
+const perperdicularWalls = () => {
+  const walls = [];
+  const firstSide = range(10, 17);
+  const secondSide = range(33, 40);
+  const commonValues = [10, 40];
+  const commonArray = [...firstSide, ...secondSide];
+  commonArray.forEach((element) => {
+    commonValues.forEach((value) => {
+      if (element === value) {
+        walls.push([element, value]);
+      } else {
+        walls.push([element, value]);
+        walls.push([value, element]);
+      }
+    });
+  });
+  return walls;
+};
+
+const monsterPen = () => [
+  [21, 22], [22, 22], [23, 22], [26, 22], [27, 22], [28, 22],
+  [21, 28], [22, 28], [23, 28], [24, 28], [25, 28], [26, 28], [27, 28], [28, 28],
+  [21, 23], [21, 24], [21, 25], [21, 26], [21, 27],
+  [28, 23], [28, 24], [28, 25], [28, 26], [28, 27]];
+
+const wallGenerator = numofCells => [
+  ...monsterPen(), ...perperdicularWalls(), ...singleWalls(numofCells),
+  ...borderTouchingWalls(numofCells), ...borderWalls(numofCells)];
+
 export const getWalls = cellsInEachRow => wallGenerator(cellsInEachRow);
 
-export const getEnergizers = () => [[4, 6], [9, 1], [1, 9], [13, 13]];
+export const getEnergizers = () => [[41, 5], [7, 43], [7, 16], [41, 44]];
 
-export const getGhosts = () => [[23, 5, 'RIGHT'], [19, 1, 'LEFT'], [1, 19, 'DOWN'], [1, 13, 'UP']];
+export const getGhosts = () => [[23, 25, 'RIGHT'], [25, 24, 'LEFT'], [27, 25, 'DOWN'], [25, 26, 'UP']];
 
-export const getPacman = () => [[1, 5]];
+export const getPacman = () => [[2, 5]];
 
 export const entityApplier = (gridState,
   entityLocations,

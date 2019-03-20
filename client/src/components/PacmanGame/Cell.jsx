@@ -9,7 +9,7 @@ const Cell = ({
     pacman: 'yellow',
     food: 'green',
     ghost: 'red',
-    wall: 'brown',
+    wall: '#13326D',
     energizer: 'cyan',
   };
   const color = colorCode[entity] || 'black';
