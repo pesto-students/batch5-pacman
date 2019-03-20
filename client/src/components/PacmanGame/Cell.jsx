@@ -2,27 +2,38 @@ import React from 'react';
 import { Rect } from 'react-konva';
 import PropTypes from 'prop-types';
 
-const Cell = ({
-  x, y, gridSize, entity,
-}) => {
-  const colorCode = {
-    pacman: 'yellow',
-    food: 'green',
-    ghost: 'red',
-    wall: '#13326D',
-    energizer: 'cyan',
-  };
-  const color = colorCode[entity] || 'black';
-  return (
-    <Rect
-      x={x * gridSize}
-      y={y * gridSize}
-      width={gridSize}
-      height={gridSize}
-      fill={color}
-    />
-  );
-};
+class Cell extends React.Component {
+  shouldComponentUpdate(newprops) {
+    const { x: prevPostionX, y: prevPostionY, entity: prevEntity } = this.props;
+    const { x: newPositionX, y: newPositionY, entity: newEntity } = newprops;
+    return !(prevPostionX === newPositionX
+      && prevPostionY === newPositionY
+      && prevEntity === newEntity);
+  }
+
+  render() {
+    const {
+      x, y, gridSize, entity,
+    } = this.props;
+    const colorCode = {
+      pacman: 'yellow',
+      food: 'green',
+      ghost: 'red',
+      wall: 'brown',
+      energizer: 'cyan',
+    };
+    const color = colorCode[entity] || 'black';
+    return (
+      <Rect
+        x={x * gridSize}
+        y={y * gridSize}
+        width={gridSize}
+        height={gridSize}
+        fill={color}
+      />
+    );
+  }
+}
 
 Cell.propTypes = {
   x: PropTypes.number.isRequired,
