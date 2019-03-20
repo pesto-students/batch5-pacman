@@ -21,7 +21,7 @@ const ButtonAppBar = ({ classes, isLoggedIn }) => (
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" color="inherit" className={classes.grow}>
-          PackMan Pro
+          PacMan Pro
         </Typography>
         {isLoggedIn
           ? (
