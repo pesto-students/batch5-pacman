@@ -1,3 +1,5 @@
+import pathfinding from 'pathfinding';
+
 export const initSquareGridState = edge => Array(edge).fill(Array(edge).fill(0))
   .map(arr => arr.slice());
 
@@ -133,4 +135,27 @@ export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
     return randomAdjacentCell;
   }
   return getRandomAdjacentAvailableCell(gridState, currentLocation);
+};
+
+const getGridwithWeights = (grid) => {
+  const gridwithWeights = grid.map((array) => {
+    const newArray = array.map((element) => {
+      let weight = element;
+      if (weight === 4) weight = 1;
+      if (weight !== 1) weight = 0;
+      return weight;
+    });
+    return newArray;
+  });
+  return gridwithWeights;
+};
+
+export const moveBlinky = (gridState, blinky, pacman) => {
+  const { x1, y1 } = blinky;
+  const { x, y } = pacman;
+  const gridwithWeights = getGridwithWeights(gridState);
+  const graph = new pathfinding.Grid(gridwithWeights);
+  const finder = new pathfinding.AStarFinder();
+  const path = finder.findPath(x1, y1, x, y, graph);
+  return path;
 };
