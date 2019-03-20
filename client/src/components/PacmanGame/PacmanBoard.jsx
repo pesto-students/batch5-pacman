@@ -4,31 +4,38 @@ import { Stage, Layer } from 'react-konva';
 import { codeToEntity } from './gameCore';
 import Cell from './Cell';
 import Ghosts from './Ghosts';
+import PacmanEntity from './PacmanEntity';
 
-const PacmanBoard = ({ gridState, gridSize, ghosts }) => (
-  <Stage width={500} height={500}>
-    <Layer>
-      {
-        gridState.map((row, rowIndex) => (
-          row.map((_, columnIndex) => {
-            const entity = codeToEntity(gridState[rowIndex][columnIndex]);
-            const uniqueKey = `row-${rowIndex}-col-${columnIndex}-entity-${entity}`;
-            return (
-              <Cell
-                key={uniqueKey}
-                y={columnIndex}
-                x={rowIndex}
-                gridSize={gridSize}
-                entity={entity}
-              />
-            );
-          })
-        ))
-      }
-      <Ghosts ghosts={ghosts} gridSize={gridSize} />
-    </Layer>
-  </Stage>
-);
+const PacmanBoard = ({
+  gridState,
+  gridSize,
+  ghosts,
+  pacman,
+}) => {
+  const nonMovingCells = gridState
+    .map((row, rowIndex) => (row.map((_, columnIndex) => {
+      const entity = codeToEntity(gridState[rowIndex][columnIndex]);
+      const uniqueKey = `row-${rowIndex}-col-${columnIndex}-entity-${entity}`;
+      return (
+        <Cell
+          key={uniqueKey}
+          y={columnIndex}
+          x={rowIndex}
+          gridSize={gridSize}
+          entity={entity}
+        />
+      );
+    })));
+  return (
+    <Stage width={500} height={500}>
+      <Layer>
+        {nonMovingCells}
+        <Ghosts ghosts={ghosts} gridSize={gridSize} />
+        <PacmanEntity location={pacman} gridSize={gridSize} />
+      </Layer>
+    </Stage>
+  );
+};
 
 PacmanBoard.propTypes = {
   gridSize: PropTypes.number.isRequired,
@@ -42,6 +49,11 @@ PacmanBoard.propTypes = {
     y: PropTypes.number.isRequired,
     direction: PropTypes.string,
   })).isRequired,
+  pacman: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    direction: PropTypes.string,
+  }).isRequired,
 };
 
 export default PacmanBoard;
