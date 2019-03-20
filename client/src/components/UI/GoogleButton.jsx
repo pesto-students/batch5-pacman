@@ -1,6 +1,6 @@
 import React from 'react';
 
-const serverUrl = process.env.SERVER_URL;
+const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:9000';
 
 const GoogleButton = () => (
   <a href={`${serverUrl}/auth/google`} className="google-button">
