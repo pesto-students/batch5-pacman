@@ -3,7 +3,7 @@ import pathfinding from 'pathfinding';
 export const initSquareGridState = edge => Array(edge).fill(Array(edge).fill(0))
   .map(arr => arr.slice());
 
-export const getFoods = () => [[15, 8], [17, 10], [20, 37], [36, 17], [5, 37], [10, 39]];
+export const getFoods = () => [[15, 8], [17, 10], [24, 23], [20, 37], [36, 17], [5, 37], [10, 39]];
 
 const borderWalls = (numofCells) => {
   const cellsArray = [...Array(numofCells).keys()];
@@ -80,7 +80,7 @@ export const getEnergizers = () => [[41, 5], [7, 43], [7, 16], [41, 44]];
 
 export const getGhosts = () => [[23, 25, 'RIGHT'], [25, 24, 'LEFT'], [27, 25, 'DOWN'], [25, 26, 'UP']];
 
-export const getPacman = () => [[2, 5]];
+export const getPacman = () => [22, 23, 'RIGHT'];
 
 export const entityApplier = (gridState,
   entityLocations,
