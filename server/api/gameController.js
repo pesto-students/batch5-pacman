@@ -1,5 +1,7 @@
+const uuidv1 = require('uuid/v1');
+
 const createRoom = (playerInfo) => {
-  const roomId = (Math.random() * 100000000000).toFixed(0);
+  const roomId = uuidv1();
   const pacmanOne = playerInfo;
   const pacmanTwo = {};
   const freeToJoin = true;
