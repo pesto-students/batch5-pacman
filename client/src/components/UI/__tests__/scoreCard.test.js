@@ -4,12 +4,12 @@ import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
 import ScoreCard from '../ScoreCard';
 
-describe('Tests for <ScoreCard />', () => {
+describe('<ScoreCard />', () => {
   it('should render just one Table at a time', () => {
     const wrapper = shallow(<ScoreCard />);
     expect(wrapper.dive().find(Table).length).toBe(1);
   });
-  it('should render three Rows if its detailed scorecard', () => {
+  it('should render three Rows if its not detailed scorecard', () => {
     const wrapper = shallow(<ScoreCard />);
     expect(wrapper.dive().find(TableRow).length).toBe(3);
   });
