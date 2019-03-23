@@ -37,7 +37,7 @@ class GoogleLogin extends Component {
     const username = localStorage.getItem('username');
     const { classes } = this.props;
     return (
-      <div className="auth">
+      <>
         {isLogIn
           ? (
             <>
@@ -48,7 +48,7 @@ class GoogleLogin extends Component {
           )
           : <GoogleButton />}
         <span>{username}</span>
-      </div>
+      </>
     );
   }
 }

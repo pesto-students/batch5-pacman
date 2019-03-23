@@ -14,29 +14,39 @@ const styles = {
   grow: {
     flexGrow: 1,
   },
+  button: {
+    marginRight: 20,
+  },
 };
 
-const ButtonAppBar = ({ classes, isLoggedIn }) => (
-  <div className="NavBar">
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" color="inherit" className={classes.grow}>
-          PacMan Pro
-        </Typography>
-        {isLoggedIn
-          ? (
-            <Button color="inherit">Leader Board</Button>
-          )
-          : <Button color="inherit" href="/auth/signin">login</Button>}
-      </Toolbar>
-    </AppBar>
-  </div>
-);
+const NavBar = ({ classes }) => {
+  const isLoggedIn = Object.prototype.hasOwnProperty.call(localStorage, 'jwt');
+  return (
+    <div className="NavBar">
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            PacMan Pro
+          </Typography>
+          {isLoggedIn
+            ? (
+              <>
+                <Button color="inherit" className={classes.button}>Leader Board</Button>
+                <Typography variant="h7" color="inherit">
+                  {window.localStorage.getItem('username')}
+                </Typography>
+              </>
+            )
+            : ''}
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+};
 
-ButtonAppBar.propTypes = {
+NavBar.propTypes = {
   classes: PropTypes.shape().isRequired,
-  isLoggedIn: PropTypes.bool.isRequired,
 };
 
 
-export default withStyles(styles)(ButtonAppBar);
+export default withStyles(styles)(NavBar);
