@@ -45,7 +45,7 @@ a {
 	-moz-font-feature-settings: "liga" on;
 	color: rgba(109, 76, 76, 0.84) !important;
 	fill: rgba(0, 0, 0, 0.84) !important;
-	box-shadow: 0 1px 7px rgba(0, 0, 0, 0.05);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, .6);
 	font: inherit;
   outline: none;
   background-color: white;
