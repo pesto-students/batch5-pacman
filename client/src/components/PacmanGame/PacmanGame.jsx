@@ -69,8 +69,8 @@ class PacmanGame extends Component {
 
   moveGhosts = () => {
     const { ghosts, gridState } = this.state;
-    const ghostUpdated = ghosts.map(({ x, y }) => {
-      const newGhostLocation = getRandomAdjacentAvailableCell(gridState, { x, y });
+    const ghostUpdated = ghosts.map(({ x, y, direction }) => {
+      const newGhostLocation = getRandomAdjacentAvailableCell(gridState, { x, y, direction });
 
       return newGhostLocation;
     });
@@ -152,7 +152,7 @@ class PacmanGame extends Component {
     const { pacman } = this.state;
     let newDirection;
     if (keycode === 37) newDirection = 'LEFT';
-    if (keycode === 38) newDirection = 'TOP';
+    if (keycode === 38) newDirection = 'UP';
     if (keycode === 39) newDirection = 'RIGHT';
     if (keycode === 40) newDirection = 'DOWN';
 
