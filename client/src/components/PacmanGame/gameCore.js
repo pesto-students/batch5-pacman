@@ -117,18 +117,27 @@ export const entityToCode = (entity) => {
 
 export const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
 
-const choices = [
-  [0, -1, 'TOP'],
-  [0, 1, 'DOWN'],
-  [1, 0, 'RIGHT'],
-  [-1, 0, 'LEFT'],
-];
+const choices = {
+  UP: { x: 0, y: -1 },
+  DOWN: { x: 0, y: 1 },
+  RIGHT: { x: 1, y: 0 },
+  LEFT: { x: -1, y: 0 },
+};
 
 export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
-  const randomIndexInChoice = parseInt(Math.random() * choices.length, 10);
+  const { x, y, direction } = currentLocation;
+  const directionChoices = Object.keys(choices);
+  const randomIndex = parseInt(Math.random() * directionChoices.length, 10);
+  const randomChoice = choices[directionChoices[randomIndex]];
+  const totalX = choices[direction].x + randomChoice.x;
+  const totalY = choices[direction].y + randomChoice.y;
+  if ((totalX === 0) && (totalY === 0)) {
+    return getRandomAdjacentAvailableCell(gridState, currentLocation);
+  }
   const randomAdjacentCell = {
-    x: currentLocation.x + choices[randomIndexInChoice][0],
-    y: currentLocation.y + choices[randomIndexInChoice][1],
+    x: x + randomChoice.x,
+    y: y + randomChoice.y,
+    direction: directionChoices[randomIndex],
   };
 
   if (!isWall(gridState, randomAdjacentCell)) {
@@ -160,16 +169,11 @@ export const moveBlinky = (gridState, blinky, pacman) => {
   return path;
 };
 
+
 export const moveInDirection = ({ x, y, direction }) => {
-  const directionLocation = choices
-    .reduce((acc, value) => (
-      { ...acc, [value[2]]: [...value.slice(0, 2)] }
-    ), {});
-
   const newLocation = {
-    x: x + directionLocation[direction][0],
-    y: y + directionLocation[direction][1],
+    x: x + choices[direction].x,
+    y: y + choices[direction].y,
   };
-
   return newLocation;
 };
