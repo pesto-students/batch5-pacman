@@ -9,7 +9,7 @@ const App = ({ history, location }) => (
   <div>
     <div className="container">
       <SimpleModal history={history} location={location} mode="GameStart" />
-      <PacmanGame width={500} numberofCells={50} />
+      <PacmanGame width={500} numberofCells={30} />
     </div>
   </div>
 );
