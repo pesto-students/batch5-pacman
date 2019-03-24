@@ -78,9 +78,9 @@ export const getWalls = cellsInEachRow => wallGenerator(cellsInEachRow);
 
 export const getEnergizers = () => [[41, 5], [7, 43], [7, 16], [41, 44]];
 
-export const getGhosts = () => [[23, 25, 'RIGHT'], [25, 24, 'LEFT'], [27, 25, 'DOWN'], [25, 26, 'UP']];
+export const getGhosts = () => [[23, 47, 'RIGHT'], [25, 7, 'LEFT'], [4, 25, 'DOWN'], [25, 26, 'UP']];
 
-export const getPacman = () => [22, 23, 'RIGHT'];
+export const getPacman = () => [1, 5, 'DOWN'];
 
 export const entityApplier = (gridState,
   entityLocations,
@@ -117,18 +117,27 @@ export const entityToCode = (entity) => {
 
 export const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
 
-const choices = [
-  [0, -1, 'TOP'],
-  [0, 1, 'DOWN'],
-  [1, 0, 'RIGHT'],
-  [-1, 0, 'LEFT'],
-];
+const choices = {
+  UP: [0, -1],
+  DOWN: [0, 1],
+  RIGHT: [1, 0],
+  LEFT: [-1, 0],
+};
 
 export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
-  const randomIndexInChoice = parseInt(Math.random() * choices.length, 10);
+  const { x, y, direction } = currentLocation;
+  const listOfChoices = Object.keys(choices);
+  const randomIndexInChoice = parseInt(Math.random() * listOfChoices.length, 10);
+  const randomChoice = choices[listOfChoices[randomIndexInChoice]];
+  const totalX = choices[direction][0] + randomChoice[0];
+  const totalY = choices[direction][1] + randomChoice[1];
+  if ((totalX === 0) && (totalY === 0)) {
+    return getRandomAdjacentAvailableCell(gridState, currentLocation);
+  }
   const randomAdjacentCell = {
-    x: currentLocation.x + choices[randomIndexInChoice][0],
-    y: currentLocation.y + choices[randomIndexInChoice][1],
+    x: x + randomChoice[0],
+    y: y + randomChoice[1],
+    direction: listOfChoices[randomIndexInChoice],
   };
 
   if (!isWall(gridState, randomAdjacentCell)) {
@@ -160,16 +169,11 @@ export const moveBlinky = (gridState, blinky, pacman) => {
   return path;
 };
 
+
 export const moveInDirection = ({ x, y, direction }) => {
-  const directionLocation = choices
-    .reduce((acc, value) => (
-      { ...acc, [value[2]]: [...value.slice(0, 2)] }
-    ), {});
-
   const newLocation = {
-    x: x + directionLocation[direction][0],
-    y: y + directionLocation[direction][1],
+    x: x + choices[direction][0],
+    y: y + choices[direction][1],
   };
-
   return newLocation;
 };
