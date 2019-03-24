@@ -5,14 +5,10 @@ import GamePage from '../Layout/GamePage';
 
 import {
   initSquareGridState,
-  getFoods,
   getGhosts,
   getPacman,
-  getWalls,
   codeToEntity,
-  getEnergizers,
   entityToCode,
-  entityApplier,
   isWall,
   getRandomAdjacentAvailableCell,
   moveInDirection,
@@ -46,14 +42,7 @@ class PacmanGame extends Component {
   }
 
   setInitialGameState = () => {
-    const { numberofCells: cellsInEachRow } = this.props;
-    const gridState = initSquareGridState(cellsInEachRow);
-
-    const entitiesLocation = {
-      food: getFoods(),
-      wall: getWalls(cellsInEachRow),
-      energizer: getEnergizers(),
-    };
+    const gridState = initSquareGridState();
 
     const [pacmanX, pacmanY, pacmanDirection] = getPacman();
     const pacman = {
@@ -63,17 +52,6 @@ class PacmanGame extends Component {
     const ghostsArray = getGhosts().map(([x, y, direction]) => ({
       x, y, direction,
     }));
-
-
-    Object.entries(entitiesLocation).forEach(
-      ([entityName, entityFunction]) => {
-        entityApplier(
-          gridState,
-          entityFunction,
-          entityToCode(entityName),
-        );
-      },
-    );
 
     this.setState({ gridState, pacman, ghosts: ghostsArray });
   }

@@ -1,8 +1,7 @@
 import pathfinding from 'pathfinding';
+import state from './initGridState';
 
-export const initSquareGridState = edge => Array(edge).fill(Array(edge).fill(0))
-  .map(arr => arr.slice());
-
+export const initSquareGridState = () => state;
 export const getFoods = () => [[15, 8], [17, 10], [24, 23], [20, 37], [36, 17], [5, 37], [10, 39]];
 
 const borderWalls = (numofCells) => {
@@ -78,9 +77,9 @@ export const getWalls = cellsInEachRow => wallGenerator(cellsInEachRow);
 
 export const getEnergizers = () => [[41, 5], [7, 43], [7, 16], [41, 44]];
 
-export const getGhosts = () => [[23, 25, 'RIGHT'], [25, 24, 'LEFT'], [27, 25, 'DOWN'], [25, 26, 'UP']];
+export const getGhosts = () => [[9, 9, 'RIGHT'], [10, 9, 'LEFT'], [8, 9, 'DOWN'], [11, 9, 'UP']];
 
-export const getPacman = () => [22, 23, 'RIGHT'];
+export const getPacman = () => [10, 13, 'RIGHT'];
 
 export const entityApplier = (gridState,
   entityLocations,
