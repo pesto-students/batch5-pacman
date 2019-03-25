@@ -78,9 +78,9 @@ export const getWalls = cellsInEachRow => wallGenerator(cellsInEachRow);
 
 export const getEnergizers = () => [[41, 5], [7, 43], [7, 16], [41, 44]];
 
-export const getGhosts = () => [[9, 9, 'RIGHT'], [10, 9, 'LEFT'], [8, 9, 'DOWN'], [11, 9, 'UP']];
+export const getGhosts = () => [[13, 12, 'RIGHT'], [14, 12, 'LEFT'], [11, 12, 'DOWN'], [12, 12, 'UP']];
 
-export const getPacman = () => [10, 13, 'RIGHT'];
+export const getPacman = () => [13, 14, 'RIGHT'];
 
 export const entityApplier = (gridState,
   entityLocations,
