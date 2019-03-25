@@ -20,9 +20,10 @@ class ButtonGroup extends React.Component {
       classes,
       history,
       location,
+      userContext,
     } = this.props;
     const { withOrWithoutLogin } = this.state;
-    if (withOrWithoutLogin || Object.prototype.hasOwnProperty.call(localStorage, 'jwt')) {
+    if (withOrWithoutLogin || userContext.isLogIn) {
       return (
         <>
           <Button variant="contained" className={classes.button} onClick={this.resetBtnAndCloseModel}>
@@ -36,7 +37,7 @@ class ButtonGroup extends React.Component {
     }
     return (
       <>
-        <GoogleLogin history={history} location={location} />
+        <GoogleLogin history={history} location={location} userContext={userContext} />
         <Button variant="contained" className={classes.button} onClick={() => this.setState({ withOrWithoutLogin: true })}>
           Continue Without Login
         </Button>
@@ -93,6 +94,7 @@ ButtonGroup.propTypes = {
   classes: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
+  userContext: PropTypes.shape().isRequired,
   closeModal: PropTypes.func.isRequired,
   mode: PropTypes.string.isRequired,
 };
