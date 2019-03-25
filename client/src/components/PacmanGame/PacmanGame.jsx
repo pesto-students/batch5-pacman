@@ -82,47 +82,46 @@ class PacmanGame extends Component {
     return arr;
   }
 
-    moveGhosts = () => {
-      const { ghosts, gridState, scatterStart } = this.state;
-      let { moveGhostsCount, scatterGhostspath } = this.state;
-      moveGhostsCount += 1;
-      const scatterEnd = scatterStart + 55;
-      if (moveGhostsCount === scatterStart) {
-        const gridWithWeights = getGridwithWeights(gridState);
-        const ghostsPath = ghosts
-          .map((ghost, index) => chaseLocation(gridWithWeights, ghost, boardCorners[index]))
-          .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
+  moveGhosts = ({ ghosts, gridState, scatterStart }) => {
+    let { moveGhostsCount, scatterGhostspath } = this.state;
+    moveGhostsCount += 1;
+    const scatterEnd = scatterStart + 55;
+    if (moveGhostsCount === scatterStart) {
+      const gridWithWeights = getGridwithWeights(gridState);
+      const ghostsPath = ghosts
+        .map((ghost, index) => chaseLocation(gridWithWeights, ghost, boardCorners[index]))
+        .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
 
-        scatterGhostspath = ghostsPath
-          .map((array, index) => this.addPositionsToArray(array, index));
-        this.setState({
-          scatterGhostspath,
-        });
-      }
+      scatterGhostspath = ghostsPath
+        .map((array, index) => this.addPositionsToArray(array, index));
+      this.setState({
+        scatterGhostspath,
+      });
+    }
 
-      if (moveGhostsCount === scatterEnd) {
-        const ghostsUpdated = [{ x: 1, y: 1, direction: 'LEFT' },
-          { x: 23, y: 1, direction: 'LEFT' }, { x: 1, y: 23, direction: 'LEFT' },
-          { x: 23, y: 23, direction: 'LEFT' }];
-        return {
-          gridState, ghosts: ghostsUpdated, moveGhostsCount,
-        };
-      }
-
-      if (moveGhostsCount > (scatterStart + 1) && moveGhostsCount < scatterEnd) {
-        const ghostsUpdated = scatterGhostspath.map(path => path[moveGhostsCount - scatterStart]);
-        return {
-          gridState, ghosts: ghostsUpdated, moveGhostsCount,
-        };
-      }
-
-      const ghostUpdated = ghosts.map(
-        ({ x, y, direction }) => getRandomAdjacentAvailableCell(gridState, { x, y, direction }),
-      );
+    if (moveGhostsCount === scatterEnd) {
+      const ghostsUpdated = [{ x: 1, y: 1, direction: 'LEFT' },
+        { x: 23, y: 1, direction: 'LEFT' }, { x: 1, y: 23, direction: 'LEFT' },
+        { x: 23, y: 23, direction: 'LEFT' }];
       return {
-        gridState, ghosts: ghostUpdated, moveGhostsCount,
+        ghostsUpdated, moveGhostsCount,
       };
+    }
+
+    if (moveGhostsCount > (scatterStart + 1) && moveGhostsCount < scatterEnd) {
+      const ghostsUpdated = scatterGhostspath.map(path => path[moveGhostsCount - scatterStart]);
+      return {
+        ghostsUpdated, moveGhostsCount,
+      };
+    }
+
+    const ghostsUpdated = ghosts.map(
+      ({ x, y, direction }) => getRandomAdjacentAvailableCell(gridState, { x, y, direction }),
+    );
+    return {
+      ghostsUpdated, moveGhostsCount,
     };
+  };
 
   setGameStatus = (status) => {
     if (status === 'finish') {
@@ -131,22 +130,26 @@ class PacmanGame extends Component {
     }
   }
 
-  ifAtGhosts = (newLocation) => {
-    const { ghosts } = this.state;
-    return ghosts.some(({ x, y }) => (x === newLocation.x && y === newLocation.y));
+  ifAtGhosts = ({ ghosts, pacman }) => {
+    const isAtSameLocation = (
+      { x: x1, y: y1 },
+      { x: x2, y: y2 },
+    ) => (x1 === x2) && (y1 === y2);
+
+    const ispacmanDead = ghosts
+      .some(ghost => isAtSameLocation(ghost, pacman));
+
+    return ispacmanDead;
   };
 
-  movePacman = ({ gridState }) => {
-    const gridStateAfterPacmanMove = gridState;
-    const {
-      pacman, pacman: { x, y, direction },
-    } = this.state;
+  movePacman = ({ pacman, gridState }) => {
+    const { x, y, direction } = pacman;
 
     let newLocation = moveInDirection({ x, y, direction });
 
     newLocation = isWall(gridState, newLocation) ? {} : moveInDirection({ x, y, direction });
     return {
-      pacman: { ...pacman, ...newLocation }, gridStateAfterPacmanMove,
+      pacmanUpdated: { ...pacman, ...newLocation },
     };
   }
 
@@ -163,31 +166,37 @@ class PacmanGame extends Component {
     return { score, gridState };
   }
 
-  dieIfGhost = (newLocation) => {
-    if (this.ifAtGhosts(newLocation)) {
+  dieIfOnGhost = ({ ghosts, pacman }) => {
+    if (this.ifAtGhosts({ ghosts, pacman })) {
       this.setGameStatus('finish');
+      return true;
     }
+    return false;
   }
 
   animateGame = () => {
     try {
-      const { ghosts, gridState, moveGhostsCount } = this.moveGhosts();
       const {
-        pacman, gridStateAfterPacmanMove,
-      } = this.movePacman({ gridState });
+        pacman, ghosts, gridState, scatterStart,
+      } = this.state;
+      const { ghostsUpdated, moveGhostsCount } = this.moveGhosts(
+        { ghosts, gridState, scatterStart },
+      );
+      const { pacmanUpdated } = this.movePacman({ pacman, gridState });
+
+      this.dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
 
       const {
         score,
         gridState: gridStateAfterEating,
-      } = this.eatFood({ pacman, gridStateAfterPacmanMove });
-      this.dieIfGhost(pacman);
-
+      } = this.eatFood({ pacman, gridStateAfterPacmanMove: gridState });
+      console.log('in animateGame()');
       this.setState({
         gridState: gridStateAfterEating,
         score,
-        ghosts,
-        pacman,
         moveGhostsCount,
+        ghosts: ghostsUpdated,
+        pacman: pacmanUpdated,
       });
     } catch (e) {
       clearInterval(this.animationHandler);
