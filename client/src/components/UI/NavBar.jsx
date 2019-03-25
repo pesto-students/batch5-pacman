@@ -31,7 +31,7 @@ const NavBar = ({ classes, userContext }) => {
             ? (
               <>
                 <Button color="inherit" className={classes.button}>Leader Board</Button>
-                <Typography variant="h7" color="inherit">
+                <Typography variant="subtitle1" color="inherit">
                   {userContext.username}
                 </Typography>
               </>
