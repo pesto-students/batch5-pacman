@@ -19,7 +19,8 @@ class Cell extends React.Component {
       pacman: 'yellow',
       food: 'green',
       ghost: 'red',
-      wall: 'brown',
+      scatterGhost: '#CCD0D7',
+      wall: '#13326D',
       energizer: 'cyan',
     };
     const color = colorCode[entity] || 'black';

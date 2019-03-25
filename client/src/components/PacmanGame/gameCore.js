@@ -146,12 +146,12 @@ export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
   return getRandomAdjacentAvailableCell(gridState, currentLocation);
 };
 
-const getGridwithWeights = (grid) => {
+export const getGridwithWeights = (grid) => {
   const gridwithWeights = grid.map((array) => {
     const newArray = array.map((element) => {
       let weight = element;
+      if (weight !== 4) weight = 0;
       if (weight === 4) weight = 1;
-      if (weight !== 1) weight = 0;
       return weight;
     });
     return newArray;
@@ -159,16 +159,13 @@ const getGridwithWeights = (grid) => {
   return gridwithWeights;
 };
 
-export const moveBlinky = (gridState, blinky, pacman) => {
-  const { x1, y1 } = blinky;
-  const { x, y } = pacman;
-  const gridwithWeights = getGridwithWeights(gridState);
+export const chaseLocation = (gridwithWeights, ghost, location) => {
+  const { x, y } = ghost;
   const graph = new pathfinding.Grid(gridwithWeights);
   const finder = new pathfinding.AStarFinder();
-  const path = finder.findPath(x1, y1, x, y, graph);
+  const path = finder.findPath(x, y, location.x, location.y, graph);
   return path;
 };
-
 
 export const moveInDirection = ({ x, y, direction }) => {
   const newLocation = {
@@ -177,3 +174,5 @@ export const moveInDirection = ({ x, y, direction }) => {
   };
   return newLocation;
 };
+
+export const boardCorners = [{ x: 1, y: 1 }, { x: 1, y: 23 }, { x: 23, y: 1 }, { x: 23, y: 23 }];
