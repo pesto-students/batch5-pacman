@@ -13,7 +13,7 @@ const styles = theme => ({
 });
 
 class ButtonGroup extends React.Component {
-  state = { withOrWithoutLogin: false };
+  state = { displayPlayButton: false };
 
   getButtonsToStartGame() {
     const {
@@ -22,14 +22,14 @@ class ButtonGroup extends React.Component {
       location,
       userContext,
     } = this.props;
-    const { withOrWithoutLogin } = this.state;
-    if (withOrWithoutLogin || userContext.isLogIn) {
+    const { displayPlayButton } = this.state;
+    if (displayPlayButton || userContext.isLogIn) {
       return (
         <>
-          <Button variant="contained" className={classes.button} onClick={this.resetBtnAndCloseModel}>
+          <Button variant="contained" className={classes.button} onClick={this.resetButtonsAndCloseModel}>
             Single Player
           </Button>
-          <Button variant="contained" className={classes.button} onClick={this.resetBtnAndCloseModel}>
+          <Button variant="contained" className={classes.button} onClick={this.resetButtonsAndCloseModel}>
             Multi Player
           </Button>
         </>
@@ -38,27 +38,27 @@ class ButtonGroup extends React.Component {
     return (
       <>
         <GoogleLogin history={history} location={location} userContext={userContext} />
-        <Button variant="contained" className={classes.button} onClick={() => this.setState({ withOrWithoutLogin: true })}>
+        <Button variant="contained" className={classes.button} onClick={this.setDisplayPlayButton}>
           Continue Without Login
         </Button>
       </>
     );
   }
 
-  getButtonsEndGam = () => {
+  getButtonsEndGame = () => {
     const {
       classes,
       history,
       location,
     } = this.props;
-    const { withOrWithoutLogin } = this.state;
-    if (withOrWithoutLogin) {
+    const { displayPlayButton } = this.state;
+    if (displayPlayButton) {
       return (
         <>
-          <Button variant="contained" className={classes.button} onClick={this.resetBtnAndCloseModel}>
+          <Button variant="contained" className={classes.button} onClick={this.resetButtonsAndCloseModel}>
             Single Player
           </Button>
-          <Button variant="contained" className={classes.button} onClick={this.resetBtnAndCloseModel}>
+          <Button variant="contained" className={classes.button} onClick={this.resetButtonsAndCloseModel}>
             Multi Player
           </Button>
         </>
@@ -67,25 +67,30 @@ class ButtonGroup extends React.Component {
     return (
       <>
         <GoogleLogin history={history} location={location} />
-        <Button variant="contained" className={classes.button} onClick={() => this.setState({ withOrWithoutLogin: true })}>
+        <Button variant="contained" className={classes.button} onClick={this.setDisplayPlayButton}>
           Replay
         </Button>
       </>
     );
   }
 
-  resetBtnAndCloseModel = () => {
+  resetButtonsAndCloseModel = () => {
     const { closeModal } = this.props;
-    this.setState({ withOrWithoutLogin: false });
+    this.setState({ displayPlayButton: false });
     closeModal();
   };
 
+  setDisplayPlayButton = () => {
+    this.setState({ displayPlayButton: true });
+  }
+
   render() {
     const { mode } = this.props;
-    if (mode === 'GameStart') {
+    const gameStart = 'GameStart';
+    if (mode === gameStart) {
       return this.getButtonsToStartGame();
     }
-    return this.getButtonsEndGam();
+    return this.getButtonsEndGame();
   }
 }
 

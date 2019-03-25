@@ -46,9 +46,10 @@ class SimpleModal extends React.Component {
   }
 
   modalLabel = () => {
-    const { mode } = this.props;
-    const isGameStart = mode === 'GameStart';
-    const isLoggedIn = Object.prototype.hasOwnProperty.call(localStorage, 'jwt');
+    const { mode, userContext } = this.props;
+    const gameStart = 'GameStart';
+    const isGameStart = mode === gameStart;
+    const isLoggedIn = userContext.isLogIn;
     return (
       <>
         <Typography variant="h4" id="simple-modal-description">
