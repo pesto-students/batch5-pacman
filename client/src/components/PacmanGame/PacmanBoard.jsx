@@ -30,8 +30,8 @@ const PacmanBoard = ({
     <Stage width={500} height={500}>
       <Layer hitGraphEnabled={false}>
         {nonMovingCells}
-        <Ghosts ghosts={ghosts} gridSize={gridSize} />
         <PacmanEntity location={pacman} gridSize={gridSize} />
+        <Ghosts ghosts={ghosts} gridSize={gridSize} />
       </Layer>
     </Stage>
   );
