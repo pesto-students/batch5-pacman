@@ -16,26 +16,27 @@ const styles = theme => ({
 
 class GoogleLogin extends Component {
   componentWillMount() {
-    const { location, history } = this.props;
+    const { location, history, userContext } = this.props;
     const query = queryString.parse(location.search);
     if (query.token) {
-      window.localStorage.setItem('jwt', query.token);
-      window.localStorage.setItem('username', query.name);
+      const { token, name } = query;
+      userContext.login(name);
+      window.localStorage.setItem('jwt', token);
       history.push('/');
     }
   }
 
   logout = () => {
-    const { history } = this.props;
+    const { history, userContext } = this.props;
+    userContext.logout();
     window.localStorage.removeItem('jwt');
-    window.localStorage.removeItem('username');
     history.push('/');
   }
 
   render() {
-    const isLogIn = Object.prototype.hasOwnProperty.call(localStorage, 'jwt');
+    const { classes, userContext } = this.props;
+    const isLogIn = !!userContext.name;
     const username = localStorage.getItem('username');
-    const { classes } = this.props;
     return (
       <>
         {isLogIn
@@ -57,6 +58,7 @@ GoogleLogin.propTypes = {
   location: PropTypes.instanceOf(Object).isRequired,
   history: PropTypes.instanceOf(Object).isRequired,
   classes: PropTypes.instanceOf(Object).isRequired,
+  userContext: PropTypes.instanceOf(Object).isRequired,
 };
 
 

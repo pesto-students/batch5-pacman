@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import PropTypes from 'prop-types';
 
-
 const styles = {
   root: {
     flexGrow: 1,
@@ -19,8 +18,8 @@ const styles = {
   },
 };
 
-const NavBar = ({ classes }) => {
-  const isLoggedIn = Object.prototype.hasOwnProperty.call(localStorage, 'jwt');
+const NavBar = ({ classes, userContext }) => {
+  const isLoggedIn = userContext.isLogIn;
   return (
     <div className="NavBar">
       <AppBar position="static">
@@ -33,7 +32,7 @@ const NavBar = ({ classes }) => {
               <>
                 <Button color="inherit" className={classes.button}>Leader Board</Button>
                 <Typography variant="h7" color="inherit">
-                  {window.localStorage.getItem('username')}
+                  {userContext.username}
                 </Typography>
               </>
             )
@@ -46,6 +45,7 @@ const NavBar = ({ classes }) => {
 
 NavBar.propTypes = {
   classes: PropTypes.shape().isRequired,
+  userContext: PropTypes.shape().isRequired,
 };
 
 

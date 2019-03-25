@@ -63,13 +63,14 @@ class SimpleModal extends React.Component {
 
   buttonGroup = () => {
     const {
-      history, location, mode,
+      history, location, mode, userContext,
     } = this.props;
     return (
       <ButtonGroup
         history={history}
         location={location}
         closeModal={this.closeModal}
+        userContext={userContext}
         mode={mode}
       />
     );
@@ -100,6 +101,7 @@ SimpleModal.propTypes = {
   classes: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   location: PropTypes.shape().isRequired,
+  userContext: PropTypes.shape().isRequired,
   mode: PropTypes.string.isRequired,
 };
 
