@@ -92,7 +92,7 @@ class PacmanGame extends Component {
         const ghostsPath = ghosts
           .map((ghost, index) => chaseLocation(gridWithWeights, ghost, boardCorners[index]))
           .map((postion) => {
-            const positionObject = postion.map(a => ({ x: a[0], y: a[1] }));
+            const positionObject = postion.map(arr => ({ x: arr[0], y: arr[1] }));
             return positionObject;
           });
         scatterGhostspath = ghostsPath.map((array, index) => {
