@@ -149,21 +149,19 @@ export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
 export const getGridwithWeights = (grid) => {
   const gridwithWeights = grid.map((array) => {
     const newArray = array.map((element) => {
-      let weight = element;
-      if (weight !== 4) weight = 0;
-      if (weight === 4) weight = 1;
-      return weight;
+      if (element !== entityToCode('wall')) return 0;
+      return 1;
     });
     return newArray;
   });
   return gridwithWeights;
 };
 
-export const chaseLocation = (gridwithWeights, ghost, location) => {
-  const { x, y } = ghost;
+export const chaseLocation = (gridwithWeights, currentGhostLocation, targetGhostLocation) => {
+  const { x, y } = currentGhostLocation;
   const graph = new pathfinding.Grid(gridwithWeights);
   const finder = new pathfinding.AStarFinder();
-  const path = finder.findPath(x, y, location.x, location.y, graph);
+  const path = finder.findPath(x, y, targetGhostLocation.x, targetGhostLocation.y, graph);
   return path;
 };
 
