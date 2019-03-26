@@ -91,14 +91,10 @@ class PacmanGame extends Component {
         const gridWithWeights = getGridwithWeights(gridState);
         const ghostsPath = ghosts
           .map((ghost, index) => chaseLocation(gridWithWeights, ghost, boardCorners[index]))
-          .map((postion) => {
-            const positionObject = postion.map(arr => ({ x: arr[0], y: arr[1] }));
-            return positionObject;
-          });
-        scatterGhostspath = ghostsPath.map((array, index) => {
-          const newArray = this.addPositionsToArray(array, index);
-          return newArray;
-        });
+          .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
+
+        scatterGhostspath = ghostsPath
+          .map((array, index) => this.addPositionsToArray(array, index));
         this.setState({
           scatterGhostspath,
         });
@@ -120,11 +116,9 @@ class PacmanGame extends Component {
         };
       }
 
-      const ghostUpdated = ghosts.map(({ x, y, direction }) => {
-        const newGhostLocation = getRandomAdjacentAvailableCell(gridState, { x, y, direction });
-
-        return newGhostLocation;
-      });
+      const ghostUpdated = ghosts.map(
+        ({ x, y, direction }) => getRandomAdjacentAvailableCell(gridState, { x, y, direction }),
+      );
       return {
         gridState, ghosts: ghostUpdated, moveGhostsCount,
       };
