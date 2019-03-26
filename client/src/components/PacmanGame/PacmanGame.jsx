@@ -100,8 +100,10 @@ class PacmanGame extends Component {
     }
 
     if (moveGhostsCount === scatterEnd) {
-      const ghostsUpdated = [{ x: 1, y: 1, direction: 'LEFT' },
-        { x: 23, y: 1, direction: 'LEFT' }, { x: 1, y: 23, direction: 'LEFT' },
+      const ghostsUpdated = [
+        { x: 1, y: 1, direction: 'LEFT' },
+        { x: 23, y: 1, direction: 'LEFT' },
+        { x: 1, y: 23, direction: 'LEFT' },
         { x: 23, y: 23, direction: 'LEFT' }];
       return {
         ghostsUpdated, moveGhostsCount,
@@ -142,8 +144,16 @@ class PacmanGame extends Component {
     return ispacmanDead;
   };
 
-  movePacman = ({ pacman, gridState }) => {
+  movePacman = ({ pacman, ghostsUpdated, gridState }) => {
     const { x, y, direction } = pacman;
+
+    const pacmanDead = this.dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
+
+    if (pacmanDead) {
+      return {
+        pacmanUpdated: pacman,
+      };
+    }
 
     let newLocation = moveInDirection({ x, y, direction });
 
@@ -182,7 +192,7 @@ class PacmanGame extends Component {
       const { ghostsUpdated, moveGhostsCount } = this.moveGhosts(
         { ghosts, gridState, scatterStart },
       );
-      const { pacmanUpdated } = this.movePacman({ pacman, gridState });
+      const { pacmanUpdated } = this.movePacman({ pacman, ghostsUpdated, gridState });
 
       this.dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
 
@@ -190,7 +200,6 @@ class PacmanGame extends Component {
         score,
         gridState: gridStateAfterEating,
       } = this.eatFood({ pacman, gridStateAfterPacmanMove: gridState });
-      console.log('in animateGame()');
       this.setState({
         gridState: gridStateAfterEating,
         score,
