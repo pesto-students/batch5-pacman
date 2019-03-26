@@ -8,20 +8,18 @@ import { Consumer } from './api/userContext';
 
 
 const App = ({ history, location }) => (
-  <div>
-    <Consumer>
-      {context => (
-        <>
-          <NavBar userContext={context} />
-          <div className="container">
-            <SimpleModal history={history} location={location} mode="GameStart" userContext={context} />
-            <PacmanGame width={500} numberofCells={30} />
-          </div>
-        </>
-      )
-      }
-    </Consumer>
-  </div>
+  <Consumer>
+    {context => (
+      <>
+        <NavBar userContext={context} />
+        <div className="container">
+          <SimpleModal history={history} location={location} mode="GameStart" userContext={context} />
+          <PacmanGame width={500} numberofCells={30} />
+        </div>
+      </>
+    )
+    }
+  </Consumer>
 );
 
 App.propTypes = {
