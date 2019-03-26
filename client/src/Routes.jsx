@@ -15,25 +15,19 @@ class PacmanRouter extends React.Component {
     };
   }
 
-  login = (user) => {
-    this.setState({ username: user, isLogIn: true });
-  };
+  login = user => this.setState({ username: user, isLogIn: true });
 
-  logout = () => {
-    this.setState({ username: '', isLogIn: false });
-  };
+  logout = () => this.setState({ username: '', isLogIn: false });
 
   render() {
     return (
-      <div>
-        <Provider value={this.state}>
-          <BrowserRouter>
-            <Switch>
-              <Route path="/" component={App} />
-            </Switch>
-          </BrowserRouter>
-        </Provider>
-      </div>
+      <Provider value={this.state}>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/" component={App} />
+          </Switch>
+        </BrowserRouter>
+      </Provider>
     );
   }
 }
