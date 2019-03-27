@@ -47,7 +47,6 @@ class PacmanGame extends Component {
   setInitialGameState = () => {
     const gridState = initSquareGridState();
 
-
     const [pacmanX, pacmanY, pacmanDirection] = getPacman();
     const pacman = {
       x: pacmanX, y: pacmanY, direction: pacmanDirection,
@@ -56,12 +55,28 @@ class PacmanGame extends Component {
     const ghostsArray = getGhosts().map(([x, y, direction]) => ({
       x, y, direction,
     }));
-
     this.setState({ gridState, pacman, ghosts: ghostsArray });
   }
 
   startGame = () => {
-    const { config, pacman } = this.state;
+    const { config, pacman, status } = this.state;
+    if (status === 1) {
+      let { score } = this.state;
+      clearInterval(this.animationHandler);
+      score -= 10;
+      this.setState({ status: 0, score });
+      return;
+    }
+    if (status === 2) {
+      this.setInitialGameState();
+      this.setState({
+        score: 0,
+        status: 0,
+        moveGhostsCount: 0,
+      });
+      this.setState({ status: 1 });
+    }
+    if (status === 0) this.setState({ status: 1 });
     joinGame(pacman);
     this.animationHandler = setInterval(
       this.animateGame,
