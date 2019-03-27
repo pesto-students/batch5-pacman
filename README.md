@@ -1,4 +1,5 @@
 # batch5-pacman
+[![CircleCI](https://circleci.com/gh/pesto-students/batch5-pacman.svg?style=svg)](https://circleci.com/gh/pesto-students/batch5-pacman)
 
 ### Overview:
 
