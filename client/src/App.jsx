@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import PropTypes from 'prop-types';
 import './App.css';
@@ -23,7 +25,7 @@ const App = ({ history, location }) => (
 );
 
 App.propTypes = {
-  history: PropTypes.shape().isRequired,
-  location: PropTypes.shape().isRequired,
+  // history: PropTypes.shape().isRequired,
+  // location: PropTypes.shape().isRequired,
 };
 export default App;

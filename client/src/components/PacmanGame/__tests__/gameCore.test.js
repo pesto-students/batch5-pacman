@@ -1,24 +1,5 @@
-import {
-  initSquareGridState,
-  entityToCode,
-  codeToEntity,
-  entityApplier,
-} from '../gameCore';
-
-
-describe('initSquareGridState', () => {
-  const threeZeroGrid = [0, 0, 0];
-  const threeByThreeGrid = [[...threeZeroGrid], [...threeZeroGrid], [...threeZeroGrid]];
-  it('should generates 2d array with correct number of rows', () => {
-    expect(initSquareGridState(3).length).toEqual(3);
-  });
-  it('should generates 2d array with correct number of cols', () => {
-    expect(initSquareGridState(3).length).toEqual(3);
-  });
-  it('should generates the square grid', () => {
-    expect(initSquareGridState(3)).toEqual(threeByThreeGrid);
-  });
-});
+import { entityApplier } from '../gameCore';
+import { entityToCode, codeToEntity } from '../constants';
 
 describe('codeToEntity', () => {
   it('should be free for code 0', () => {
