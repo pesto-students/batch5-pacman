@@ -1,6 +1,7 @@
 import React from 'react';
 import { Rect } from 'react-konva';
 import PropTypes from 'prop-types';
+import { colorCode } from './constants';
 
 class Cell extends React.Component {
   shouldComponentUpdate(newprops) {
@@ -15,14 +16,6 @@ class Cell extends React.Component {
     const {
       x, y, gridSize, entity,
     } = this.props;
-    const colorCode = {
-      pacman: 'yellow',
-      food: 'green',
-      ghost: 'red',
-      scatterGhost: '#CCD0D7',
-      wall: '#13326D',
-      energizer: 'cyan',
-    };
     const color = colorCode[entity] || 'black';
     return (
       <Rect
