@@ -1,9 +1,8 @@
 import {
   initSquareGridState,
-  entityToCode,
-  codeToEntity,
   entityApplier,
 } from '../gameCore';
+import { entityToCode, codeToEntity } from '../constants';
 
 
 describe('initSquareGridState', () => {
