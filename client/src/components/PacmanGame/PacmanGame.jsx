@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import uuid from 'uuid';
 import { socketConnection, joinGame, leaveGame } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
@@ -46,8 +47,6 @@ class PacmanGame extends Component {
 
   setInitialGameState = () => {
     const gridState = initSquareGridState();
-
-
     const [pacmanX, pacmanY, pacmanDirection] = getPacman();
     const pacman = {
       x: pacmanX, y: pacmanY, direction: pacmanDirection,
@@ -62,7 +61,7 @@ class PacmanGame extends Component {
 
   startGame = () => {
     const { config, pacman } = this.state;
-    joinGame(pacman);
+    joinGame({ playerId: uuid.v1(), ...pacman });
     this.animationHandler = setInterval(
       this.animateGame,
       config.refreshRate,
