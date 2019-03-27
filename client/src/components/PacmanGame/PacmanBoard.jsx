@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Stage, Layer } from 'react-konva';
-import { codeToEntity } from './gameCore';
+import { codeToEntity } from './constants';
 import Cell from './Cell';
 import Ghosts from './Ghosts';
 import PacmanEntity from './PacmanEntity';

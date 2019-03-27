@@ -1,9 +1,7 @@
 import pathfinding from 'pathfinding';
-import state from './initGridState';
+import { board, entityToCode, directionValues } from './constants';
 
-export const initSquareGridState = () => state;
-
-export const getFoods = () => [[15, 8], [17, 10], [24, 23], [20, 37], [36, 17], [5, 37], [10, 39]];
+export const initSquareGridState = () => board;
 
 const borderWalls = (numofCells) => {
   const cellsArray = [...Array(numofCells).keys()];
@@ -76,12 +74,6 @@ const wallGenerator = numofCells => [
 
 export const getWalls = cellsInEachRow => wallGenerator(cellsInEachRow);
 
-export const getEnergizers = () => [[41, 5], [7, 43], [7, 16], [41, 44]];
-
-export const getGhosts = () => [[13, 12, 'RIGHT'], [14, 12, 'LEFT'], [11, 12, 'DOWN'], [12, 12, 'UP']];
-
-export const getPacman = () => [13, 14, 'RIGHT'];
-
 export const entityApplier = (gridState,
   entityLocations,
   entityCode) => entityLocations.reduce((prevGridState, [x, y]) => {
@@ -90,47 +82,15 @@ export const entityApplier = (gridState,
   return newGridState;
 }, [...gridState]);
 
-
-export const codeToEntity = (code) => {
-  const entityMap = {
-    0: 'free',
-    1: 'food',
-    2: 'energizer',
-    3: 'ghost',
-    4: 'wall',
-    5: 'pacman',
-  };
-  return entityMap[code];
-};
-
-export const entityToCode = (entity) => {
-  const entityMap = {
-    free: 0,
-    food: 1,
-    energizer: 2,
-    ghost: 3,
-    wall: 4,
-    pacman: 5,
-  };
-  return entityMap[entity];
-};
-
 export const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
-
-const choices = {
-  UP: { x: 0, y: -1 },
-  DOWN: { x: 0, y: 1 },
-  RIGHT: { x: 1, y: 0 },
-  LEFT: { x: -1, y: 0 },
-};
 
 export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
   const { x, y, direction } = currentLocation;
-  const directionChoices = Object.keys(choices);
+  const directionChoices = Object.keys(directionValues);
   const randomIndex = parseInt(Math.random() * directionChoices.length, 10);
-  const randomChoice = choices[directionChoices[randomIndex]];
-  const totalX = choices[direction].x + randomChoice.x;
-  const totalY = choices[direction].y + randomChoice.y;
+  const randomChoice = directionValues[directionChoices[randomIndex]];
+  const totalX = directionValues[direction].x + randomChoice.x;
+  const totalY = directionValues[direction].y + randomChoice.y;
   if ((totalX === 0) && (totalY === 0)) {
     return getRandomAdjacentAvailableCell(gridState, currentLocation);
   }
@@ -167,10 +127,8 @@ export const chaseLocation = (gridwithWeights, currentGhostLocation, targetGhost
 
 export const moveInDirection = ({ x, y, direction }) => {
   const newLocation = {
-    x: x + choices[direction].x,
-    y: y + choices[direction].y,
+    x: x + directionValues[direction].x,
+    y: y + directionValues[direction].y,
   };
   return newLocation;
 };
-
-export const boardCorners = [{ x: 1, y: 1 }, { x: 1, y: 23 }, { x: 23, y: 1 }, { x: 23, y: 23 }];

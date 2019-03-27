@@ -2,19 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { socketConnection, joinGame, leaveGame } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
-
+import {
+  boardCorners, codeToEntity, entityToCode, getGhosts, getPacman,
+} from './constants';
 import {
   initSquareGridState,
-  getGhosts,
-  getPacman,
-  codeToEntity,
-  entityToCode,
   isWall,
   getRandomAdjacentAvailableCell,
   moveInDirection,
   getGridwithWeights,
   chaseLocation,
-  boardCorners,
 } from './gameCore';
 import PacmanBoard from './PacmanBoard';
 
