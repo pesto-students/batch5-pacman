@@ -2,8 +2,6 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { shallow } from 'enzyme';
-import { isThisHour } from 'date-fns';
-import { ExpansionPanelActions } from '@material-ui/core';
 import NavBar from '../NavBar';
 
 describe('<NavBar />', () => {
