@@ -1,30 +1,53 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable no-unused-vars */
 import React from 'react';
-import { shallow } from 'enzyme';
+import { createShallow } from '@material-ui/core/test-utils';
+import { Button } from '@material-ui/core';
 import NavBar from '../NavBar';
 
+const createProps = ({
+  userContext = {}, classes = {},
+}) => ({
+  userContext, classes,
+});
+
+let wrapper; let props; let shallow;
+
+beforeEach(() => {
+  props = createProps({});
+  shallow = createShallow({ dive: true });
+  wrapper = shallow(<NavBar {...props} />);
+});
+
 describe('<NavBar />', () => {
-  // it('should render', () => {
-  //   const wrapper = shallow(<NavBar />);
-  //   expect(wrapper.dive().find('div').length).toBe(1);
-  // });
-  // it('should contain LogIn button by default', () => {
-  //   const wrapper = shallow(<NavBar />);
-  //   expect(wrapper.dive().contains('login')).toBe(true);
-  // });
-  // it('should not contain Leader Board by default', () => {
-  //   const wrapper = shallow(<NavBar />);
-  //   expect(wrapper.dive().contains('Leader Board')).toBe(false);
-  // });
-  // it('should not contain LogIn button if user has already logged in', () => {
-  //   const wrapper = shallow(<NavBar isLoggedIn />);
-  //   expect(wrapper.dive().contains('login')).toBe(false);
-  // });
-  // it('should contain Leader Board by default', () => {
-  //   const wrapper = shallow(<NavBar isLoggedIn />);
-  //   expect(wrapper.dive().contains('Leader Board')).toBe(true);
-  // });
+  it('should exist', () => {
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it('should render', () => {
+    expect(wrapper.find('div').length).toBe(1);
+  });
+
+  it('should render the pacman label', () => {
+    expect(wrapper.contains('PacMan Pro')).toBe(true);
+  });
+
+  it('should not contain Leader Board if not logged in', () => {
+    expect(wrapper.contains('Leader Board')).toBe(false);
+  });
+
+  it('should contain Leader Board button if logged in', () => {
+    props = createProps({ userContext: { isLogIn: true } });
+    wrapper = shallow(<NavBar {...props} />);
+    expect(wrapper.find(Button).length).toBe(1);
+    expect(wrapper.contains('Leader Board')).toBe(true);
+  });
+
+  it('should contain username if logged in', () => {
+    const username = 'Mohd Hassaan';
+    props = createProps({ userContext: { isLogIn: true, username } });
+    wrapper = shallow(<NavBar {...props} />);
+    expect(wrapper.contains(username)).toBe(true);
+  });
+
   it('test check', () => {
     expect(true).toBe(true);
   });
