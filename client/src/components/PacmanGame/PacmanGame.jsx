@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
-import { socketConnection, joinGame, leaveGame } from '../../api/socketService';
+import {
+  socketConnection, joinGame, leaveGame, currentGameState, startGame,
+} from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
   boardCorners, codeToEntity, entityToCode, getGhosts, getPacman,
@@ -62,6 +64,8 @@ class PacmanGame extends Component {
   startGame = () => {
     const { config, pacman } = this.state;
     joinGame({ playerId: uuid.v1(), ...pacman });
+    setTimeout(startGame, 3000);
+    currentGameState();
     this.animationHandler = setInterval(
       this.animateGame,
       config.refreshRate,
@@ -123,6 +127,7 @@ class PacmanGame extends Component {
 
   setGameStatus = (status) => {
     if (status === 'finish') {
+      leaveGame();
       clearInterval(this.animationHandler);
       this.setState({ status: 2 });
     }
