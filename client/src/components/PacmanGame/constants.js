@@ -92,4 +92,4 @@ const framesPerSecond = 4;
 
 export const advanceFrameAfterTime = 1000 / framesPerSecond;
 
-export const entitiesAnimationDurationInSecond = 0.1;
+export const entitiesAnimationDurationInSecond = 0.24;
