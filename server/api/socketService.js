@@ -1,4 +1,4 @@
-const { createRoom, currentGameState, startGame } = require('./game/controller');
+const { createRoom, startGame } = require('./game/controller');
 
 const games = {};
 const socketService = (socket) => {
@@ -11,6 +11,7 @@ const socketService = (socket) => {
       // eslint-disable-next-line no-param-reassign
       socket.room = openGame.roomId;
       socket.join(openGame.roomId);
+      startGame();
     } else {
       const newGame = createRoom(playerInfo, socket);
       games.roomId = newGame;
@@ -18,15 +19,9 @@ const socketService = (socket) => {
       socket.room = newGame.roomId;
       socket.join(newGame.roomId);
     }
-    // eslint-disable-next-line no-param-reassign
-    socket.interval = setInterval(() => {
-      // eslint-disable-next-line no-undef
-      io.in(socket.room).emit('gameState', currentGameState());
-    }, 500);
+    // eslint-disable-next-line no-console
+    console.log('Joined room:', socket.room);
   });
-
-  socket.on('startGame', startGame);
-
 
   socket.on('disconnect', () => {
     clearInterval(socket.interval);

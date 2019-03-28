@@ -1,5 +1,7 @@
 const pathfinding = require('pathfinding');
-const { entityToCode } = require('./constants');
+const { entityToCode, board, directionValues } = require('./constants');
+
+const initSquareGridState = () => board;
 
 const getGridwithWeights = (grid) => {
   const gridwithWeights = grid.map((array) => {
@@ -20,4 +22,30 @@ const chaseLocation = (gridwithWeights, currentGhostLocation, targetGhostLocatio
   return path;
 };
 
-module.exports = { getGridwithWeights, chaseLocation };
+const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
+
+const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
+  const { x, y, direction } = currentLocation;
+  const directionChoices = Object.keys(directionValues);
+  const randomIndex = parseInt(Math.random() * directionChoices.length, 10);
+  const randomChoice = directionValues[directionChoices[randomIndex]];
+  const totalX = directionValues[direction].x + randomChoice.x;
+  const totalY = directionValues[direction].y + randomChoice.y;
+  if ((totalX === 0) && (totalY === 0)) {
+    return getRandomAdjacentAvailableCell(gridState, currentLocation);
+  }
+  const randomAdjacentCell = {
+    x: x + randomChoice.x,
+    y: y + randomChoice.y,
+    direction: directionChoices[randomIndex],
+  };
+
+  if (!isWall(gridState, randomAdjacentCell)) {
+    return randomAdjacentCell;
+  }
+  return getRandomAdjacentAvailableCell(gridState, currentLocation);
+};
+
+module.exports = {
+  getGridwithWeights, chaseLocation, initSquareGridState, getRandomAdjacentAvailableCell,
+};

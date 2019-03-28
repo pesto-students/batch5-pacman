@@ -11,11 +11,6 @@ const joinGame = (playerInfo) => {
   socket.emit('joinGame', playerInfo);
 };
 
-const startGame = () => {
-  console.log('Game started after 3 seconds');
-  socket.emit('startGame');
-};
-
 const currentGameState = () => {
   socket.on('gameState', (data) => {
     // eslint-disable-next-line no-console
@@ -32,5 +27,4 @@ export {
   joinGame,
   leaveGame,
   currentGameState,
-  startGame,
 };
