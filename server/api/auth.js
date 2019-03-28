@@ -1,9 +1,8 @@
-const express = require('express');
-const passport = require('passport');
+import express from 'express';
+import passport from 'passport';
+import config from '../config/config';
 
 const router = express.Router();
-const config = require('../config/config.js');
-
 const clientUrl = config.url.client;
 
 router.get(
@@ -25,4 +24,4 @@ router.get('/logout', (req, res) => {
   res.redirect(clientUrl);
 });
 
-module.exports = router;
+export default router;

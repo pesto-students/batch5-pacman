@@ -1,15 +1,15 @@
-const uuidv1 = require('uuid/v1');
-const {
+import uuidv1 from 'uuid/v1';
+import {
   boardCorners,
   refreshRate,
   getGhosts,
-} = require('./constants');
-const {
+} from './constants';
+import {
   getRandomAdjacentAvailableCell,
   getGridwithWeights,
   chaseLocation,
   initSquareGridState,
-} = require('./core');
+} from './core';
 
 const gameState = {
   moveGhostsCount: 0,
@@ -29,7 +29,7 @@ const setInitialGameState = () => {
   gameState.ghosts = ghostsArray;
 };
 
-const createRoom = (playerInfo, socket) => {
+export const createRoom = (playerInfo, socket) => {
   gameState.pacmanOne = playerInfo;
   gameState.socket = socket;
   gameState.roomId = uuidv1();
@@ -103,7 +103,7 @@ const calculateNextGameState = () => {
   gameState.ghosts = ghostsUpdated;
 };
 
-const startGame = () => {
+export const startGame = () => {
   setInitialGameState();
   setTimeout(() => {
     const { socket } = gameState;
@@ -115,10 +115,4 @@ const startGame = () => {
       io.in(socket.room).emit('gameState', currentGameState());
     }, refreshRate);
   }, 3000);
-};
-
-module.exports = {
-  createRoom,
-  currentGameState,
-  startGame,
 };

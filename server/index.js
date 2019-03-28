@@ -1,20 +1,22 @@
-const express = require('express');
-const createError = require('http-errors');
-const http = require('http');
-require('dotenv/config');
+import express from 'express';
+import createError from 'http-errors';
+import http from 'http';
+import socketIo from 'socket.io';
+import mongoose from 'mongoose';
+import {} from 'dotenv/config';
+import config from './config/config';
+import routes from './api/api';
+import authRoutes from './api/auth';
+import socketService from './api/socketService';
+import middleware from './middleware/appMiddleware';
+import './config/passport';
 
 const app = express();
 const server = http.Server(app);
-global.io = require('socket.io')(server);
-const config = require('./config/config');
-const routes = require('./api/api.js');
-const authRoutes = require('./api/auth.js');
-const socketService = require('./api/socketService');
+global.io = socketIo(server);
 
-require('mongoose').connect(config.db.url, { useNewUrlParser: true });
-
-require('./middleware/appMiddleware')(app);
-require('./config/passport');
+mongoose.connect(config.db.url, { useNewUrlParser: true });
+middleware(app);
 
 app.use('/api', routes);
 app.use('/', authRoutes);

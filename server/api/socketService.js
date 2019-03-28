@@ -32,4 +32,4 @@ const socketService = (socket) => {
   socket.emit('connected');
 };
 
-module.exports = socketService;
+export default socketService;

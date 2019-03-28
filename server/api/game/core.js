@@ -1,9 +1,9 @@
-const pathfinding = require('pathfinding');
-const { entityToCode, board, directionValues } = require('./constants');
+import pathfinding from 'pathfinding';
+import { entityToCode, board, directionValues } from './constants';
 
-const initSquareGridState = () => board;
+export const initSquareGridState = () => board;
 
-const getGridwithWeights = (grid) => {
+export const getGridwithWeights = (grid) => {
   const gridwithWeights = grid.map((array) => {
     const newArray = array.map((element) => {
       if (element !== entityToCode('wall')) return 0;
@@ -14,7 +14,7 @@ const getGridwithWeights = (grid) => {
   return gridwithWeights;
 };
 
-const chaseLocation = (gridwithWeights, currentGhostLocation, targetGhostLocation) => {
+export const chaseLocation = (gridwithWeights, currentGhostLocation, targetGhostLocation) => {
   const { x, y } = currentGhostLocation;
   const graph = new pathfinding.Grid(gridwithWeights);
   const finder = new pathfinding.AStarFinder();
@@ -24,7 +24,7 @@ const chaseLocation = (gridwithWeights, currentGhostLocation, targetGhostLocatio
 
 const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
 
-const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
+export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
   const { x, y, direction } = currentLocation;
   const directionChoices = Object.keys(directionValues);
   const randomIndex = parseInt(Math.random() * directionChoices.length, 10);
@@ -44,8 +44,4 @@ const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
     return randomAdjacentCell;
   }
   return getRandomAdjacentAvailableCell(gridState, currentLocation);
-};
-
-module.exports = {
-  getGridwithWeights, chaseLocation, initSquareGridState, getRandomAdjacentAvailableCell,
 };
