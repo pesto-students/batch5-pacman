@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon index.js --exec babel-node",
-    "test": "jest --no-cache"
+    "test": "jest --no-cache",
+    "pretest": "yarn"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

@@ -16,9 +16,19 @@ jobs:
     steps:
     - checkout
     - run:
-        name: install packages
+        name: run client tests
         command: |
           cd client && yarn test
+  
+  server-test:
+    docker:
+    - image: circleci/node:8.11.1
+    steps:
+    - checkout
+    - run:
+        name: run server tests
+        command: |
+          cd server && yarn test
 
   deploy-server:
     docker:
@@ -42,11 +52,16 @@ workflows:
   pacman-build:
     jobs:
     - build
-    - client-test
-    - deploy-server:
+    - client-test:
         requires:
         - build
+    - server-test:
+        requires:
+        - build
+    - deploy-server:
+        requires:
         - client-test
+        - server-test
         filters:
           branches:
             only:
