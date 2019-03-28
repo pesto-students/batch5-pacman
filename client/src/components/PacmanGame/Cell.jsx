@@ -13,6 +13,20 @@ class Cell extends React.Component {
       && prevEntity === newEntity);
   }
 
+  killerCells = ({
+    entity, ghostIndex, gridSize, x, y,
+  }) => {
+    const image = new window.Image(gridSize, gridSize);
+    image.src = (entity === 'scatterGhost') ? ghostImages[4] : ghostImages[ghostIndex];
+    return (
+      <Image
+        x={x * gridSize}
+        y={y * gridSize}
+        image={image}
+      />
+    );
+  }
+
   render() {
     const {
       x, y, gridSize, entity, ghostIndex,
@@ -24,24 +38,14 @@ class Cell extends React.Component {
     }
 
     if (entity === 'ghost' || entity === 'scatterGhost') {
-      const image = new window.Image(gridSize, gridSize);
-      image.src = ghostImages[ghostIndex];
-      if (entity === 'scatterGhost') {
-        const [, , , , afraidGhost] = ghostImages;
-        image.src = afraidGhost;
-      }
-      return (
-        <Image
-          x={x * gridSize}
-          y={y * gridSize}
-          image={image}
-        />
-      );
+      return this.killerCells({
+        x, y, gridSize, entity, ghostIndex,
+      });
     }
 
 
     if (entity === 'food' || entity === 'energizer') {
-      const entityRadiusScale = entity === 'food' ? 0.2 : 0.4;
+      const entityRadiusScale = (entity === 'food') ? 0.2 : 0.4;
       return (
         <Circle
           x={(x + 0.5) * gridSize}

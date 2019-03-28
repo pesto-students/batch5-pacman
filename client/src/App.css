@@ -10,6 +10,10 @@ body{
   transform: translate(-50%, -50%);
 }
 
+.konvajs-content {
+  background: black;
+}
+
 .App {
   text-align: center;
 }
@@ -23,40 +27,40 @@ body{
 }
 
 a {
-	-webkit-tap-highlight-color: transparent;
-	text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
 }
 
 .auth{
   text-align: center;
 }
 .google-button {
-	display: inline-block;
-	max-width: 300px;
-	margin-top: 50px;
-	border: 0;
-	padding: 0 18px;
-	text-align: left;
-	width: 100px;
-	height: 37px;
-	border-radius: 4px;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	-moz-font-feature-settings: "liga" on;
-	color: rgba(109, 76, 76, 0.84) !important;
-	fill: rgba(0, 0, 0, 0.84) !important;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, .6);
-	font: inherit;
+  display: inline-block;
+  max-width: 300px;
+  margin-top: 50px;
+  border: 0;
+  padding: 0 18px;
+  text-align: left;
+  width: 100px;
+  height: 37px;
+  border-radius: 4px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -moz-font-feature-settings: "liga" on;
+  color: rgba(109, 76, 76, 0.84) !important;
+  fill: rgba(0, 0, 0, 0.84) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .6);
+  font: inherit;
   outline: none;
   background-color: white;
 }
 
 .google-button .svgIcon {
-	vertical-align: middle;
-	fill: rgba(0, 0, 0, 0.54);
-	padding-right: 4px;
-	height: 37px;
-	display: inline-block;
+  vertical-align: middle;
+  fill: rgba(0, 0, 0, 0.54);
+  padding-right: 4px;
+  height: 37px;
+  display: inline-block;
 }
 
 
