@@ -6,7 +6,7 @@ import {
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
-  boardCorners, codeToEntity, entityToCode, getGhosts, getPacman,
+  boardCorners, codeToEntity, entityToCode, getGhosts, getPacman, advanceFrameAfterTime,
 } from './constants';
 import {
   initSquareGridState,
@@ -30,7 +30,7 @@ class PacmanGame extends Component {
     status: 0, // 0 - Not-started, 1 - Progress, 2 - Finished, 3 - Paused
     gridState: [],
     config: {
-      refreshRate: 200,
+      refreshRate: advanceFrameAfterTime,
     },
     moveGhostsCount: 0,
     scatterGhostspath: [],
