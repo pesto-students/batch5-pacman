@@ -1,6 +1,6 @@
-const passport = require('passport');
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const config = require('./config');
+import passport from 'passport';
+import { OAuth2Strategy as GoogleStrategy } from 'passport-google-oauth';
+import config from './config';
 
 passport.serializeUser((user, done) => {
   done(null, user);

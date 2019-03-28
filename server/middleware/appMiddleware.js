@@ -1,10 +1,10 @@
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const passport = require('passport');
+import morgan from 'morgan';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
 
-module.exports = (app) => {
+export default (app) => {
   app.use(morgan('dev'));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());

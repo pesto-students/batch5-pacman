@@ -1,5 +1,7 @@
-const router = require('express').Router();
-const controller = require('./controller');
+import express from 'express';
+import controller from './controller';
+
+const router = express.Router();
 
 router.get('/', controller.greet);
 
