@@ -1,7 +1,8 @@
 import React from 'react';
-import { Rect } from 'react-konva';
+import { Rect, Circle, Image } from 'react-konva';
 import PropTypes from 'prop-types';
-import { colorCode } from './constants';
+import { colorCode, ghostImages } from './constants';
+
 
 class Cell extends React.Component {
   shouldComponentUpdate(newprops) {
@@ -14,9 +15,43 @@ class Cell extends React.Component {
 
   render() {
     const {
-      x, y, gridSize, entity,
+      x, y, gridSize, entity, ghostIndex,
     } = this.props;
-    const color = colorCode[entity] || 'black';
+    const color = colorCode[entity];
+
+    if (!color) {
+      return null;
+    }
+
+    if (entity === 'ghost' || entity === 'scatterGhost') {
+      const image = new window.Image(gridSize, gridSize);
+      image.src = ghostImages[ghostIndex];
+      if (entity === 'scatterGhost') {
+        const [, , , , afraidGhost] = ghostImages;
+        image.src = afraidGhost;
+      }
+      return (
+        <Image
+          x={x * gridSize}
+          y={y * gridSize}
+          image={image}
+        />
+      );
+    }
+
+
+    if (entity === 'food' || entity === 'energizer') {
+      const entityRadiusScale = entity === 'food' ? 0.2 : 0.4;
+      return (
+        <Circle
+          x={(x + 0.5) * gridSize}
+          y={(y + 0.5) * gridSize}
+          radius={gridSize * entityRadiusScale}
+          fill={color}
+        />
+      );
+    }
+
     return (
       <Rect
         x={x * gridSize}
@@ -34,6 +69,11 @@ Cell.propTypes = {
   y: PropTypes.number.isRequired,
   gridSize: PropTypes.number.isRequired,
   entity: PropTypes.string.isRequired,
+  ghostIndex: PropTypes.number,
+};
+
+Cell.defaultProps = {
+  ghostIndex: 0,
 };
 
 export default Cell;
