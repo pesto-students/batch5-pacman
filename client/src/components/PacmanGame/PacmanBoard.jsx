@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Stage, Layer } from 'react-konva';
-import { codeToEntity } from './constants';
+import { codeToEntity, boardEdgeInPixel } from './constants';
 import Cell from './Cell';
 import Ghosts from './Ghosts';
 import PacmanEntity from './PacmanEntity';
@@ -27,7 +27,7 @@ const PacmanBoard = ({
       );
     })));
   return (
-    <Stage width={500} height={500}>
+    <Stage width={boardEdgeInPixel} height={boardEdgeInPixel}>
       <Layer hitGraphEnabled={false}>
         {nonMovingCells}
         <PacmanEntity location={pacman} gridSize={gridSize} />
