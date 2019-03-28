@@ -2,11 +2,13 @@ const uuidv1 = require('uuid/v1');
 const {
   boardCorners,
   refreshRate,
+  getGhosts,
 } = require('./constants');
 const {
   getRandomAdjacentAvailableCell,
   getGridwithWeights,
   chaseLocation,
+  initSquareGridState,
 } = require('./core');
 
 const gameState = {
@@ -15,9 +17,17 @@ const gameState = {
   scatterStart: 75,
   pacmanOne: {},
   pacmanTwo: {},
-  interval: null,
+  gridState: [],
 };
 
+const setInitialGameState = () => {
+  const gridState = initSquareGridState();
+  const ghostsArray = getGhosts().map(([x, y, direction]) => ({
+    x, y, direction,
+  }));
+  gameState.gridState = gridState;
+  gameState.ghosts = ghostsArray;
+};
 
 const createRoom = (playerInfo, socket) => {
   gameState.pacmanOne = playerInfo;
@@ -29,7 +39,16 @@ const createRoom = (playerInfo, socket) => {
 
 const currentGameState = () => {
   const { socket, ...rest } = gameState;
-  socket.emit('gameState', rest);
+  return rest;
+};
+
+const addPositionsToArray = (arr, index) => {
+  const scatterTime = 55;
+  if (arr.length < scatterTime) {
+    arr.push(boardCorners[index]);
+    return addPositionsToArray(arr, index);
+  }
+  return arr;
 };
 
 const moveGhosts = ({ ghosts, gridState, scatterStart }) => {
@@ -43,10 +62,8 @@ const moveGhosts = ({ ghosts, gridState, scatterStart }) => {
       .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
 
     scatterGhostspath = ghostsPath
-      .map((array, index) => this.addPositionsToArray(array, index));
-    this.setState({
-      scatterGhostspath,
-    });
+      .map((array, index) => addPositionsToArray(array, index));
+    gameState.scatterGhostspath = scatterGhostspath;
   }
 
   if (moveGhostsCount === scatterEnd) {
@@ -75,23 +92,33 @@ const moveGhosts = ({ ghosts, gridState, scatterStart }) => {
   };
 };
 
-const animateGame = () => {
-  try {
-    const {
-      ghosts, gridState, scatterStart,
-    } = gameState;
-    const { ghostsUpdated, moveGhostsCount } = moveGhosts(
-      { ghosts, gridState, scatterStart },
-    );
-    gameState.moveGhostsCount = moveGhostsCount;
-    gameState.ghosts = ghostsUpdated;
-  } catch (e) {
-    clearInterval(gameState.interval);
-  }
+const calculateNextGameState = () => {
+  const {
+    ghosts, gridState, scatterStart,
+  } = gameState;
+  const { ghostsUpdated, moveGhostsCount } = moveGhosts(
+    { ghosts, gridState, scatterStart },
+  );
+  gameState.moveGhostsCount = moveGhostsCount;
+  gameState.ghosts = ghostsUpdated;
 };
 
 const startGame = () => {
-  gameState.interval = setInterval(() => animateGame(), refreshRate);
+  setInitialGameState();
+  setTimeout(() => {
+    const { socket } = gameState;
+    // eslint-disable-next-line no-console
+    console.log('Game started after 3 seconds');
+    socket.interval = setInterval(() => {
+      calculateNextGameState();
+      // eslint-disable-next-line no-undef
+      io.in(socket.room).emit('gameState', currentGameState());
+    }, refreshRate);
+  }, 3000);
 };
 
-module.exports = { createRoom, currentGameState, startGame };
+module.exports = {
+  createRoom,
+  currentGameState,
+  startGame,
+};
