@@ -16,6 +16,7 @@ const Ghosts = ({ ghosts, gridSize }) => ghosts.map(({ x, y, direction }, index)
       x={x}
       gridSize={gridSize}
       entity={entity}
+      ghostIndex={index}
     />
   );
 });

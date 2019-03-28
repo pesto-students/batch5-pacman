@@ -1,3 +1,17 @@
+import ghostImage1 from '../../sprites/blinky.png';
+import ghostImage2 from '../../sprites/inky.png';
+import ghostImage3 from '../../sprites/clyde.png';
+import ghostImage4 from '../../sprites/pinky.png';
+import afraidGhost from '../../sprites/afraidGhost.png';
+
+export const ghostImages = [
+  ghostImage1,
+  ghostImage2,
+  ghostImage3,
+  ghostImage4,
+  afraidGhost,
+];
+
 export const board = [
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
   [4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4],
