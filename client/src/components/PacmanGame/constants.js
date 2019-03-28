@@ -71,3 +71,5 @@ export const directionValues = {
 export const getGhosts = () => [[13, 12, 'RIGHT'], [14, 12, 'LEFT'], [11, 12, 'DOWN'], [12, 12, 'UP']];
 
 export const getPacman = () => [13, 14, 'RIGHT'];
+
+export const boardEdgeInPixel = Math.min(window.innerWidth, window.innerHeight) * 0.65;
