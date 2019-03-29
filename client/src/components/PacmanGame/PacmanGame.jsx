@@ -6,7 +6,13 @@ import {
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
-  boardCorners, codeToEntity, entityToCode, getGhosts, getPacman, advanceFrameAfterTime,
+  boardCorners,
+  codeToEntity,
+  entityToCode,
+  getGhosts,
+  getPacman,
+  advanceFrameAfterTime,
+  boardTranspose,
 } from './constants';
 import {
   initSquareGridState,
@@ -149,7 +155,7 @@ class PacmanGame extends Component {
     moveGhostsCount += 1;
     const scatterEnd = scatterStart + 55;
     if (moveGhostsCount === scatterStart) {
-      const gridWithWeights = getGridwithWeights(gridState);
+      const gridWithWeights = getGridwithWeights(boardTranspose);
       const ghostsPath = ghosts
         .map((ghost, index) => chaseLocation(gridWithWeights, ghost, boardCorners[index]))
         .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
