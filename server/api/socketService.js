@@ -2,31 +2,29 @@ import logger from '../utils/logger';
 
 const { createRoom, startGame } = require('./game/controller');
 
-const games = [];
-// const findGameById = (id) => {
-//   const availableGame = Object.values(games);
-//   return availableGame.find(game => game.roomId === id);
-// };
+const games = {};
 
 const socketService = (socket) => {
   socket.on('joinGame', (playerInfo) => {
     let roomId;
-    const availableGames = games.filter(game => game.available)[0];
-    if (availableGames) {
+    const gameList = Object.values(games);
+    const availableRoom = gameList.find(game => game.available);
+    if (availableRoom) {
       // eslint-disable-next-line prefer-destructuring
-      roomId = availableGames.roomId;
-      availableGames.pacmanTwo = playerInfo;
-      availableGames.available = false;
+      roomId = availableRoom.roomId;
+      availableRoom.pacmanTwo = playerInfo;
+      availableRoom.available = false;
+      games[roomId] = availableRoom;
       // eslint-disable-next-line no-param-reassign
-      socket.room = availableGames.roomId;
-      socket.join(availableGames.roomId);
+      socket.room = availableRoom.roomId;
+      socket.join(availableRoom.roomId);
       startGame();
       logger('Joined room', socket.room);
     } else {
       const newGame = createRoom(playerInfo, socket);
       // eslint-disable-next-line prefer-destructuring
       roomId = newGame.roomId;
-      games[newGame.roomId] = newGame;
+      games[roomId] = newGame;
       // eslint-disable-next-line no-param-reassign
       socket.room = newGame.roomId;
       socket.join(newGame.roomId);
@@ -37,14 +35,15 @@ const socketService = (socket) => {
 
   socket.on('disconnect', () => {
     clearInterval(socket.interval);
-    // delete games[socket.room];
+    delete games[socket.room];
     socket.leave(socket.room);
   });
-  socket.on('update-game-state', (info) => {
-    // Find game by room-id
-    // Update pacman position, food & score
-    // Send the info back to clients in that room
-    socket.emit('update-game', info);
+  socket.on('update-game-state', ({ pacman, playerId, roomId }) => {
+    const room = games[roomId];
+    const player = room.pacmanOne.playerId === playerId ? 'pacmanOne' : 'pacmanTwo';
+    room[player] = pacman;
+    games[roomId] = room;
+    socket.emit('game-update', { pacmanOne: room.pacmanOne, pacmanTwo: room.pacmanTwo });
   });
 };
 
