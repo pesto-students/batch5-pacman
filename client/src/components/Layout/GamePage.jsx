@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -26,7 +27,9 @@ const GamePage = (props) => {
           <Grid item xs={3} />
           <Grid item xs={6}>
             <Button variant="outlined" size="medium" color="primary" onClick={startGame}>
-              Start
+              {status === 0 ? 'Start'
+                : status === 1 ? 'Pause'
+                  : 'Restart'}
             </Button>
             <div>
               Score:
