@@ -1,3 +1,5 @@
+import logger from '../utils/logger';
+
 const { createRoom, startGame } = require('./game/controller');
 
 const games = {};
@@ -12,12 +14,16 @@ const socketService = (socket) => {
       socket.room = openGame.roomId;
       socket.join(openGame.roomId);
       startGame();
+      // eslint-disable-next-line no-console
+      logger('Joined room', socket.room);
     } else {
       const newGame = createRoom(playerInfo, socket);
       games.roomId = newGame;
       // eslint-disable-next-line no-param-reassign
       socket.room = newGame.roomId;
       socket.join(newGame.roomId);
+      // eslint-disable-next-line no-console
+      logger('Created new room');
     }
     // eslint-disable-next-line no-console
     console.log('Joined room:', socket.room);

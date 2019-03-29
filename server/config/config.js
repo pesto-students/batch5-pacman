@@ -11,6 +11,6 @@ const config = {
   url: {
     client: process.env.CLIENT_URL,
   },
+  showLog: process.env.SHOW_LOG || 'YES',
 };
-
 export default config;
