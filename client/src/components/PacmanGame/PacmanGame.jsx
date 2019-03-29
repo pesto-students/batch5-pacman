@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
@@ -28,7 +27,7 @@ class PacmanGame extends Component {
     },
     ghosts: [],
     score: 0,
-    status: 0, // 0 - Not-started, 1 - Progress, 2 - Finished, 3 - Paused
+    status: 0, // 0 - Not-started, 1 - Progress, 2 - Restart
     gridState: [],
     config: {
       refreshRate: advanceFrameAfterTime,
