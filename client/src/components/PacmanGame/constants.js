@@ -40,6 +40,8 @@ export const board = [
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
 ];
 
+export const boardTranspose = board[0].map((col, i) => board.map(row => row[i]));
+
 export const codeToEntity = (code) => {
   const entityMap = {
     0: 'free',
@@ -92,4 +94,4 @@ const framesPerSecond = 4;
 
 export const advanceFrameAfterTime = 1000 / framesPerSecond;
 
-export const entitiesAnimationDurationInSecond = 0.24;
+export const entitiesAnimationDurationInSecond = 0.10;
