@@ -2,8 +2,8 @@ import openSocket from 'socket.io-client';
 
 const socket = openSocket(process.env.REACT_APP_SERVER_URL);
 
-const socketConnection = (cb) => {
-  socket.on('connected', () => cb());
+const createSocketConnection = (cb) => {
+  socket.on('connected', data => cb(data));
   socket.emit('connection');
 };
 
@@ -11,7 +11,7 @@ const joinGame = (playerInfo) => {
   socket.emit('joinGame', playerInfo);
 };
 
-const currentGameState = () => {
+const getCurrentGameState = () => {
   socket.on('gameState', (data) => {
     // eslint-disable-next-line no-console
     console.log('Game state:', data);
@@ -22,9 +22,21 @@ const leaveGame = () => {
   socket.emit('disconnect');
 };
 
+const updateGameState = ({ pacman, roomId, playerId }) => {
+  socket.emit('update-game-state',
+    { ...pacman, roomId, playerId }
+  );
+};
+
+const getGameUpdate = (cb) => {
+  socket.on('game-update', cb);
+};
+
 export {
-  socketConnection,
+  createSocketConnection,
   joinGame,
   leaveGame,
-  currentGameState,
+  getCurrentGameState,
+  updateGameState,
+  getGameUpdate,
 };

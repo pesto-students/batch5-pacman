@@ -33,7 +33,7 @@ export const createRoom = (playerInfo, socket) => {
   gameState.pacmanOne = playerInfo;
   gameState.socket = socket;
   gameState.roomId = uuidv1();
-  gameState.freeToJoin = true;
+  gameState.available = true;
   return gameState;
 };
 
