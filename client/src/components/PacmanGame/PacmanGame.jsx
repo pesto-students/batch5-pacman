@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
@@ -62,7 +63,24 @@ class PacmanGame extends Component {
   }
 
   startGame = () => {
-    const { config, pacman } = this.state;
+    const { config, pacman, status } = this.state;
+    if (status === 1) {
+      let { score } = this.state;
+      clearInterval(this.animationHandler);
+      score -= 10;
+      this.setState({ status: 0, score });
+      return;
+    }
+    if (status === 2) {
+      this.setInitialGameState();
+      this.setState({
+        score: 0,
+        moveGhostsCount: 0,
+      });
+      this.setState({ status: 1 });
+    }
+    if (status === 0) this.setState({ status: 1 });
+    joinGame(pacman);
     joinGame({ playerId: uuid.v1(), ...pacman });
     currentGameState();
     this.animationHandler = setInterval(
