@@ -24,8 +24,7 @@ const leaveGame = () => {
 
 const updateGameState = ({ pacman, roomId, playerId }) => {
   socket.emit('update-game-state',
-    { ...pacman, roomId, playerId }
-  );
+    { ...pacman, roomId, playerId });
 };
 
 const getGameUpdate = (cb) => {

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import uuid from 'uuid';
 import {
   createSocketConnection, joinGame, leaveGame, getCurrentGameState, updateGameState,
+  getGameUpdate,
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
@@ -47,6 +48,7 @@ class PacmanGame extends Component {
     createSocketConnection((roomId) => {
       // eslint-disable-next-line no-console
       console.log('Connected to room: ', roomId);
+      this.setState({ roomId });
     });
     this.setInitialGameState();
   }
@@ -142,6 +144,18 @@ class PacmanGame extends Component {
       this.animateGame,
       config.refreshRate,
     );
+    setInterval(() => {
+      // eslint-disable-next-line no-shadow
+      const { pacman, playerId, roomId } = this.state;
+      updateGameState({ pacman, playerId, roomId });
+      getGameUpdate((info) => {
+        // eslint-disable-next-line no-console
+        console.log(info);
+        // this.setState({
+        //   opponent: info
+        // });
+      });
+    }, 4000);
     document.addEventListener('keydown', this.setDirection);
   };
 
@@ -260,7 +274,7 @@ class PacmanGame extends Component {
   animateGame = () => {
     try {
       const {
-        pacman, ghosts, gridState, scatterStart, playerId, roomId,
+        pacman, ghosts, gridState, scatterStart,
       } = this.state;
       const { ghostsUpdated, moveGhostsCount } = this.moveGhosts(
         { ghosts, gridState, scatterStart },
@@ -268,12 +282,6 @@ class PacmanGame extends Component {
       const { pacmanUpdated } = this.movePacman({ pacman, ghostsUpdated, gridState });
 
       this.dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
-
-      // getGameUpdate((info) => {
-      //   this.setState({
-      //     opponent: info
-      //   });
-      // });
 
       const {
         score,
@@ -286,7 +294,7 @@ class PacmanGame extends Component {
         ghosts: ghostsUpdated,
         pacman: pacmanUpdated,
       });
-      updateGameState({ pacman, playerId, roomId });
+      // updateGameState({ pacman, playerId, roomId });
     } catch (e) {
       clearInterval(this.animationHandler);
     }
@@ -306,7 +314,6 @@ class PacmanGame extends Component {
       });
     }
   }
-
 
   render() {
     const { width: canvasWidth, numberofCells: cellsInEachRow } = this.props;
