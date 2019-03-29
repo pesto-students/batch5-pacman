@@ -43,9 +43,72 @@ class PacmanGame extends Component {
     this.setInitialGameState();
   }
 
+  shouldComponentUpdate(_, newState) {
+    const printDiffs = (objDiffs, debug) => {
+      if (debug && Object.keys(objDiffs).length > 0) {
+        // eslint-disable-next-line no-console
+        console.log('Diff is', (objDiffs));
+      }
+    };
+
+    const onlyPacmanDirectionChange = objDiffs => (
+      Object.keys(objDiffs).length === 1 && objDiffs.pacman && objDiffs.pacman.direction);
+
+    const onlyGhostMoveCountChange = objDiffs => (
+      Object.keys(objDiffs).length === 1 && objDiffs.moveGhostsCount);
+
+    const objDiffs = this.getObjectDiffs({ oldObj: this.state, newObj: newState });
+
+    if (onlyPacmanDirectionChange(objDiffs) || onlyGhostMoveCountChange(objDiffs)) {
+      return false;
+    }
+
+    printDiffs(objDiffs, false);
+
+    return true;
+  }
+
   componentWillUnmount() {
     leaveGame();
   }
+
+  getObjectDiffs = ({ oldObj, newObj }) => {
+    const isAnObject = value => typeof value === 'object' && value !== null;
+    const isEmptyObject = obj => isAnObject(obj) && Object.keys(obj).length === 0;
+
+    const diffWithEmptyObjAsValue = Object.keys(newObj).reduce((acc, key) => {
+      if (isAnObject(oldObj[key]) && isAnObject(newObj[key])) {
+        return {
+          ...acc,
+          [key]: this.getObjectDiffs({
+            oldObj: oldObj[key],
+            newObj: newObj[key],
+          }),
+        };
+      }
+
+      const noDiffInValue = oldObj[key] === newObj[key];
+
+      return noDiffInValue ? acc : {
+        ...acc,
+        [key]: newObj[key],
+      };
+    }, {});
+
+
+    const objDiff = Object.keys(diffWithEmptyObjAsValue).reduce((acc, key) => {
+      if (isEmptyObject(diffWithEmptyObjAsValue[key])) {
+        return acc;
+      }
+      return {
+        ...acc,
+        [key]: diffWithEmptyObjAsValue[key],
+      };
+    }, {});
+
+    return objDiff;
+  }
+
 
   setInitialGameState = () => {
     const gridState = initSquareGridState();
