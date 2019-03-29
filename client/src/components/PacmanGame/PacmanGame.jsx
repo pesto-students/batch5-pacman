@@ -71,7 +71,6 @@ class PacmanGame extends Component {
       this.setInitialGameState();
       this.setState({
         score: 0,
-        status: 0,
         moveGhostsCount: 0,
       });
       this.setState({ status: 1 });
