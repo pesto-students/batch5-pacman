@@ -12,8 +12,8 @@ const Ghosts = ({ ghosts, gridSize }) => ghosts.map(({ x, y, direction }, index)
   return (
     <Cell
       key={uniqueKey}
-      y={y}
-      x={x}
+      gridY={y}
+      gridX={x}
       gridSize={gridSize}
       entity={entity}
       ghostIndex={index}

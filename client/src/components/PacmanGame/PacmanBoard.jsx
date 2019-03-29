@@ -19,8 +19,8 @@ const PacmanBoard = ({
       return (
         <Cell
           key={uniqueKey}
-          y={columnIndex}
-          x={rowIndex}
+          gridY={columnIndex}
+          gridX={rowIndex}
           gridSize={gridSize}
           entity={entity}
         />
