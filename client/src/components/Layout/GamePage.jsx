@@ -8,10 +8,9 @@ import ScoreCard from '../UI/ScoreCard';
 
 const styles = theme => ({
   root: {
-    ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2,
-    width: '96%',
+    width: '100%',
   },
 });
 
@@ -22,9 +21,9 @@ const GamePage = (props) => {
   return (
     <React.Fragment>
       <Paper className={classes.root} elevation={1}>
-        <Grid container spacing={16}>
-          <Grid item xs={3} />
-          <Grid item xs={6}>
+        <Grid container spacing={14}>
+          <Grid item xs={false} sm={false} md={3} lg={3} />
+          <Grid item md={6} lg={6} xs={12} sm={8}>
             <Button variant="outlined" size="medium" color="primary" onClick={startGame}>
               Start
             </Button>
@@ -38,7 +37,7 @@ const GamePage = (props) => {
             </div>
             {render()}
           </Grid>
-          <Grid item xs={3} sm container>
+          <Grid container xs={6} sm={4} md={3} lg={3}>
             <ScoreCard />
           </Grid>
         </Grid>

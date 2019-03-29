@@ -22,9 +22,10 @@ const CustomTableCell = withStyles(theme => ({
 
 const styles = {
   card: {
-    minWidth: 275,
+    width: '95%',
     backgroundColor: '#d3d3d3',
     height: 'fit-content',
+    marginTop: 10,
   },
   bullet: {
     display: 'inline-block',
