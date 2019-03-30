@@ -38,13 +38,14 @@ const socketService = (socket) => {
     delete games[socket.room];
     socket.leave(socket.room);
   });
-  socket.on('update-game-state', ({ pacman, playerId, roomId }) => {
-    const room = games[roomId];
-    const player = room.pacmanOne.playerId === playerId ? 'pacmanOne' : 'pacmanTwo';
-    room[player] = pacman;
-    games[roomId] = room;
-    socket.emit('game-update', { pacmanOne: room.pacmanOne, pacmanTwo: room.pacmanTwo });
-  });
+  // socket.on('update-game-state', ({ pacman, playerId, roomId }) => {
+  //   const room = games[roomId];
+  //   console.log(room.pacmanOne.playerId);
+  //   const player = room.pacmanOne.playerId === playerId ? 'pacmanOne' : 'pacmanTwo';
+  //   room[player] = pacman;
+  //   games[roomId] = room;
+  //   socket.emit('game-update', { pacmanOne: room.pacmanOne, pacmanTwo: room.pacmanTwo });
+  // });
 };
 
 export default socketService;

@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
 import {
-  createSocketConnection, joinGame, leaveGame, getCurrentGameState, updateGameState,
-  getGameUpdate,
+  createSocketConnection, joinGame, leaveGame, getCurrentGameState,
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
@@ -48,7 +47,7 @@ class PacmanGame extends Component {
     createSocketConnection((roomId) => {
       // eslint-disable-next-line no-console
       console.log('Connected to room: ', roomId);
-      this.setState({ roomId });
+      // this.setState({ roomId });
     });
     this.setInitialGameState();
   }
@@ -137,6 +136,7 @@ class PacmanGame extends Component {
   startGame = () => {
     const { config, pacman } = this.state;
     const playerId = uuid.v1();
+    // eslint-disable-next-line react/no-unused-state
     this.setState({ playerId });
     joinGame({ playerId, pacman });
     getCurrentGameState();
@@ -144,18 +144,6 @@ class PacmanGame extends Component {
       this.animateGame,
       config.refreshRate,
     );
-    setInterval(() => {
-      // eslint-disable-next-line no-shadow
-      const { pacman, playerId, roomId } = this.state;
-      updateGameState({ pacman, playerId, roomId });
-      getGameUpdate((info) => {
-        // eslint-disable-next-line no-console
-        console.log(info);
-        // this.setState({
-        //   opponent: info
-        // });
-      });
-    }, 4000);
     document.addEventListener('keydown', this.setDirection);
   };
 
