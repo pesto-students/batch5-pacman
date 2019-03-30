@@ -27,7 +27,7 @@ const GamePage = (props) => {
   return (
     <React.Fragment>
       <Paper className={classes.root} elevation={1}>
-        <Grid container spacing={14}>
+        <Grid container>
           <Grid item xs={false} sm={false} md={3} lg={3} />
           <Grid item md={6} lg={6} xs={12} sm={8}>
             <Button variant="outlined" size="medium" color="primary" onClick={startGame}>
@@ -43,7 +43,7 @@ const GamePage = (props) => {
             </div>
             {render()}
           </Grid>
-          <Grid container xs={6} sm={4} md={3} lg={3}>
+          <Grid item container xs={6} sm={4} md={3} lg={3}>
             <ScoreCard />
           </Grid>
         </Grid>
