@@ -112,7 +112,7 @@ export const startGame = () => {
     socket.interval = setInterval(() => {
       calculateNextGameState();
       // eslint-disable-next-line no-undef
-      io.in(socket.room).emit('gameState', currentGameState());
+      io.in(socket.room).emit('game-update', currentGameState());
     }, refreshRate);
   }, 3000);
 };
