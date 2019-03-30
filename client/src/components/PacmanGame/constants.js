@@ -40,7 +40,7 @@ export const getBoard = () => [
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
 ];
 
-export const boardTranspose = board[0].map((col, i) => board.map(row => row[i]));
+export const boardTranspose = getBoard()[0].map((col, i) => getBoard().map(row => row[i]));
 
 export const codeToEntity = (code) => {
   const entityMap = {
