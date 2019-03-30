@@ -33,7 +33,7 @@ class PacmanGame extends Component {
     },
     ghosts: [],
     score: 0,
-    status: 0, // 0 - Not-started, 1 - Progress, 2 - Finished, 3 - Paused
+    status: 0, // 0 - Not-started, 1 - Progress, 2 - Restart
     gridState: [],
     config: {
       refreshRate: advanceFrameAfterTime,
@@ -131,7 +131,24 @@ class PacmanGame extends Component {
   }
 
   startGame = () => {
-    const { config, pacman } = this.state;
+    const { config, pacman, status } = this.state;
+    if (status === 1) {
+      let { score } = this.state;
+      clearInterval(this.animationHandler);
+      score -= 10;
+      this.setState({ status: 0, score });
+      return;
+    }
+    if (status === 2) {
+      this.setInitialGameState();
+      this.setState({
+        score: 0,
+        moveGhostsCount: 0,
+      });
+      this.setState({ status: 1 });
+    }
+    if (status === 0) this.setState({ status: 1 });
+    joinGame(pacman);
     joinGame({ playerId: uuid.v1(), ...pacman });
     currentGameState();
     this.animationHandler = setInterval(

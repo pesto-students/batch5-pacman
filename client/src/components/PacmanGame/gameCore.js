@@ -1,7 +1,7 @@
 import pathfinding from 'pathfinding';
-import { board, entityToCode, directionValues } from './constants';
+import { getBoard, entityToCode, directionValues } from './constants';
 
-export const initSquareGridState = () => board;
+export const initSquareGridState = () => getBoard();
 
 const borderWalls = (numofCells) => {
   const cellsArray = [...Array(numofCells).keys()];

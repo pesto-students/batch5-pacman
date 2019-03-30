@@ -18,6 +18,12 @@ const GamePage = (props) => {
   const {
     render, classes, startGame, score, status,
   } = props;
+
+  const buttonMessage = () => {
+    if (status === 0) return 'Start';
+    if (status === 1) return 'Pause';
+    return 'Restart';
+  };
   return (
     <React.Fragment>
       <Paper className={classes.root} elevation={1}>
@@ -25,7 +31,7 @@ const GamePage = (props) => {
           <Grid item xs={false} sm={false} md={3} lg={3} />
           <Grid item md={6} lg={6} xs={12} sm={8}>
             <Button variant="outlined" size="medium" color="primary" onClick={startGame}>
-              Start
+              {buttonMessage()}
             </Button>
             <div>
               Score:

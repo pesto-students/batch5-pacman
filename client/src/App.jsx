@@ -5,7 +5,7 @@ import NavBar from './components/UI/NavBar';
 import PacmanGame from './components/PacmanGame/PacmanGame';
 import SimpleModal from './components/UI/Modal';
 import { Consumer } from './api/userContext';
-import { board, boardEdgeInPixel } from './components/PacmanGame/constants';
+import { getBoard, boardEdgeInPixel } from './components/PacmanGame/constants';
 
 const App = ({ history, location }) => (
   <Consumer>
@@ -14,7 +14,7 @@ const App = ({ history, location }) => (
         <NavBar userContext={context} />
         <div className="container">
           <SimpleModal history={history} location={location} mode="GameStart" userContext={context} />
-          <PacmanGame width={boardEdgeInPixel} numberofCells={board.length} />
+          <PacmanGame width={boardEdgeInPixel} numberofCells={getBoard().length} />
         </div>
       </>
     )
