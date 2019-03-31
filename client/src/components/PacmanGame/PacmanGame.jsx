@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
 import {
-  createSocketConnection, joinGame, leaveGame, getCurrentGameState,
+  createSocketConnection, joinGame, leaveGame, getGameUpdate,
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
@@ -149,7 +149,7 @@ class PacmanGame extends Component {
     }
     if (status === 0) this.setState({ status: 1 });
     joinGame({ playerId: uuid.v1(), ...pacman });
-    getCurrentGameState();
+    getGameUpdate();
     this.animationHandler = setInterval(
       this.animateGame,
       config.refreshRate,

@@ -51,6 +51,10 @@ const currentGameState = () => {
   return rest;
 };
 
+const endGame = () => {
+  clearInterval(gameState.interval);
+};
+
 const eatFood = ({ pacman: newLocation }) => {
   const { gridState } = gameState;
   const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
@@ -80,6 +84,7 @@ const ifAtGhosts = ({ ghosts, pacman }) => {
 const dieIfOnGhost = ({ ghosts, pacman }) => {
   if (ifAtGhosts({ ghosts, pacman })) {
     gameState.status = 2;
+    endGame();
     return true;
   }
   return false;
@@ -187,7 +192,7 @@ export const startGame = () => {
     const { socket } = gameState;
     // eslint-disable-next-line no-console
     console.log('Game started after 3 seconds');
-    socket.interval = setInterval(() => {
+    gameState.interval = setInterval(() => {
       calculateNextGameState();
       // eslint-disable-next-line no-undef
       io.in(socket.room).emit('game-update', currentGameState());
