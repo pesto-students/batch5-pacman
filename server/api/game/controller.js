@@ -186,6 +186,16 @@ const calculateNextGameState = () => {
   gameState.ghosts = ghostsUpdated;
 };
 
+export const updateDirection = ({ playerId, direction }) => {
+  const { pacmanOne, pacmanTwo } = gameState;
+  if (pacmanOne.playerId === playerId) {
+    gameState.pacmanOne.direction = direction;
+  }
+  if (pacmanTwo.playerId === playerId) {
+    gameState.pacmanTwo.direction = direction;
+  }
+};
+
 export const startGame = () => {
   setInitialGameState();
   setTimeout(() => {

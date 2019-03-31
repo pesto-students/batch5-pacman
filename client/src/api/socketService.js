@@ -29,10 +29,15 @@ const getGameUpdate = () => {
   });
 };
 
+const changeDirection = (data) => {
+  socket.emit('update-direction', data);
+};
+
 export {
   createSocketConnection,
   joinGame,
   leaveGame,
   getCurrentGameState,
   getGameUpdate,
+  changeDirection,
 };
