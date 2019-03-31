@@ -132,3 +132,12 @@ export const moveInDirection = ({ x, y, direction }) => {
   };
   return newLocation;
 };
+
+export const locationOnCanvas = ({
+  gridX, gridY, gridSize, centerEntity = false,
+}) => {
+  const canvasPos = gridPostion => gridPostion * gridSize;
+  const [x, y] = [gridX, gridY]
+    .map(value => (centerEntity ? canvasPos(value + 0.5) : canvasPos(value)));
+  return { x, y };
+};

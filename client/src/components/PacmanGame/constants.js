@@ -90,8 +90,8 @@ export const getPacman = () => [13, 14, 'RIGHT'];
 
 export const boardEdgeInPixel = Math.min(window.innerWidth, window.innerHeight) * 0.65;
 
-const framesPerSecond = 4;
+const framesPerSecond = 5;
 
 export const advanceFrameAfterTime = 1000 / framesPerSecond;
 
-export const entitiesAnimationDurationInSecond = 0.10;
+export const entitiesAnimationDurationInSecond = 1 / framesPerSecond;

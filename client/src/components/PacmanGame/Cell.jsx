@@ -1,7 +1,8 @@
 import React from 'react';
-import { Rect, Circle, Image } from 'react-konva';
+import { Rect, Circle } from 'react-konva';
 import PropTypes from 'prop-types';
-import { colorCode, ghostImages } from './constants';
+import { colorCode } from './constants';
+import { locationOnCanvas } from './gameCore';
 
 
 class Cell extends React.Component {
@@ -13,28 +14,6 @@ class Cell extends React.Component {
       && prevEntity === newEntity);
   }
 
-  locationOnCanvas = ({
-    gridX, gridY, gridSize, centerEntity = false,
-  }) => {
-    const canvasPos = gridPostion => gridPostion * gridSize;
-    const [x, y] = [gridX, gridY]
-      .map(value => (centerEntity ? canvasPos(value + 0.5) : canvasPos(value)));
-    return { x, y };
-  };
-
-  killerCells = ({
-    entity, ghostIndex, gridSize, gridX, gridY,
-  }) => {
-    const image = new window.Image(gridSize, gridSize);
-    image.src = (entity === 'scatterGhost') ? ghostImages[4] : ghostImages[ghostIndex];
-
-    return (
-      <Image
-        {...this.locationOnCanvas({ gridX, gridY, gridSize })}
-        image={image}
-      />
-    );
-  }
 
   eatableCells = ({
     entity, gridSize, gridX, gridY, color,
@@ -43,7 +22,7 @@ class Cell extends React.Component {
 
     return (
       <Circle
-        {...this.locationOnCanvas({
+        {...locationOnCanvas({
           gridX, gridY, gridSize, centerEntity: true,
         })}
         radius={gridSize * entityRadiusScale}
@@ -54,18 +33,12 @@ class Cell extends React.Component {
 
   render() {
     const {
-      gridX, gridY, gridSize, entity, ghostIndex,
+      gridX, gridY, gridSize, entity,
     } = this.props;
     const color = colorCode[entity];
 
     if (!color) {
       return null;
-    }
-
-    if (entity === 'ghost' || entity === 'scatterGhost') {
-      return this.killerCells({
-        gridX, gridY, gridSize, entity, ghostIndex,
-      });
     }
 
 
@@ -77,7 +50,7 @@ class Cell extends React.Component {
 
     return (
       <Rect
-        {...this.locationOnCanvas({ gridX, gridY, gridSize })}
+        {...locationOnCanvas({ gridX, gridY, gridSize })}
         width={gridSize}
         height={gridSize}
         fill={color}
@@ -92,11 +65,6 @@ Cell.propTypes = {
   gridY: PropTypes.number.isRequired,
   gridSize: PropTypes.number.isRequired,
   entity: PropTypes.string.isRequired,
-  ghostIndex: PropTypes.number,
-};
-
-Cell.defaultProps = {
-  ghostIndex: 0,
 };
 
 export default Cell;

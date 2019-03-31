@@ -4,7 +4,7 @@ import { Stage, Layer } from 'react-konva';
 import { codeToEntity, boardEdgeInPixel } from './constants';
 import Cell from './Cell';
 import Ghosts from './Ghosts';
-import PacmanEntity from './PacmanEntity';
+import AnimateEntity from './AnimateEntity';
 
 const PacmanBoard = ({
   gridState,
@@ -30,7 +30,7 @@ const PacmanBoard = ({
     <Stage width={boardEdgeInPixel} height={boardEdgeInPixel}>
       <Layer hitGraphEnabled={false}>
         {nonMovingCells}
-        <PacmanEntity location={pacman} gridSize={gridSize} />
+        <AnimateEntity location={pacman} gridSize={gridSize} entity="pacman" />
         <Ghosts ghosts={ghosts} gridSize={gridSize} />
       </Layer>
     </Stage>
