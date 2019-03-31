@@ -22,8 +22,11 @@ const leaveGame = () => {
   socket.emit('disconnect');
 };
 
-const getGameUpdate = (cb) => {
-  socket.on('game-update', cb);
+const getGameUpdate = () => {
+  socket.on('game-update', (data) => {
+    // eslint-disable-next-line no-console
+    console.log('Game state:', data);
+  });
 };
 
 export {

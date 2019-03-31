@@ -41,6 +41,7 @@ const socketService = (socket) => {
     const player2 = { username: game.pacmanTwo.username, score: game.pacmanTwo.score };
     gameResultsController.saveGame({ player1, player2 });
     delete games[roomId];
+    clearInterval(socket.interval);
   });
 
   socket.on('disconnect', () => {
