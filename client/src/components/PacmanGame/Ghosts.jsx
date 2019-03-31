@@ -1,19 +1,15 @@
 import React from 'react';
-import Cell from './Cell';
+import AnimateEntity from './AnimateEntity';
 
-const Ghosts = ({ ghosts, gridSize }) => ghosts.map(({ x, y, direction }, index) => {
-  let entity;
-  if (direction === undefined || direction === null) {
-    entity = 'scatterGhost';
-  } else {
-    entity = 'ghost';
-  }
+const Ghosts = ({ ghosts, gridSize }) => ghosts.map((location, index) => {
+  const { direction, x, y } = location;
+  const noGhostDirection = direction === undefined || direction === null;
+  const entity = noGhostDirection ? 'scatterGhost' : 'ghost';
   const uniqueKey = `row-${x}-col-${y}-entity-ghost${index}`;
   return (
-    <Cell
+    <AnimateEntity
       key={uniqueKey}
-      gridY={y}
-      gridX={x}
+      location={location}
       gridSize={gridSize}
       entity={entity}
       ghostIndex={index}
