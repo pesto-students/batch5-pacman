@@ -2,7 +2,7 @@ import logger from '../utils/logger';
 
 const gameResultsController = require('./game-results/controller');
 
-const { createRoom, startGame } = require('./game/controller');
+const { createRoom, startGame, updateDirection } = require('./game/controller');
 
 const games = {};
 
@@ -34,6 +34,8 @@ const socketService = (socket) => {
     }
     socket.emit('connected', roomId);
   });
+
+  socket.on('update-direction', updateDirection);
 
   socket.on('game-end', (roomId) => {
     const game = games[roomId];

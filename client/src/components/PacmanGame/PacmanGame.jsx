@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import uuid from 'uuid';
 import {
-  createSocketConnection, joinGame, leaveGame, getGameUpdate,
+  createSocketConnection,
+  joinGame,
+  leaveGame,
+  getGameUpdate,
+  changeDirection,
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
@@ -41,6 +45,7 @@ class PacmanGame extends Component {
     moveGhostsCount: 0,
     scatterGhostspath: [],
     scatterStart: 75,
+    playerId: uuid.v1(),
   };
 
   componentDidMount() {
@@ -131,7 +136,9 @@ class PacmanGame extends Component {
   }
 
   startGame = () => {
-    const { config, pacman, status } = this.state;
+    const {
+      config, pacman, status, playerId,
+    } = this.state;
     if (status === 1) {
       let { score } = this.state;
       clearInterval(this.animationHandler);
@@ -148,7 +155,7 @@ class PacmanGame extends Component {
       this.setState({ status: 1 });
     }
     if (status === 0) this.setState({ status: 1 });
-    joinGame({ playerId: uuid.v1(), ...pacman });
+    joinGame({ playerId, ...pacman });
     getGameUpdate();
     this.animationHandler = setInterval(
       this.animateGame,
@@ -299,7 +306,7 @@ class PacmanGame extends Component {
   }
 
   setDirection = ({ which: keycode }) => {
-    const { pacman } = this.state;
+    const { pacman, playerId } = this.state;
     const { direction: oldDirection } = pacman;
     let newDirection;
     if (keycode === 37) newDirection = 'LEFT';
@@ -313,6 +320,7 @@ class PacmanGame extends Component {
         pacman: { ...pacman, direction: newDirection },
       });
     }
+    changeDirection({ playerId, direction: newDirection });
   }
 
   render() {
