@@ -3,11 +3,16 @@ import {
   boardCorners,
   refreshRate,
   getGhosts,
+  getPacman,
+  codeToEntity,
+  entityToCode,
 } from './constants';
 import {
   getRandomAdjacentAvailableCell,
   getGridwithWeights,
   chaseLocation,
+  moveInDirection,
+  isWall,
   initSquareGridState,
 } from './core';
 
@@ -18,15 +23,19 @@ const gameState = {
   pacmanOne: {},
   pacmanTwo: {},
   gridState: [],
+  status: 0,
 };
 
 const setInitialGameState = () => {
+  const { pacmanOne, pacmanTwo } = gameState;
   const gridState = initSquareGridState();
   const ghostsArray = getGhosts().map(([x, y, direction]) => ({
     x, y, direction,
   }));
   gameState.gridState = gridState;
   gameState.ghosts = ghostsArray;
+  gameState.pacmanOne = { ...pacmanOne, ...getPacman() };
+  gameState.pacmanTwo = { ...pacmanTwo, ...getPacman() };
 };
 
 export const createRoom = (playerInfo, socket) => {
@@ -40,6 +49,59 @@ export const createRoom = (playerInfo, socket) => {
 const currentGameState = () => {
   const { socket, ...rest } = gameState;
   return rest;
+};
+
+const eatFood = ({ pacman: newLocation }) => {
+  const { gridState } = gameState;
+  const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
+  let { score } = newLocation;
+  if (entityInCell === 'food') {
+    score += 1;
+  } else if (entityInCell === 'energizer') {
+    score += 5;
+  }
+  gridState[newLocation.x][newLocation.y] = entityToCode('free');
+  gameState.gridState = gridState;
+  return { score };
+};
+
+const ifAtGhosts = ({ ghosts, pacman }) => {
+  const isAtSameLocation = (
+    { x: x1, y: y1 },
+    { x: x2, y: y2 },
+  ) => (x1 === x2) && (y1 === y2);
+
+  const ispacmanDead = ghosts
+    .some(ghost => isAtSameLocation(ghost, pacman));
+
+  return ispacmanDead;
+};
+
+const dieIfOnGhost = ({ ghosts, pacman }) => {
+  if (ifAtGhosts({ ghosts, pacman })) {
+    gameState.status = 2;
+    return true;
+  }
+  return false;
+};
+
+const movePacman = ({ pacman, ghostsUpdated, gridState }) => {
+  const { x, y, direction } = pacman;
+
+  const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
+
+  if (pacmanDead) {
+    return {
+      pacmanUpdated: pacman,
+    };
+  }
+
+  let newLocation = moveInDirection({ x, y, direction });
+
+  newLocation = isWall(gridState, newLocation) ? {} : moveInDirection({ x, y, direction });
+  return {
+    pacmanUpdated: { ...pacman, ...newLocation },
+  };
 };
 
 const addPositionsToArray = (arr, index) => {
@@ -94,11 +156,27 @@ const moveGhosts = ({ ghosts, gridState, scatterStart }) => {
 
 const calculateNextGameState = () => {
   const {
-    ghosts, gridState, scatterStart,
+    ghosts, gridState, scatterStart, pacmanOne, pacmanTwo,
   } = gameState;
-  const { ghostsUpdated, moveGhostsCount } = moveGhosts(
-    { ghosts, gridState, scatterStart },
-  );
+  const { ghostsUpdated, moveGhostsCount } = moveGhosts({ ghosts, gridState, scatterStart });
+  const { pacmanUpdated: newPacmanOne } = movePacman({
+    pacman: pacmanOne, ghostsUpdated, gridState,
+  });
+  const { pacmanUpdated: newPacmanTwo } = movePacman({
+    pacman: pacmanTwo, ghostsUpdated, gridState,
+  });
+
+  dieIfOnGhost({ ghosts: ghostsUpdated, pacman: newPacmanOne });
+  dieIfOnGhost({ ghosts: ghostsUpdated, pacman: newPacmanTwo });
+
+  const {
+    score: pacmanOneScore,
+  } = eatFood({ pacman: pacmanOne, gridStateAfterPacmanMove: gridState });
+  const {
+    score: pacmanTwoScore,
+  } = eatFood({ pacman: pacmanTwo, gridStateAfterPacmanMove: gridState });
+  gameState.pacmanOne = { ...pacmanOne, ...newPacmanOne, score: pacmanOneScore };
+  gameState.pacmanTwo = { ...pacmanTwo, ...newPacmanTwo, score: pacmanTwoScore };
   gameState.moveGhostsCount = moveGhostsCount;
   gameState.ghosts = ghostsUpdated;
 };

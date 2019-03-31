@@ -22,7 +22,7 @@ export const chaseLocation = (gridwithWeights, currentGhostLocation, targetGhost
   return path;
 };
 
-const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
+export const isWall = (gridState, { x, y }) => Boolean(gridState[x][y] === entityToCode('wall'));
 
 export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
   const { x, y, direction } = currentLocation;
@@ -44,4 +44,12 @@ export const getRandomAdjacentAvailableCell = (gridState, currentLocation) => {
     return randomAdjacentCell;
   }
   return getRandomAdjacentAvailableCell(gridState, currentLocation);
+};
+
+export const moveInDirection = ({ x, y, direction }) => {
+  const newLocation = {
+    x: x + directionValues[direction].x,
+    y: y + directionValues[direction].y,
+  };
+  return newLocation;
 };
