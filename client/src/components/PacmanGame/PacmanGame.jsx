@@ -57,15 +57,12 @@ class PacmanGame extends Component {
       }
     };
 
-    const onlyPacmanDirectionChange = objDiffs => (
-      Object.keys(objDiffs).length === 1 && objDiffs.pacman && objDiffs.pacman.direction);
-
     const onlyGhostMoveCountChange = objDiffs => (
       Object.keys(objDiffs).length === 1 && objDiffs.moveGhostsCount);
 
     const objDiffs = this.getObjectDiffs({ oldObj: this.state, newObj: newState });
 
-    if (onlyPacmanDirectionChange(objDiffs) || onlyGhostMoveCountChange(objDiffs)) {
+    if (onlyGhostMoveCountChange(objDiffs)) {
       return false;
     }
 
@@ -300,13 +297,15 @@ class PacmanGame extends Component {
 
   setDirection = ({ which: keycode }) => {
     const { pacman } = this.state;
+    const { direction: oldDirection } = pacman;
     let newDirection;
     if (keycode === 37) newDirection = 'LEFT';
     if (keycode === 38) newDirection = 'UP';
     if (keycode === 39) newDirection = 'RIGHT';
     if (keycode === 40) newDirection = 'DOWN';
 
-    if (newDirection) {
+
+    if (typeof newDirection === 'string' && newDirection !== oldDirection) {
       this.setState({
         pacman: { ...pacman, direction: newDirection },
       });
