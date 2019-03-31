@@ -43,6 +43,6 @@ Build the Multiplayer PacMan game which would work smoothly with various fun fea
 
 ### URLS: 
 
-- Game-staging: https://5c89a982fb0eb10008c6c763--youthful-dubinsky-b46f9a.netlify.com/
+- Game-staging: https://youthful-dubinsky-b46f9a.netlify.com/
 - Server URL production: https://batch5-pacman.herokuapp.com/
 - Server URL staging: https://pacman-staging.herokuapp.com/
