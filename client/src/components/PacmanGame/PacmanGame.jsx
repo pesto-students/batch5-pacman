@@ -134,11 +134,25 @@ class PacmanGame extends Component {
   }
 
   startGame = () => {
-    const { config, pacman } = this.state;
-    const playerId = uuid.v1();
-    // eslint-disable-next-line react/no-unused-state
-    this.setState({ playerId });
-    joinGame({ playerId, pacman });
+    const { config, pacman, status } = this.state;
+    if (status === 1) {
+      let { score } = this.state;
+      clearInterval(this.animationHandler);
+      score -= 10;
+      this.setState({ status: 0, score });
+      return;
+    }
+    if (status === 2) {
+      this.setInitialGameState();
+      this.setState({
+        score: 0,
+        moveGhostsCount: 0,
+      });
+      this.setState({ status: 1 });
+    }
+    if (status === 0) this.setState({ status: 1 });
+    joinGame(pacman);
+    joinGame({ playerId: uuid.v1(), ...pacman });
     getCurrentGameState();
     this.animationHandler = setInterval(
       this.animateGame,

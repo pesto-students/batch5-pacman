@@ -1,5 +1,7 @@
 import logger from '../utils/logger';
 
+const gameResultsController = require('./game-results/controller');
+
 const { createRoom, startGame } = require('./game/controller');
 
 const games = {};
@@ -33,19 +35,19 @@ const socketService = (socket) => {
     socket.emit('connected', roomId);
   });
 
+  socket.on('game-end', (roomId) => {
+    const game = games[roomId];
+    const player1 = { username: game.pacmanOne.username, score: game.pacmanOne.score };
+    const player2 = { username: game.pacmanTwo.username, score: game.pacmanTwo.score };
+    gameResultsController.saveGame({ player1, player2 });
+    delete games[roomId];
+  });
+
   socket.on('disconnect', () => {
     clearInterval(socket.interval);
     delete games[socket.room];
     socket.leave(socket.room);
   });
-  // socket.on('update-game-state', ({ pacman, playerId, roomId }) => {
-  //   const room = games[roomId];
-  //   console.log(room.pacmanOne.playerId);
-  //   const player = room.pacmanOne.playerId === playerId ? 'pacmanOne' : 'pacmanTwo';
-  //   room[player] = pacman;
-  //   games[roomId] = room;
-  //   socket.emit('game-update', { pacmanOne: room.pacmanOne, pacmanTwo: room.pacmanTwo });
-  // });
 };
 
 export default socketService;
