@@ -148,7 +148,6 @@ class PacmanGame extends Component {
       this.setState({ status: 1 });
     }
     if (status === 0) this.setState({ status: 1 });
-    joinGame(pacman);
     joinGame({ playerId: uuid.v1(), ...pacman });
     getCurrentGameState();
     this.animationHandler = setInterval(
