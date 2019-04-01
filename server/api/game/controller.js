@@ -51,7 +51,7 @@ const currentGameState = () => {
   return rest;
 };
 
-const endGame = () => {
+export const endGame = () => {
   clearInterval(gameState.interval);
 };
 
@@ -164,15 +164,15 @@ const calculateNextGameState = () => {
     ghosts, gridState, scatterStart, pacmanOne, pacmanTwo,
   } = gameState;
   const { ghostsUpdated, moveGhostsCount } = moveGhosts({ ghosts, gridState, scatterStart });
-  const { pacmanUpdated: newPacmanOne } = movePacman({
+  const { pacmanUpdated: pacmanUpdatedOne } = movePacman({
     pacman: pacmanOne, ghostsUpdated, gridState,
   });
-  const { pacmanUpdated: newPacmanTwo } = movePacman({
+  const { pacmanUpdated: pacmanUpdatedTwo } = movePacman({
     pacman: pacmanTwo, ghostsUpdated, gridState,
   });
 
-  dieIfOnGhost({ ghosts: ghostsUpdated, pacman: newPacmanOne });
-  dieIfOnGhost({ ghosts: ghostsUpdated, pacman: newPacmanTwo });
+  dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdatedOne });
+  dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdatedTwo });
 
   const {
     score: pacmanOneScore,
@@ -180,8 +180,8 @@ const calculateNextGameState = () => {
   const {
     score: pacmanTwoScore,
   } = eatFood({ pacman: pacmanTwo, gridStateAfterPacmanMove: gridState });
-  gameState.pacmanOne = { ...pacmanOne, ...newPacmanOne, score: pacmanOneScore };
-  gameState.pacmanTwo = { ...pacmanTwo, ...newPacmanTwo, score: pacmanTwoScore };
+  gameState.pacmanOne = { ...pacmanOne, ...pacmanUpdatedOne, score: pacmanOneScore };
+  gameState.pacmanTwo = { ...pacmanTwo, ...pacmanUpdatedTwo, score: pacmanTwoScore };
   gameState.moveGhostsCount = moveGhostsCount;
   gameState.ghosts = ghostsUpdated;
 };

@@ -8,7 +8,7 @@ const createSocketConnection = (cb) => {
 };
 
 const joinGame = (playerInfo) => {
-  socket.emit('joinGame', playerInfo);
+  socket.emit('join-game', playerInfo);
 };
 
 const getCurrentGameState = () => {
@@ -29,8 +29,8 @@ const getGameUpdate = () => {
   });
 };
 
-const changeDirection = (data) => {
-  socket.emit('update-direction', data);
+const updateNewDirection = ({ playerId, direction }) => {
+  socket.emit('update-direction', { playerId, direction });
 };
 
 export {
@@ -39,5 +39,5 @@ export {
   leaveGame,
   getCurrentGameState,
   getGameUpdate,
-  changeDirection,
+  updateNewDirection,
 };

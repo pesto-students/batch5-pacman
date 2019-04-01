@@ -6,7 +6,7 @@ import {
   joinGame,
   leaveGame,
   getGameUpdate,
-  changeDirection,
+  updateNewDirection,
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import {
@@ -320,7 +320,7 @@ class PacmanGame extends Component {
         pacman: { ...pacman, direction: newDirection },
       });
     }
-    changeDirection({ playerId, direction: newDirection });
+    updateNewDirection({ playerId, direction: newDirection });
   }
 
   render() {
