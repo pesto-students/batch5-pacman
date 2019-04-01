@@ -1,4 +1,5 @@
 import uuidv1 from 'uuid/v1';
+import { GAME_UPDATE } from '../channels';
 import {
   boardCorners,
   refreshRate,
@@ -205,7 +206,7 @@ export const startGame = () => {
     gameState.interval = setInterval(() => {
       calculateNextGameState();
       // eslint-disable-next-line no-undef
-      io.in(socket.room).emit('game-update', currentGameState());
+      io.in(socket.room).emit(GAME_UPDATE, currentGameState());
     }, refreshRate);
   }, 3000);
 };

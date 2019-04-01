@@ -1,18 +1,24 @@
 import logger from '../utils/logger';
+import {
+  JOIN_GAME,
+  UPDATE_DIRECTION,
+  GAME_END,
+  DISCONNECT,
+  CONNECTED,
+} from './channels';
+import gameResultsController from './game-results/controller';
 
-const gameResultsController = require('./game-results/controller');
-
-const {
+import {
   createRoom,
   startGame,
   updateDirection,
   endGame,
-} = require('./game/controller');
+} from './game/controller';
 
 const games = {};
 
 const socketService = (socket) => {
-  socket.on('join-game', (playerInfo) => {
+  socket.on(JOIN_GAME, (playerInfo) => {
     let roomId;
     const gameList = Object.values(games);
     const availableRoom = gameList.find(game => game.available);
@@ -37,12 +43,12 @@ const socketService = (socket) => {
       socket.join(newGame.roomId);
       logger('Created new room');
     }
-    socket.emit('connected', roomId);
+    socket.emit(CONNECTED, roomId);
   });
 
-  socket.on('update-direction', updateDirection);
+  socket.on(UPDATE_DIRECTION, updateDirection);
 
-  socket.on('game-end', (roomId) => {
+  socket.on(GAME_END, (roomId) => {
     const game = games[roomId];
     const player1 = { username: game.pacmanOne.username, score: game.pacmanOne.score };
     const player2 = { username: game.pacmanTwo.username, score: game.pacmanTwo.score };
@@ -51,7 +57,7 @@ const socketService = (socket) => {
     endGame();
   });
 
-  socket.on('disconnect', () => {
+  socket.on(DISCONNECT, () => {
     endGame();
     delete games[socket.room];
     socket.leave(socket.room);
