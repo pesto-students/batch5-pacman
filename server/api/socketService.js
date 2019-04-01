@@ -6,6 +6,7 @@ import {
   DISCONNECT,
   CONNECTED,
   ROOM_FULL,
+  ROOM_CREATED,
 } from './channels';
 import gameResultsController from './game-results/controller';
 
@@ -44,8 +45,9 @@ const socketService = (socket) => {
       socket.room = newGame.roomId;
       socket.join(newGame.roomId);
       logger('Created new room');
-      socket.emit(CONNECTED, roomId);
+      socket.emit(ROOM_CREATED, roomId);
     }
+    socket.emit(CONNECTED, roomId);
   });
 
   socket.on(UPDATE_DIRECTION, updateDirection);

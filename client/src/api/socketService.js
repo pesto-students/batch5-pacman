@@ -7,12 +7,15 @@ const {
   DISCONNECT,
   CONNECTED,
   GAME_UPDATE,
+  ROOM_CREATED,
 } = channels;
 
 const socket = openSocket(process.env.REACT_APP_SERVER_URL);
 
 const createSocketConnection = (cb) => {
   socket.on(CONNECTED, data => cb(data));
+  // eslint-disable-next-line no-console
+  socket.on(ROOM_CREATED, data => console.log('New Room Created', data));
   socket.emit('connection');
 };
 
@@ -24,10 +27,9 @@ const leaveGame = () => {
   socket.emit(DISCONNECT);
 };
 
-const getGameUpdate = () => {
-  socket.on(GAME_UPDATE, (data) => {
-    // eslint-disable-next-line no-console
-    console.log('Game state:', data);
+const getGameUpdate = (cb) => {
+  socket.on(GAME_UPDATE, (newState) => {
+    cb({ newState });
   });
 };
 
