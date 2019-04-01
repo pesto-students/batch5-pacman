@@ -5,6 +5,7 @@ import {
   GAME_END,
   DISCONNECT,
   CONNECTED,
+  ROOM_FULL,
 } from './channels';
 import gameResultsController from './game-results/controller';
 
@@ -33,6 +34,7 @@ const socketService = (socket) => {
       socket.join(availableRoom.roomId);
       startGame();
       logger('Joined room', socket.room);
+      socket.emit(ROOM_FULL, roomId);
     } else {
       const newGame = createRoom(playerInfo, socket);
       // eslint-disable-next-line prefer-destructuring
@@ -42,8 +44,8 @@ const socketService = (socket) => {
       socket.room = newGame.roomId;
       socket.join(newGame.roomId);
       logger('Created new room');
+      socket.emit(CONNECTED, roomId);
     }
-    socket.emit(CONNECTED, roomId);
   });
 
   socket.on(UPDATE_DIRECTION, updateDirection);

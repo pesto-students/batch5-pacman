@@ -4,3 +4,4 @@ export const GAME_END = 'game-end';
 export const DISCONNECT = 'disconnect';
 export const CONNECTED = 'connected';
 export const GAME_UPDATE = 'game-update';
+export const ROOM_FULL = 'room-full';
