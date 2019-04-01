@@ -4,7 +4,8 @@ import {
   boardCorners,
   refreshRate,
   getGhosts,
-  getPacman,
+  getPacmanOne,
+  getPacmanTwo,
   codeToEntity,
   entityToCode,
 } from './constants';
@@ -35,8 +36,8 @@ const setInitialGameState = () => {
   }));
   gameState.gridState = gridState;
   gameState.ghosts = ghostsArray;
-  gameState.pacmanOne = { ...pacmanOne, ...getPacman() };
-  gameState.pacmanTwo = { ...pacmanTwo, ...getPacman() };
+  gameState.pacmanOne = { ...pacmanOne, ...getPacmanOne() };
+  gameState.pacmanTwo = { ...pacmanTwo, ...getPacmanTwo() };
 };
 
 export const createRoom = (playerInfo, socket) => {
