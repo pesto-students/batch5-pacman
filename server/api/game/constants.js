@@ -68,5 +68,5 @@ export const getPacmanOne = () => ({
 });
 
 export const getPacmanTwo = () => ({
-  x: 12, y: 14, direction: 'left', score: 0,
+  x: 12, y: 14, direction: 'LEFT', score: 0,
 });
