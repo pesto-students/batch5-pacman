@@ -16,10 +16,11 @@ const styles = theme => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing.unit * 4,
     outline: 'none',
-    top: '20%',
+    top: '50%',
+    minHeight: '319px',
     left: '50%',
     textAlign: 'center',
-    transform: 'translate(-50%, -20%)',
+    transform: 'translate(-50%, -50%)',
     alignItem: 'center',
   },
   bigAvatar: {

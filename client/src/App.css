@@ -1,7 +1,7 @@
 body{
   height: 100vh;
   position: relative;
-  background: lightgrey;
+  background: url('./background/funky-lines.png');
 }
 .game{
   position: absolute;
@@ -24,6 +24,7 @@ body{
   align-items: center;
   display: flex;
   flex-direction: column;
+  padding: 20px 0;
 }
 
 a {
@@ -62,5 +63,26 @@ a {
   height: 37px;
   display: inline-block;
 }
-
+.blink {
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  margin: 0 5px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  background: rgb(60, 124, 31);
+  animation: 2s mix infinite;
+}
+@keyframes mix {
+  0% {
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(0.5);
+  }
+}
 

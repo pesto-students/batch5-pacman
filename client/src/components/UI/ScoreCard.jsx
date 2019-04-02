@@ -8,6 +8,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import skull from '../../sprites/skull.png';
 
 const CustomTableCell = withStyles(theme => ({
   head: {
@@ -16,16 +17,22 @@ const CustomTableCell = withStyles(theme => ({
   },
   body: {
     fontSize: 14,
+    textTransform: 'uppercase',
   },
 }))(TableCell);
 
-
 const styles = {
   card: {
-    width: '95%',
-    backgroundColor: '#d3d3d3',
+    width: '80%',
+    margin: '0 auto',
     height: 'fit-content',
     marginTop: 10,
+    borderRadius: '15px',
+    padding: '0px',
+  },
+  cardContent: {
+    padding: '0px',
+    margin: '0px',
   },
   bullet: {
     display: 'inline-block',
@@ -35,26 +42,35 @@ const styles = {
   title: {
     fontSize: 14,
   },
-  pos: {
-    marginBottom: 12,
+  score: {
+    fontWeight: 'bold',
+    fontSize: '30px',
+  },
+  table: {
+    padding: '0px',
   },
 };
-
+const skullLogo = {
+  fontSize: '8px',
+  position: 'relative',
+  top: '3px',
+  left: '2px',
+};
+const scoreHeader = {
+  fontSize: '20px',
+};
 const ScoreCard = (props) => {
-  const { classes, isDetailed } = props;
+  // eslint-disable-next-line react/prop-types
+  const { classes, isDetailed, score: rows2 } = props;
   const rows = [
     { name: 'Food', playerOne: 320, playerTwo: 230 },
     { name: 'Energizer', playerOne: 320, playerTwo: 230 },
     { name: 'Ghosts', playerOne: 320, playerTwo: 230 },
     { name: 'Total', playerOne: 320, playerTwo: 230 },
   ];
-  const rows2 = [
-    { name: 'Player One', score: 320 },
-    { name: 'Player Two', score: 320 },
-  ];
   return (
     <Card className={classes.card}>
-      <CardContent>
+      <CardContent className={classes.cardContent}>
         {isDetailed
           ? (
             <Table className={classes.table}>
@@ -82,17 +98,21 @@ const ScoreCard = (props) => {
             <Table className={classes.table}>
               <TableHead>
                 <TableRow>
-                  <CustomTableCell>ScoreCard</CustomTableCell>
+                  <CustomTableCell style={scoreHeader}>Score</CustomTableCell>
                   <CustomTableCell />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows2.map(({ name, score }) => (
+                {rows2.map(({
+                  name, score, isAlive, isHost,
+                }) => (
                   <TableRow className={classes.row} key={`${name}+${score}`}>
                     <CustomTableCell component="th" scope="row">
-                      {name}
+                      <span>{name}</span>
+                      <span>{isHost ? (<span className="blink" />) : null}</span>
+                      <span style={skullLogo}>{isAlive ? null : (<img alt="Dead" src={skull} />)}</span>
                     </CustomTableCell>
-                    <CustomTableCell align="right">{score}</CustomTableCell>
+                    <CustomTableCell align="right" className={classes.score}>{score}</CustomTableCell>
                   </TableRow>
                 ))}
               </TableBody>
