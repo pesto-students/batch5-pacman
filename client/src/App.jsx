@@ -13,10 +13,8 @@ const App = ({ history, location }) => (
       <>
         <NavBar userContext={context} />
         <div className="container">
-          {!context.isGameStarted
-            ? <SimpleModal history={history} location={location} mode="GameStart" userContext={context} />
-            : <PacmanGame width={boardEdgeInPixel} numberofCells={getBoard().length} />
-          }
+          <SimpleModal history={history} location={location} mode="GameStart" userContext={context} />
+          <PacmanGame width={boardEdgeInPixel} numberofCells={getBoard().length} />
         </div>
       </>
     )
