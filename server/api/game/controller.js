@@ -4,8 +4,7 @@ import {
   boardCorners,
   refreshRate,
   getGhosts,
-  getPacmanOne,
-  getPacmanTwo,
+  getPacman,
   codeToEntity,
   entityToCode,
   boardTranspose,
@@ -19,196 +18,202 @@ import {
   initSquareGridState,
 } from './core';
 
-const gameState = {
-  moveGhostsCount: 0,
-  scatterGhostspath: [],
-  scatterStart: 15,
-  pacmanOne: {},
-  pacmanTwo: {},
-  gridState: [],
-  status: 0,
-};
-
-const setInitialGameState = () => {
-  const { pacmanOne, pacmanTwo } = gameState;
-  const gridState = initSquareGridState();
-  const ghostsArray = getGhosts().map(([x, y, direction]) => ({
-    x, y, direction,
-  }));
-  gameState.gridState = gridState;
-  gameState.ghosts = ghostsArray;
-  gameState.pacmanOne = { ...pacmanOne, ...getPacmanOne() };
-  gameState.pacmanTwo = { ...pacmanTwo, ...getPacmanTwo() };
-};
-
-export const createRoom = (playerInfo, socket) => {
-  gameState.pacmanOne = playerInfo;
-  gameState.socket = socket;
-  gameState.roomId = uuidv1();
-  gameState.available = true;
-  return gameState;
-};
-
-const currentGameState = () => {
-  const { socket, ...rest } = gameState;
-  return rest;
-};
-
-export const endGame = () => {
-  clearInterval(gameState.interval);
-};
-
-const eatFood = ({ pacman: newLocation }) => {
-  const { gridState } = gameState;
-  const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
-  let { score } = newLocation;
-  if (entityInCell === 'food') {
-    score += 1;
-  } else if (entityInCell === 'energizer') {
-    score += 5;
-  }
-  gridState[newLocation.x][newLocation.y] = entityToCode('free');
-  gameState.gridState = gridState;
-  return { score };
-};
-
-const ifAtGhosts = ({ ghosts, pacman }) => {
-  const isAtSameLocation = (
-    { x: x1, y: y1 },
-    { x: x2, y: y2 },
-  ) => (x1 === x2) && (y1 === y2);
-
-  const ispacmanDead = ghosts
-    .some(ghost => isAtSameLocation(ghost, pacman));
-
-  return ispacmanDead;
-};
-
-const dieIfOnGhost = ({ ghosts, pacman }) => {
-  if (ifAtGhosts({ ghosts, pacman })) {
-    gameState.status = 2;
-    endGame();
-    return true;
-  }
-  return false;
-};
-
-const movePacman = ({ pacman, ghostsUpdated, gridState }) => {
-  const { x, y, direction } = pacman;
-
-  const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
-
-  if (pacmanDead) {
-    return {
-      pacmanUpdated: pacman,
+class Game {
+  constructor({ playerId, socket }) {
+    this.gameState = {
+      moveGhostsCount: 0,
+      scatterGhostspath: [],
+      scatterStart: 75,
+      players: { [playerId]: {} },
+      gridState: [],
+      status: 0,
+      socket,
     };
+    this.available = true;
+    this.roomId = uuidv1();
   }
 
-  let newLocation = moveInDirection({ x, y, direction });
-
-  newLocation = isWall(gridState, newLocation) ? {} : moveInDirection({ x, y, direction });
-  return {
-    pacmanUpdated: { ...pacman, ...newLocation },
+  setInitialGameState = () => {
+    const { players } = this.gameState;
+    const gridState = initSquareGridState();
+    const ghostsArray = getGhosts().map(([x, y, direction]) => ({
+      x, y, direction,
+    }));
+    this.gameState.gridState = gridState;
+    this.gameState.ghosts = ghostsArray;
+    Object.keys(players).forEach((player, index) => {
+      const { x } = getPacman();
+      this.gameState.players[player] = { ...getPacman(), x: x + index };
+    });
   };
-};
 
-const addPositionsToArray = (arr, index) => {
-  const scatterTime = 55;
-  if (arr.length < scatterTime) {
-    arr.push(boardCorners[index]);
-    return addPositionsToArray(arr, index);
-  }
-  return arr;
-};
-
-const moveGhosts = ({ ghosts, gridState, scatterStart }) => {
-  let { moveGhostsCount, scatterGhostspath } = gameState;
-  moveGhostsCount += 1;
-  const scatterEnd = scatterStart + 55;
-  if (moveGhostsCount === scatterStart) {
-    const gridWithWeights = getGridwithWeights(boardTranspose);
-    const ghostsPath = ghosts
-      .map((ghost, index) => chaseLocation(gridWithWeights, ghost, boardCorners[index]))
-      .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
-
-    scatterGhostspath = ghostsPath
-      .map((array, index) => addPositionsToArray(array, index));
-    gameState.scatterGhostspath = scatterGhostspath;
+  getGameResult = () => {
+    const { players } = this.gameState;
+    return Object.keys(players).reduce((acc, playerId) => {
+      const player = players[playerId];
+      const result = {
+        username: player.username || 'Guest',
+        score: player.score,
+      };
+      return { ...acc, result };
+    }, {});
   }
 
-  if (moveGhostsCount === scatterEnd) {
-    const ghostsUpdated = [
-      { x: 1, y: 1, direction: 'LEFT' },
-      { x: 23, y: 1, direction: 'LEFT' },
-      { x: 1, y: 23, direction: 'LEFT' },
-      { x: 23, y: 23, direction: 'LEFT' }];
+  currentGameState = () => {
+    const { socket, ...rest } = this.gameState;
+    return rest;
+  };
+
+  endGame = () => {
+    clearInterval(this.gameState.interval);
+  };
+
+  eatFood = ({ pacman: newLocation }) => {
+    const { gridState } = this.gameState;
+    const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
+    let { score } = newLocation;
+    if (entityInCell === 'food') {
+      score += 1;
+    } else if (entityInCell === 'energizer') {
+      score += 5;
+    }
+    gridState[newLocation.x][newLocation.y] = entityToCode('free');
+    this.gameState.gridState = gridState;
+    return { score };
+  };
+
+  ifAtGhosts = ({ ghosts, pacman }) => {
+    const isAtSameLocation = (
+      { x: x1, y: y1 },
+      { x: x2, y: y2 },
+    ) => (x1 === x2) && (y1 === y2);
+
+    const ispacmanDead = ghosts
+      .some(ghost => isAtSameLocation(ghost, pacman));
+
+    return ispacmanDead;
+  };
+
+  dieIfOnGhost = ({ ghosts, pacman }) => {
+    if (this.ifAtGhosts({ ghosts, pacman })) {
+      this.gameState.status = 2;
+      this.endGame();
+      return true;
+    }
+    return false;
+  };
+
+  movePacman = ({ pacman, ghostsUpdated, gridState }) => {
+    const { x, y, direction } = pacman;
+
+    const pacmanDead = this.dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
+
+    if (pacmanDead) {
+      return {
+        pacmanUpdated: pacman,
+      };
+    }
+
+    let newLocation = moveInDirection({ x, y, direction });
+
+    newLocation = isWall(gridState, newLocation) ? {} : moveInDirection({ x, y, direction });
+    return {
+      pacmanUpdated: { ...pacman, ...newLocation },
+    };
+  };
+
+  addPositionsToArray = (arr, index) => {
+    const scatterTime = 55;
+    if (arr.length < scatterTime) {
+      arr.push(boardCorners[index]);
+      return this.addPositionsToArray(arr, index);
+    }
+    return arr;
+  };
+
+  moveGhosts = ({ ghosts, gridState, scatterStart }) => {
+    let { moveGhostsCount, scatterGhostspath } = this.gameState;
+    moveGhostsCount += 1;
+    const scatterEnd = scatterStart + 55;
+    if (moveGhostsCount === scatterStart) {
+      const gridWithWeights = getGridwithWeights(boardTranspose);
+      const ghostsPath = ghosts
+        .map((ghost, index) => chaseLocation(gridWithWeights, ghost, boardCorners[index]))
+        .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
+
+      scatterGhostspath = ghostsPath
+        .map((array, index) => this.addPositionsToArray(array, index));
+      this.gameState.scatterGhostspath = scatterGhostspath;
+    }
+
+    if (moveGhostsCount === scatterEnd) {
+      const ghostsUpdated = [
+        { x: 1, y: 1, direction: 'LEFT' },
+        { x: 23, y: 1, direction: 'LEFT' },
+        { x: 1, y: 23, direction: 'LEFT' },
+        { x: 23, y: 23, direction: 'LEFT' }];
+      return {
+        ghostsUpdated, moveGhostsCount,
+      };
+    }
+
+    if (moveGhostsCount > (scatterStart + 1) && moveGhostsCount < scatterEnd) {
+      const ghostsUpdated = scatterGhostspath.map(path => path[moveGhostsCount - scatterStart]);
+      return {
+        ghostsUpdated, moveGhostsCount,
+      };
+    }
+
+    const ghostsUpdated = ghosts.map(
+      ({ x, y, direction }) => getRandomAdjacentAvailableCell(gridState, { x, y, direction }),
+    );
     return {
       ghostsUpdated, moveGhostsCount,
     };
-  }
-
-  if (moveGhostsCount > (scatterStart + 1) && moveGhostsCount < scatterEnd) {
-    const ghostsUpdated = scatterGhostspath.map(path => path[moveGhostsCount - scatterStart]);
-    return {
-      ghostsUpdated, moveGhostsCount,
-    };
-  }
-
-  const ghostsUpdated = ghosts.map(
-    ({ x, y, direction }) => getRandomAdjacentAvailableCell(gridState, { x, y, direction }),
-  );
-  return {
-    ghostsUpdated, moveGhostsCount,
   };
-};
 
-const calculateNextGameState = () => {
-  const {
-    ghosts, gridState, scatterStart, pacmanOne, pacmanTwo,
-  } = gameState;
-  const { ghostsUpdated, moveGhostsCount } = moveGhosts({ ghosts, gridState, scatterStart });
-  const { pacmanUpdated: pacmanUpdatedOne } = movePacman({
-    pacman: pacmanOne, ghostsUpdated, gridState,
-  });
-  const { pacmanUpdated: pacmanUpdatedTwo } = movePacman({
-    pacman: pacmanTwo, ghostsUpdated, gridState,
-  });
+  calculateNextGameState = () => {
+    const {
+      ghosts, gridState, scatterStart, players,
+    } = this.gameState;
 
-  dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdatedOne });
-  dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdatedTwo });
+    const { ghostsUpdated, moveGhostsCount } = this.moveGhosts({ ghosts, gridState, scatterStart });
 
-  const {
-    score: pacmanOneScore,
-  } = eatFood({ pacman: pacmanOne, gridStateAfterPacmanMove: gridState });
-  const {
-    score: pacmanTwoScore,
-  } = eatFood({ pacman: pacmanTwo, gridStateAfterPacmanMove: gridState });
-  gameState.pacmanOne = { ...pacmanOne, ...pacmanUpdatedOne, score: pacmanOneScore };
-  gameState.pacmanTwo = { ...pacmanTwo, ...pacmanUpdatedTwo, score: pacmanTwoScore };
-  gameState.moveGhostsCount = moveGhostsCount;
-  gameState.ghosts = ghostsUpdated;
-};
+    Object.keys(players).forEach((player) => {
+      const pacman = players[player];
+      const { pacmanUpdated } = this.movePacman({
+        pacman, ghostsUpdated, gridState,
+      });
 
-export const updateDirection = ({ playerId, direction }) => {
-  const { pacmanOne, pacmanTwo } = gameState;
-  if (pacmanOne.playerId === playerId) {
-    gameState.pacmanOne.direction = direction;
+      this.dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
+
+      const {
+        score,
+      } = this.eatFood({ pacman, gridStateAfterPacmanMove: gridState });
+
+      this.gameState.players[player] = { ...pacman, ...pacmanUpdated, score };
+    });
+
+    this.gameState.moveGhostsCount = moveGhostsCount;
+    this.gameState.ghosts = ghostsUpdated;
+  };
+
+  updateDirection = ({ playerId, direction }) => {
+    this.gameState.players[playerId].direction = direction;
+  };
+
+  startGame = () => {
+    this.setInitialGameState();
+    setTimeout(() => {
+      // eslint-disable-next-line no-console
+      console.log('Game started after 3 seconds');
+      this.gameState.interval = setInterval(() => {
+        this.calculateNextGameState();
+        // eslint-disable-next-line no-undef
+        io.in(this.roomId).emit(GAME_UPDATE, this.currentGameState());
+      }, refreshRate);
+    }, 3000);
   }
-  if (pacmanTwo.playerId === playerId) {
-    gameState.pacmanTwo.direction = direction;
-  }
-};
+}
 
-export const startGame = () => {
-  setInitialGameState();
-  setTimeout(() => {
-    const { socket } = gameState;
-    // eslint-disable-next-line no-console
-    console.log('Game started after 3 seconds');
-    gameState.interval = setInterval(() => {
-      calculateNextGameState();
-      // eslint-disable-next-line no-undef
-      io.in(socket.room).emit(GAME_UPDATE, currentGameState());
-    }, refreshRate);
-  }, 3000);
-};
+export default Game;
