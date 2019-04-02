@@ -7,6 +7,7 @@ const {
   DISCONNECT,
   CONNECTED,
   GAME_UPDATE,
+  ROOM_FULL,
 } = channels;
 
 const socket = openSocket(process.env.REACT_APP_SERVER_URL);
@@ -31,6 +32,14 @@ const getGameUpdate = () => {
   });
 };
 
+const foundBothPlayer = (ref) => {
+  socket.on(ROOM_FULL, (roomID) => {
+    // eslint-disable-next-line no-console
+    console.log('room full', roomID);
+    ref.setState({ isGameStarted: true });
+  });
+};
+
 const updateNewDirection = ({ playerId, direction }) => {
   socket.emit(UPDATE_DIRECTION, { playerId, direction });
 };
@@ -41,4 +50,5 @@ export {
   leaveGame,
   getGameUpdate,
   updateNewDirection,
+  foundBothPlayer,
 };

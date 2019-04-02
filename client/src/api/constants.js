@@ -5,6 +5,7 @@ const channels = {
   DISCONNECT: 'disconnect',
   CONNECTED: 'connected',
   GAME_UPDATE: 'game-update',
+  ROOM_FULL: 'room-full',
 };
 
 export default channels;
