@@ -26,7 +26,7 @@ export const board = [
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
 ];
 
-export const refreshRate = 200;
+export const refreshRate = 1000;
 
 export const directionValues = {
   UP: { x: 0, y: -1 },

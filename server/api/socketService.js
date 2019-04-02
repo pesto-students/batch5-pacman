@@ -44,7 +44,8 @@ const socketService = (socket) => {
       // eslint-disable-next-line no-param-reassign
       socket.room = newGame.roomId;
       socket.join(newGame.roomId);
-      logger('Created new room');
+      logger('Created new room', newGame.roomId);
+      logger('Current games object: ', Object.entries(games));
       socket.emit(ROOM_CREATED, roomId);
     }
     socket.emit(CONNECTED, roomId);
