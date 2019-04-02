@@ -34,7 +34,7 @@ const socketService = (socket) => {
       socket.join(availableRoom.roomId);
       startGame();
       logger('Joined room', socket.room);
-      socket.emit(ROOM_FULL, roomId);
+      global.io.to(roomId).emit(ROOM_FULL, roomId);
     } else {
       const newGame = createRoom(playerInfo, socket);
       // eslint-disable-next-line prefer-destructuring
@@ -44,7 +44,7 @@ const socketService = (socket) => {
       socket.room = newGame.roomId;
       socket.join(newGame.roomId);
       logger('Created new room');
-      socket.emit(CONNECTED, roomId);
+      global.io.to(roomId).emit(CONNECTED, roomId);
     }
   });
 
