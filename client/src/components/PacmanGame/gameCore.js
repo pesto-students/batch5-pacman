@@ -141,3 +141,40 @@ export const locationOnCanvas = ({
     .map(value => (centerEntity ? canvasPos(value + 0.5) : canvasPos(value)));
   return { x, y };
 };
+
+export const getObjectDiffs = ({ oldObj, newObj }) => {
+  const isAnObject = value => typeof value === 'object' && value !== null;
+  const isEmptyObject = obj => isAnObject(obj) && Object.keys(obj).length === 0;
+
+  const diffWithEmptyObjAsValue = Object.keys(newObj).reduce((acc, key) => {
+    if (isAnObject(oldObj[key]) && isAnObject(newObj[key])) {
+      return {
+        ...acc,
+        [key]: getObjectDiffs({
+          oldObj: oldObj[key],
+          newObj: newObj[key],
+        }),
+      };
+    }
+
+    const noDiffInValue = oldObj[key] === newObj[key];
+
+    return noDiffInValue ? acc : {
+      ...acc,
+      [key]: newObj[key],
+    };
+  }, {});
+
+
+  const objDiff = Object.keys(diffWithEmptyObjAsValue).reduce((acc, key) => {
+    if (isEmptyObject(diffWithEmptyObjAsValue[key])) {
+      return acc;
+    }
+    return {
+      ...acc,
+      [key]: diffWithEmptyObjAsValue[key],
+    };
+  }, {});
+
+  return objDiff;
+};

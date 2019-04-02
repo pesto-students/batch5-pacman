@@ -10,7 +10,7 @@ const PacmanBoard = ({
   gridState,
   gridSize,
   ghosts,
-  pacman,
+  pacmans,
 }) => {
   const nonMovingCells = gridState
     .map((row, rowIndex) => (row.map((_, columnIndex) => {
@@ -30,7 +30,7 @@ const PacmanBoard = ({
     <Stage width={boardEdgeInPixel} height={boardEdgeInPixel}>
       <Layer hitGraphEnabled={false}>
         {nonMovingCells}
-        <AnimateEntity location={pacman} gridSize={gridSize} entity="pacman" />
+        {Object.keys(pacmans).map(playerId => <AnimateEntity key={playerId} location={pacmans[playerId]} gridSize={gridSize} entity="pacman" />)}
         <Ghosts ghosts={ghosts} gridSize={gridSize} />
       </Layer>
     </Stage>
@@ -49,10 +49,12 @@ PacmanBoard.propTypes = {
     y: PropTypes.number.isRequired,
     direction: PropTypes.string,
   })).isRequired,
-  pacman: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    direction: PropTypes.string,
+  pacmans: PropTypes.shape({
+    [PropTypes.string.isRequired]: PropTypes.shape({
+      x: PropTypes.number.isRequired,
+      y: PropTypes.number.isRequired,
+      direction: PropTypes.string,
+    }),
   }).isRequired,
 };
 
