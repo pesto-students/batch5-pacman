@@ -65,10 +65,6 @@ export const entityToCode = (entity) => {
   return entityMap[entity];
 };
 
-export const getPacmanOne = () => ({
+export const getPacman = () => ({
   x: 13, y: 14, direction: 'RIGHT', score: 0,
-});
-
-export const getPacmanTwo = () => ({
-  x: 12, y: 14, direction: 'LEFT', score: 0,
 });

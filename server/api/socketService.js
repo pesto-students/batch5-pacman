@@ -10,12 +10,7 @@ import {
 } from './channels';
 import gameResultsController from './game-results/controller';
 
-import {
-  createRoom,
-  startGame,
-  updateDirection,
-  endGame,
-} from './game/controller';
+import Game from './game/controller';
 
 const games = {};
 
@@ -26,18 +21,16 @@ const socketService = (socket) => {
     const availableRoom = gameList.find(game => game.available);
     if (availableRoom) {
       // eslint-disable-next-line prefer-destructuring
-      roomId = availableRoom.roomId;
       availableRoom.pacmanTwo = playerInfo;
       availableRoom.available = false;
-      games[roomId] = availableRoom;
       // eslint-disable-next-line no-param-reassign
       socket.room = availableRoom.roomId;
       socket.join(availableRoom.roomId);
-      startGame();
+      availableRoom.startGame();
       logger('Joined room', socket.room);
       global.io.to(roomId).emit(ROOM_FULL, roomId);
     } else {
-      const newGame = createRoom(playerInfo, socket);
+      const newGame = new Game(playerInfo, socket);
       // eslint-disable-next-line prefer-destructuring
       roomId = newGame.roomId;
       games[roomId] = newGame;
@@ -49,9 +42,9 @@ const socketService = (socket) => {
       socket.emit(ROOM_CREATED, roomId);
     }
     socket.emit(CONNECTED, roomId);
+    socket.on(UPDATE_DIRECTION, games[socket.room].updateDirection);
   });
 
-  socket.on(UPDATE_DIRECTION, updateDirection);
 
   socket.on(GAME_END, (roomId) => {
     const game = games[roomId];
@@ -59,11 +52,10 @@ const socketService = (socket) => {
     const player2 = { username: game.pacmanTwo.username, score: game.pacmanTwo.score };
     gameResultsController.saveGame({ player1, player2 });
     delete games[roomId];
-    endGame();
+    games[socket.room].endGame();
   });
 
   socket.on(DISCONNECT, () => {
-    endGame();
     delete games[socket.room];
     socket.leave(socket.room);
   });
