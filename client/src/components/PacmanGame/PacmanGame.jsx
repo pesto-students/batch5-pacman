@@ -81,13 +81,9 @@ class PacmanGame extends Component {
   animateGame = ({ newState }) => {
     try {
       const {
-        pacmanOne, pacmanTwo, ghosts, gridState,
+        players, ghosts, gridState,
       } = newState;
 
-      const players = {
-        [pacmanOne.playerId]: pacmanOne,
-        [pacmanTwo.playerId]: pacmanTwo,
-      };
 
       this.setState({
         gridState,
