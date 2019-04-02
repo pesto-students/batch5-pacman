@@ -95,3 +95,10 @@ const framesPerSecond = 5;
 export const advanceFrameAfterTime = 1000 / framesPerSecond;
 
 export const entitiesAnimationDurationInSecond = 1 / framesPerSecond;
+
+export const arrowKeysDirections = {
+  ArrowLeft: 'LEFT',
+  ArrowUp: 'UP',
+  ArrowRight: 'RIGHT',
+  ArrowDown: 'DOWN',
+};
