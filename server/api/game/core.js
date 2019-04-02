@@ -1,7 +1,7 @@
 import pathfinding from 'pathfinding';
-import { entityToCode, board, directionValues } from './constants';
+import { entityToCode, getBoard, directionValues } from './constants';
 
-export const initSquareGridState = () => board;
+export const initSquareGridState = getBoard;
 
 export const getGridwithWeights = (grid) => {
   const gridwithWeights = grid.map((array) => {

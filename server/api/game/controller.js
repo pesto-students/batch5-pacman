@@ -8,6 +8,7 @@ import {
   getPacmanTwo,
   codeToEntity,
   entityToCode,
+  boardTranspose,
 } from './constants';
 import {
   getRandomAdjacentAvailableCell,
@@ -21,7 +22,7 @@ import {
 const gameState = {
   moveGhostsCount: 0,
   scatterGhostspath: [],
-  scatterStart: 75,
+  scatterStart: 15,
   pacmanOne: {},
   pacmanTwo: {},
   gridState: [],
@@ -125,7 +126,7 @@ const moveGhosts = ({ ghosts, gridState, scatterStart }) => {
   moveGhostsCount += 1;
   const scatterEnd = scatterStart + 55;
   if (moveGhostsCount === scatterStart) {
-    const gridWithWeights = getGridwithWeights(gridState);
+    const gridWithWeights = getGridwithWeights(boardTranspose);
     const ghostsPath = ghosts
       .map((ghost, index) => chaseLocation(gridWithWeights, ghost, boardCorners[index]))
       .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
