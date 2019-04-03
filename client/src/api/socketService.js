@@ -7,6 +7,7 @@ const {
   DISCONNECT,
   CONNECTED,
   GAME_UPDATE,
+  ROOM_FULL,
   ROOM_CREATED,
 } = channels;
 
@@ -27,6 +28,14 @@ const leaveGame = () => {
   socket.emit(DISCONNECT);
 };
 
+const foundBothPlayer = (ref) => {
+  socket.on(ROOM_FULL, (roomID) => {
+    // eslint-disable-next-line no-console
+    console.log('room full', roomID);
+    ref.setState({ isGameStarted: true });
+  });
+};
+
 const getGameUpdate = (cb) => {
   socket.on(GAME_UPDATE, (newState) => {
     cb({ newState });
@@ -42,5 +51,6 @@ export {
   joinGame,
   leaveGame,
   getGameUpdate,
+  foundBothPlayer,
   updateNewDirection,
 };
