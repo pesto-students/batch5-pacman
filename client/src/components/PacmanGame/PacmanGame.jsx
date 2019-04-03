@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import uuid from 'uuid';
 import {
-  createSocketConnection,
-  joinGame,
   leaveGame,
   getGameUpdate,
   updateNewDirection,
@@ -20,14 +17,10 @@ class PacmanGame extends Component {
     score: 0,
     status: 0, // 0 - Not-started, 1 - Progress, 2 - Restart
     gridState: [],
-    playerId: uuid.v1(),
   };
 
   componentDidMount() {
-    createSocketConnection((roomId) => {
-      // eslint-disable-next-line no-console
-      console.log('Connected to room: ', roomId);
-    });
+    this.startGame();
   }
 
   shouldComponentUpdate(_, newState) {
@@ -57,9 +50,7 @@ class PacmanGame extends Component {
   }
 
   startGame = () => {
-    const {
-      pacmans, status, playerId,
-    } = this.state;
+    const { status } = this.state;
     if (status === 1) {
       let { score } = this.state;
       clearInterval(this.animationHandler);
@@ -75,7 +66,6 @@ class PacmanGame extends Component {
       this.setState({ status: 1 });
     }
     if (status === 0) this.setState({ status: 1 });
-    joinGame({ playerId, ...pacmans });
     getGameUpdate(this.animateGame);
     document.addEventListener('keydown', this.setDirection);
   };
@@ -110,9 +100,10 @@ class PacmanGame extends Component {
   }
 
   setDirection = ({ key }) => {
+    const { playerId } = this.props;
     const newDirection = arrowKeysDirections[key];
     if (newDirection !== undefined) {
-      const { pacmans, playerId } = this.state;
+      const { pacmans } = this.state;
       const { direction: oldDirection } = pacmans[playerId] !== undefined
         ? pacmans[playerId] : { direction: { x: 13, y: 14, direction: 'RIGHT' } };
       if (newDirection !== oldDirection) {
@@ -150,6 +141,7 @@ class PacmanGame extends Component {
 PacmanGame.propTypes = {
   width: PropTypes.number.isRequired,
   numberofCells: PropTypes.number.isRequired,
+  playerId: PropTypes.string.isRequired,
 };
 
 export default PacmanGame;
