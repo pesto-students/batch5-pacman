@@ -42,7 +42,7 @@ const socketService = (socket) => {
       logger('Current games object: ', Object.entries(games));
       socket.emit(ROOM_CREATED, roomId);
     }
-    socket.emit(CONNECTED, roomId);
+    socket.emit(CONNECTED, socket.room);
     socket.on(UPDATE_DIRECTION, games[socket.room].updateDirection);
   });
 
