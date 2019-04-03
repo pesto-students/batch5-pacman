@@ -65,6 +65,17 @@ export const entityToCode = (entity) => {
   return entityMap[entity];
 };
 
-export const getPacman = () => ({
-  x: 13, y: 14, direction: 'RIGHT', score: 0,
-});
+export const getPacmans = () => ([
+  {
+    x: 13, y: 14, direction: 'RIGHT', score: 0,
+  },
+  {
+    x: 12, y: 14, direction: 'RIGHT', score: 0,
+  },
+]);
+
+export const newGhostValues = [
+  { x: 1, y: 1, direction: 'LEFT' },
+  { x: 23, y: 1, direction: 'LEFT' },
+  { x: 1, y: 23, direction: 'LEFT' },
+  { x: 23, y: 23, direction: 'LEFT' }];

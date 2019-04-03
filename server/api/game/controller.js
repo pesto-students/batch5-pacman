@@ -1,25 +1,25 @@
 import uuidv1 from 'uuid/v1';
 import { GAME_UPDATE } from '../channels';
 import {
-  boardCorners,
   refreshRate,
+  boardCorners,
   getGhosts,
-  getPacman,
-  codeToEntity,
-  entityToCode,
+  getPacmans,
   boardTranspose,
+  newGhostValues,
 } from './constants';
 import {
   getRandomAdjacentAvailableCell,
   getGridwithWeights,
   chaseLocation,
-  moveInDirection,
-  isWall,
   initSquareGridState,
+  eatFood,
+  movePacman,
+  dieIfOnGhost,
 } from './core';
 
 class Game {
-  constructor({ playerId, socket }) {
+  constructor({ playerId }) {
     this.gameState = {
       moveGhostsCount: 0,
       scatterGhostspath: [],
@@ -27,7 +27,6 @@ class Game {
       players: { [playerId]: {} },
       gridState: [],
       status: 0,
-      socket,
     };
     this.available = true;
     this.roomId = uuidv1();
@@ -35,16 +34,14 @@ class Game {
 
   setInitialGameState = () => {
     const { players } = this.gameState;
-    const gridState = initSquareGridState();
-    const ghostsArray = getGhosts().map(([x, y, direction]) => ({
+    const pacmans = getPacmans();
+    Object.keys(players).forEach((playerId, index) => {
+      this.gameState.players[playerId] = { ...pacmans[index] };
+    });
+    this.gameState.gridState = initSquareGridState();
+    this.gameState.ghosts = getGhosts().map(([x, y, direction]) => ({
       x, y, direction,
     }));
-    this.gameState.gridState = gridState;
-    this.gameState.ghosts = ghostsArray;
-    Object.keys(players).forEach((player, index) => {
-      const { x } = getPacman();
-      this.gameState.players[player] = { ...getPacman(), x: x + index };
-    });
   };
 
   getGameResult = () => {
@@ -59,76 +56,10 @@ class Game {
     }, {});
   }
 
-  currentGameState = () => {
-    const { socket, ...rest } = this.gameState;
-    return rest;
-  };
+  currentGameState = () => this.gameState;
 
   endGame = () => {
     clearInterval(this.gameState.interval);
-  };
-
-  eatFood = ({ pacman: newLocation }) => {
-    const { gridState } = this.gameState;
-    const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
-    let { score } = newLocation;
-    if (entityInCell === 'food') {
-      score += 1;
-    } else if (entityInCell === 'energizer') {
-      score += 5;
-    }
-    gridState[newLocation.x][newLocation.y] = entityToCode('free');
-    this.gameState.gridState = gridState;
-    return { score };
-  };
-
-  ifAtGhosts = ({ ghosts, pacman }) => {
-    const isAtSameLocation = (
-      { x: x1, y: y1 },
-      { x: x2, y: y2 },
-    ) => (x1 === x2) && (y1 === y2);
-
-    const ispacmanDead = ghosts
-      .some(ghost => isAtSameLocation(ghost, pacman));
-
-    return ispacmanDead;
-  };
-
-  dieIfOnGhost = ({ ghosts, pacman }) => {
-    if (this.ifAtGhosts({ ghosts, pacman })) {
-      this.gameState.status = 2;
-      this.endGame();
-      return true;
-    }
-    return false;
-  };
-
-  movePacman = ({ pacman, ghostsUpdated, gridState }) => {
-    const { x, y, direction } = pacman;
-
-    const pacmanDead = this.dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
-
-    if (pacmanDead) {
-      return {
-        pacmanUpdated: pacman,
-      };
-    }
-
-    let newLocation = moveInDirection({ x, y, direction });
-
-    newLocation = isWall(gridState, newLocation) ? {} : moveInDirection({ x, y, direction });
-    return {
-      pacmanUpdated: { ...pacman, ...newLocation },
-    };
-  };
-
-  addPositionsToArray = (arr, index) => {
-    const scatterTime = 55;
-    if (arr.length < scatterTime) {
-      arr.push(boardCorners[index]);
-      return this.addPositionsToArray(arr, index);
-    }
-    return arr;
   };
 
   moveGhosts = ({ ghosts, gridState, scatterStart }) => {
@@ -147,11 +78,7 @@ class Game {
     }
 
     if (moveGhostsCount === scatterEnd) {
-      const ghostsUpdated = [
-        { x: 1, y: 1, direction: 'LEFT' },
-        { x: 23, y: 1, direction: 'LEFT' },
-        { x: 1, y: 23, direction: 'LEFT' },
-        { x: 23, y: 23, direction: 'LEFT' }];
+      const ghostsUpdated = newGhostValues;
       return {
         ghostsUpdated, moveGhostsCount,
       };
@@ -181,17 +108,22 @@ class Game {
 
     Object.keys(players).forEach((player) => {
       const pacman = players[player];
-      const { pacmanUpdated } = this.movePacman({
+      const { pacmanUpdated } = movePacman({
         pacman, ghostsUpdated, gridState,
       });
 
-      this.dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
-
+      const isDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
+      if (isDead) {
+        this.endGame();
+      }
       const {
         score,
-      } = this.eatFood({ pacman, gridStateAfterPacmanMove: gridState });
+        gridStateAfterEatingFood,
+      } = eatFood({ pacman, gridState });
 
       this.gameState.players[player] = { ...pacman, ...pacmanUpdated, score };
+      this.gameState.gridState = gridStateAfterEatingFood;
+      this.gameState.status = isDead ? 2 : 0;
     });
 
     this.gameState.moveGhostsCount = moveGhostsCount;
@@ -204,15 +136,13 @@ class Game {
 
   startGame = () => {
     this.setInitialGameState();
-    setTimeout(() => {
-      // eslint-disable-next-line no-console
-      console.log('Game started after 3 seconds');
-      this.gameState.interval = setInterval(() => {
-        this.calculateNextGameState();
-        // eslint-disable-next-line no-undef
-        io.in(this.roomId).emit(GAME_UPDATE, this.currentGameState());
-      }, refreshRate);
-    }, 3000);
+    // eslint-disable-next-line no-console
+    console.log('Game started');
+    this.gameState.interval = setInterval(() => {
+      this.calculateNextGameState();
+      // eslint-disable-next-line no-undef
+      io.in(this.roomId).emit(GAME_UPDATE, this.currentGameState());
+    }, refreshRate);
   }
 }
 

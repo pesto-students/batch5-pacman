@@ -26,10 +26,10 @@ const socketService = (socket) => {
       // eslint-disable-next-line no-param-reassign
       socket.room = availableRoom.roomId;
       socket.join(availableRoom.roomId);
-      availableRoom.startGame();
       logger('Joined room', socket.room);
+      availableRoom.startGame();
       // eslint-disable-next-line no-undef
-      io.to(roomId).emit(ROOM_FULL, roomId);
+      io.in(socket.room).emit(ROOM_FULL, socket.room);
     } else {
       const newGame = new Game({ playerId, socket });
       // eslint-disable-next-line prefer-destructuring

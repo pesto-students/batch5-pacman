@@ -1,5 +1,11 @@
 import pathfinding from 'pathfinding';
-import { entityToCode, getBoard, directionValues } from './constants';
+import {
+  entityToCode,
+  getBoard,
+  directionValues,
+  codeToEntity,
+  boardCorners,
+} from './constants';
 
 export const initSquareGridState = getBoard;
 
@@ -52,4 +58,66 @@ export const moveInDirection = ({ x, y, direction }) => {
     y: y + directionValues[direction].y,
   };
   return newLocation;
+};
+
+export const eatFood = ({ pacman: newLocation, gridState }) => {
+  const entityInCell = codeToEntity(gridState[newLocation.x][newLocation.y]);
+  let { score } = newLocation;
+  if (entityInCell === 'food') {
+    score += 1;
+  } else if (entityInCell === 'energizer') {
+    score += 5;
+  }
+  // eslint-disable-next-line no-param-reassign
+  gridState[newLocation.x][newLocation.y] = entityToCode('free');
+  return { score, gridStateAfterEatingFood: gridState };
+};
+
+export const ifAtGhosts = ({ ghosts, pacman }) => {
+  const isAtSameLocation = (
+    { x: x1, y: y1 },
+    { x: x2, y: y2 },
+  ) => (x1 === x2) && (y1 === y2);
+
+  const ispacmanDead = ghosts
+    .some(ghost => isAtSameLocation(ghost, pacman));
+
+  return ispacmanDead;
+};
+
+export const addPositionsToArray = (arr, index) => {
+  const scatterTime = 55;
+  if (arr.length < scatterTime) {
+    arr.push(boardCorners[index]);
+    return addPositionsToArray(arr, index);
+  }
+  return arr;
+};
+
+export const dieIfOnGhost = ({ ghosts, pacman }) => {
+  if (ifAtGhosts({ ghosts, pacman })) {
+    return true;
+  }
+  return false;
+};
+
+export const movePacman = ({ pacman, ghostsUpdated, gridState }) => {
+  const { x, y, direction } = pacman;
+
+  const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
+
+  if (pacmanDead) {
+    return {
+      status: 2,
+      pacmanUpdated: pacman,
+    };
+  }
+
+  let newLocation = moveInDirection({ x, y, direction });
+
+  newLocation = isWall(gridState, newLocation) ? {} : moveInDirection({ x, y, direction });
+  return {
+    pacmanUpdated: { ...pacman, ...newLocation },
+    status: 0,
+  };
 };
