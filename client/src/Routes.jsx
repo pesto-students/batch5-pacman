@@ -10,8 +10,6 @@ import {
   foundBothPlayer,
 } from './api/socketService';
 
-// const playerId = uuid.v1();
-
 class PacmanRouter extends React.Component {
   constructor(props) {
     super(props);
