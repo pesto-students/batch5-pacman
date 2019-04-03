@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Circle, Image } from 'react-konva';
 import PropTypes from 'prop-types';
-import { entitiesAnimationDurationInSecond, ghostImages, colorCode } from './constants';
+import {
+  entitiesAnimationDurationInSecond, ghostImages, colorCode, locationIn2D,
+} from './constants';
 import { locationOnCanvas } from './gameCore';
 
 
@@ -76,11 +78,7 @@ class AnimateEntity extends Component {
 }
 
 AnimateEntity.propTypes = {
-  location: PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    direction: PropTypes.string,
-  }).isRequired,
+  location: locationIn2D.isRequired,
   gridSize: PropTypes.number.isRequired,
   ghostIndex: PropTypes.number,
   entity: PropTypes.string.isRequired,

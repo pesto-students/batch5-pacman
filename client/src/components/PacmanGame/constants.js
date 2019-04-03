@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import ghostImage1 from '../../sprites/blinky.png';
 import ghostImage2 from '../../sprites/inky.png';
 import ghostImage3 from '../../sprites/clyde.png';
@@ -102,3 +104,9 @@ export const arrowKeysDirections = {
   ArrowRight: 'RIGHT',
   ArrowDown: 'DOWN',
 };
+
+export const locationIn2D = PropTypes.shape({
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  direction: PropTypes.string,
+});
