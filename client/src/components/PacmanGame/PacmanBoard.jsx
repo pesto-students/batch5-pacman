@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Stage, Layer } from 'react-konva';
-import { codeToEntity, boardEdgeInPixel } from './constants';
+import { codeToEntity, boardEdgeInPixel, locationIn2D } from './constants';
 import Cell from './Cell';
 import Ghosts from './Ghosts';
 import AnimateEntity from './AnimateEntity';
@@ -44,17 +44,9 @@ PacmanBoard.propTypes = {
       PropTypes.number.isRequired,
     ).isRequired,
   ).isRequired,
-  ghosts: PropTypes.arrayOf(PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-    direction: PropTypes.string,
-  })).isRequired,
+  ghosts: PropTypes.arrayOf(locationIn2D).isRequired,
   pacmans: PropTypes.shape({
-    [PropTypes.string.isRequired]: PropTypes.shape({
-      x: PropTypes.number.isRequired,
-      y: PropTypes.number.isRequired,
-      direction: PropTypes.string,
-    }),
+    [PropTypes.string.isRequired]: locationIn2D,
   }).isRequired,
 };
 

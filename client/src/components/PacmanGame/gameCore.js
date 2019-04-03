@@ -142,10 +142,20 @@ export const locationOnCanvas = ({
   return { x, y };
 };
 
-export const getObjectDiffs = ({ oldObj, newObj }) => {
-  const isAnObject = value => typeof value === 'object' && value !== null;
-  const isEmptyObject = obj => isAnObject(obj) && Object.keys(obj).length === 0;
+const isAnObject = value => typeof value === 'object' && value !== null;
+const isEmptyObject = obj => isAnObject(obj) && Object.keys(obj).length === 0;
 
+const stripEmptyObjValues = obj => Object.keys(obj).reduce((acc, key) => {
+  if (isEmptyObject(obj[key])) {
+    return acc;
+  }
+  return {
+    ...acc,
+    [key]: obj[key],
+  };
+}, {});
+
+export const getObjectDiffs = ({ oldObj, newObj }) => {
   const diffWithEmptyObjAsValue = Object.keys(newObj).reduce((acc, key) => {
     if (isAnObject(oldObj[key]) && isAnObject(newObj[key])) {
       return {
@@ -165,16 +175,5 @@ export const getObjectDiffs = ({ oldObj, newObj }) => {
     };
   }, {});
 
-
-  const objDiff = Object.keys(diffWithEmptyObjAsValue).reduce((acc, key) => {
-    if (isEmptyObject(diffWithEmptyObjAsValue[key])) {
-      return acc;
-    }
-    return {
-      ...acc,
-      [key]: diffWithEmptyObjAsValue[key],
-    };
-  }, {});
-
-  return objDiff;
+  return stripEmptyObjValues(diffWithEmptyObjAsValue);
 };

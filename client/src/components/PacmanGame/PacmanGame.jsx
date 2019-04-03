@@ -15,19 +15,11 @@ import PacmanBoard from './PacmanBoard';
 
 class PacmanGame extends Component {
   state = {
-    pacmans: {
-
-    },
+    pacmans: {},
     ghosts: [],
     score: 0,
     status: 0, // 0 - Not-started, 1 - Progress, 2 - Restart
     gridState: [],
-    // config: {
-    //   refreshRate: advanceFrameAfterTime,
-    // },
-    // moveGhostsCount: 0,
-    // scatterGhostspath: [],
-    // scatterStart: 75,
     playerId: uuid.v1(),
   };
 
@@ -35,9 +27,7 @@ class PacmanGame extends Component {
     createSocketConnection((roomId) => {
       // eslint-disable-next-line no-console
       console.log('Connected to room: ', roomId);
-      // this.setState({ roomId });
     });
-    // this.setInitialGameState();
   }
 
   shouldComponentUpdate(_, newState) {
