@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon index.js --exec babel-node",
     "test": "jest --no-cache",
-    "pretest": "yarn"
+    "pretest": "yarn",
+    "build": "yarn start"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
