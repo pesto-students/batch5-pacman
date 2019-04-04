@@ -9,8 +9,9 @@ exports.greet = (req, res) => {
 exports.save = (req, res) => {
   const user = {
     username: req.body.username,
-    password: req.body.username,
-    email: req.body.username,
+    score: req.body.score,
+    googleId: req.body.id,
+    email: req.body.email,
   };
   User.create(user)
     .then(() => {
