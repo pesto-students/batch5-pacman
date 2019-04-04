@@ -28,7 +28,10 @@ export const getBoard = () => [
 
 export const boardTranspose = getBoard()[0].map((col, i) => getBoard().map(row => row[i]));
 
-export const refreshRate = 700;
+
+const framesPerSecond = 3;
+
+export const advanceFrameAfterTime = 1000 / framesPerSecond;
 
 export const directionValues = {
   UP: { x: 0, y: -1 },
