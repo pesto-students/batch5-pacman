@@ -1,7 +1,7 @@
 import uuidv1 from 'uuid/v1';
 import { GAME_UPDATE } from '../channels';
 import {
-  refreshRate,
+  advanceFrameAfterTime,
   boardCorners,
   getGhosts,
   getPacmans,
@@ -16,6 +16,7 @@ import {
   eatFood,
   movePacman,
   dieIfOnGhost,
+  addPositionsToArray,
 } from './core';
 
 class Game {
@@ -73,7 +74,7 @@ class Game {
         .map(postion => postion.map(arr => ({ x: arr[0], y: arr[1] })));
 
       scatterGhostspath = ghostsPath
-        .map((array, index) => this.addPositionsToArray(array, index));
+        .map((array, index) => addPositionsToArray(array, index));
       this.gameState.scatterGhostspath = scatterGhostspath;
     }
 
@@ -142,7 +143,7 @@ class Game {
       this.calculateNextGameState();
       // eslint-disable-next-line no-undef
       io.in(this.roomId).emit(GAME_UPDATE, this.currentGameState());
-    }, refreshRate);
+    }, advanceFrameAfterTime);
   }
 }
 
