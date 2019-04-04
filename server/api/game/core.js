@@ -101,16 +101,35 @@ export const dieIfOnGhost = ({ ghosts, pacman }) => {
   return false;
 };
 
-export const movePacman = ({ pacman, ghostsUpdated, gridState }) => {
+
+export const movePacman = ({
+  pacman, ghostsUpdated, gridState, energizers, freight, freightCount,
+}) => {
   const { x, y, direction } = pacman;
+  let freightMode = freight;
+  let count = freightCount;
+  const eatenEnergizerIndex = energizers.findIndex(energy => (energy.x === x) && (energy.y === y));
+  if (eatenEnergizerIndex !== -1) {
+    energizers.splice(eatenEnergizerIndex, 1);
+    freightMode = true;
+  }
+  if (count > 100) {
+    freightMode = false;
+    count = 0;
+  }
+  if (freightMode) count += 1;
 
-  const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
-
-  if (pacmanDead) {
-    return {
-      status: 2,
-      pacmanUpdated: pacman,
-    };
+  if (!freightMode) {
+    const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
+    if (pacmanDead) {
+      return {
+        status: 2,
+        pacmanUpdated: pacman,
+        boost: energizers,
+        freightMode,
+        count,
+      };
+    }
   }
 
   let newLocation = moveInDirection({ x, y, direction });
@@ -119,6 +138,9 @@ export const movePacman = ({ pacman, ghostsUpdated, gridState }) => {
   return {
     pacmanUpdated: { ...pacman, ...newLocation },
     status: 0,
+    boost: energizers,
+    freightMode,
+    count,
   };
 };
 
