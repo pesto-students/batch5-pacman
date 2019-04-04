@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Stage, Layer } from 'react-konva';
 import { codeToEntity, boardEdgeInPixel, locationIn2D } from './constants';
 import Cell from './Cell';
-import Ghosts from './Ghosts';
 import AnimateEntity from './AnimateEntity';
 
 const PacmanBoard = ({
@@ -30,8 +29,23 @@ const PacmanBoard = ({
     <Stage width={boardEdgeInPixel} height={boardEdgeInPixel}>
       <Layer hitGraphEnabled={false}>
         {nonMovingCells}
-        {Object.keys(pacmans).map(playerId => <AnimateEntity key={playerId} location={pacmans[playerId]} gridSize={gridSize} entity="pacman" />)}
-        <Ghosts ghosts={ghosts} gridSize={gridSize} />
+        {Object.keys(pacmans).map(playerId => (
+          <AnimateEntity
+            key={playerId}
+            location={pacmans[playerId]}
+            gridSize={gridSize}
+            entity="pacman"
+          />
+        ))}
+        {ghosts.map((ghostLocation, index) => (
+          <AnimateEntity
+            key={`${ghostLocation + index}`}
+            location={ghostLocation}
+            gridSize={gridSize}
+            ghostIndex={index}
+            entity="ghost"
+          />
+        ))}
       </Layer>
     </Stage>
   );
