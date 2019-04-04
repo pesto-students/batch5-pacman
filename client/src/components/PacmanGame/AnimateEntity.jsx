@@ -17,7 +17,7 @@ class AnimateEntity extends Component {
   }
 
   killerCell = ({
-    entity, gridSize, ghostIndex, gridX, gridY,
+    entity, gridSize, ghostIndex,
   }) => {
     const image = new window.Image(gridSize, gridSize);
     image.src = (entity === 'scatterGhost') ? ghostImages[4] : ghostImages[ghostIndex];
@@ -27,9 +27,6 @@ class AnimateEntity extends Component {
           this.node = node;
           this.center = false;
         }}
-        {...locationOnCanvas({
-          gridX, gridY, gridSize, centerEntity: false,
-        })}
         image={image}
       />
     );
@@ -78,13 +75,17 @@ class AnimateEntity extends Component {
 }
 
 AnimateEntity.propTypes = {
-  location: locationIn2D.isRequired,
+  location: locationIn2D,
   gridSize: PropTypes.number.isRequired,
   ghostIndex: PropTypes.number,
   entity: PropTypes.string.isRequired,
 };
 
 AnimateEntity.defaultProps = {
+  location: {
+    x: 0,
+    y: 0,
+  },
   ghostIndex: 0,
 };
 
