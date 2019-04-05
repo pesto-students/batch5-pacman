@@ -177,3 +177,9 @@ export const getObjectDiffs = ({ oldObj, newObj }) => {
 
   return stripEmptyObjValues(diffWithEmptyObjAsValue);
 };
+
+export const makeSquareImgWithSrc = ({ src, size }) => {
+  const image = new window.Image(size, size);
+  image.src = src;
+  return image;
+};

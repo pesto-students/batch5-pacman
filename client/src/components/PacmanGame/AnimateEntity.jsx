@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
-import { Circle, Image } from 'react-konva';
+import { Image } from 'react-konva';
 import PropTypes from 'prop-types';
 import {
-  entitiesAnimationDurationInSecond, ghostImages, colorCode, locationIn2D,
+  entitiesAnimationDurationInSecond, ghostImages, pacmanImages, locationIn2D,
 } from './constants';
-import { locationOnCanvas } from './gameCore';
+import { locationOnCanvas, makeSquareImgWithSrc } from './gameCore';
 
 
 class AnimateEntity extends Component {
-  componentDidMount() {
-    this.animate(this.node, this.center);
-  }
-
   componentDidUpdate() {
     this.animate(this.node, this.center);
   }
@@ -19,8 +15,8 @@ class AnimateEntity extends Component {
   killerCell = ({
     entity, gridSize, ghostIndex,
   }) => {
-    const image = new window.Image(gridSize, gridSize);
-    image.src = (entity === 'scatterGhost') ? ghostImages[4] : ghostImages[ghostIndex];
+    const src = (entity === 'scatterGhost') ? ghostImages[4] : ghostImages[ghostIndex];
+    const image = makeSquareImgWithSrc({ src, size: gridSize });
     return (
       <Image
         ref={(node) => {
@@ -32,16 +28,18 @@ class AnimateEntity extends Component {
     );
   }
 
-  pacmanCell = ({ entity, gridSize }) => (
-    <Circle
-      ref={(node) => {
-        this.node = node;
-        this.center = true;
-      }}
-      radius={gridSize / 2}
-      fill={colorCode[entity]}
-    />
-  )
+  pacmanCell = ({ gridSize, direction }) => {
+    const image = makeSquareImgWithSrc({ src: pacmanImages[direction], size: gridSize });
+    return (
+      <Image
+        ref={(node) => {
+          this.node = node;
+          this.center = false;
+        }}
+        image={image}
+      />
+    );
+  }
 
   animate(node, center) {
     const { location: { x, y }, gridSize } = this.props;
@@ -60,7 +58,7 @@ class AnimateEntity extends Component {
 
   render() {
     const {
-      location: { x: gridX, y: gridY }, gridSize, entity, ghostIndex,
+      location: { x: gridX, y: gridY, direction }, gridSize, entity, ghostIndex,
     } = this.props;
 
     if (entity === 'ghost' || entity === 'scatterGhost') {
@@ -69,7 +67,7 @@ class AnimateEntity extends Component {
       });
     }
     return this.pacmanCell({
-      gridSize, entity,
+      gridSize, entity, direction,
     });
   }
 }

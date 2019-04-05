@@ -1,10 +1,16 @@
 import PropTypes from 'prop-types';
 
-import ghostImage1 from '../../sprites/blinky.png';
-import ghostImage2 from '../../sprites/inky.png';
-import ghostImage3 from '../../sprites/clyde.png';
-import ghostImage4 from '../../sprites/pinky.png';
-import afraidGhost from '../../sprites/afraidGhost.png';
+import ghostImage1 from '../../sprites/ghosts/blinky.png';
+import ghostImage2 from '../../sprites/ghosts/inky.png';
+import ghostImage3 from '../../sprites/ghosts/clyde.png';
+import ghostImage4 from '../../sprites/ghosts/pinky.png';
+import afraidGhost from '../../sprites/ghosts/afraid.png';
+
+import pacmanUp from '../../sprites/pacman/up.png';
+import pacmanDown from '../../sprites/pacman/down.png';
+import pacmanRight from '../../sprites/pacman/right.png';
+import pacmanLeft from '../../sprites/pacman/left.png';
+import pacmanClose from '../../sprites/pacman/close.png';
 
 export const ghostImages = [
   ghostImage1,
@@ -13,6 +19,14 @@ export const ghostImages = [
   ghostImage4,
   afraidGhost,
 ];
+
+export const pacmanImages = {
+  UP: pacmanUp,
+  DOWN: pacmanDown,
+  RIGHT: pacmanRight,
+  LEFT: pacmanLeft,
+  CLOSE: pacmanClose,
+};
 
 export const getBoard = () => [
   [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
@@ -92,7 +106,7 @@ export const getPacman = () => [13, 14, 'RIGHT'];
 
 export const boardEdgeInPixel = Math.min(window.innerWidth, window.innerHeight) * 0.65;
 
-const framesPerSecond = 5;
+const framesPerSecond = 2;
 
 export const advanceFrameAfterTime = 1000 / framesPerSecond;
 
