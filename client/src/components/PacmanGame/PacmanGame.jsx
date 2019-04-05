@@ -73,6 +73,7 @@ class PacmanGame extends Component {
       });
       this.setState({ status: 1 });
     }
+    findClientToServerLatencyTime({ playerId });
     if (status === 0) this.setState({ status: 1 });
     findClientToServerLatencyTime({ playerId });
     getGameUpdate(this.animateGame);
