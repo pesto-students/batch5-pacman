@@ -94,43 +94,42 @@ export const addPositionsToArray = (arr, index) => {
   return arr;
 };
 
-export const dieIfOnGhost = ({ ghosts, pacman }) => {
+export const dieIfOnGhost = ({ ghosts, pacman, fright }) => {
+  if (fright) return false;
   if (ifAtGhosts({ ghosts, pacman })) {
     return true;
   }
   return false;
 };
 
-
 export const movePacman = ({
-  pacman, ghostsUpdated, gridState, energizers, freight, freightCount,
+  pacman, ghostsUpdated, gridState, energizers, fright, frightCount,
 }) => {
   const { x, y, direction } = pacman;
-  let freightMode = freight;
-  let count = freightCount;
+  let frightMode = fright;
+  let count = frightCount;
   const eatenEnergizerIndex = energizers.findIndex(energy => (energy.x === x) && (energy.y === y));
   if (eatenEnergizerIndex !== -1) {
     energizers.splice(eatenEnergizerIndex, 1);
-    freightMode = true;
+    frightMode = true;
   }
   if (count > 100) {
-    freightMode = false;
+    frightMode = false;
     count = 0;
   }
-  if (freightMode) count += 1;
+  if (frightMode) count += 1;
 
-  if (!freightMode) {
-    const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
-    if (pacmanDead) {
-      return {
-        status: 2,
-        pacmanUpdated: pacman,
-        boost: energizers,
-        freightMode,
-        count,
-      };
-    }
+  const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman, frightMode });
+  if (pacmanDead) {
+    return {
+      status: 2,
+      pacmanUpdated: pacman,
+      boost: energizers,
+      frightMode,
+      count,
+    };
   }
+
 
   let newLocation = moveInDirection({ x, y, direction });
 
@@ -139,7 +138,7 @@ export const movePacman = ({
     pacmanUpdated: { ...pacman, ...newLocation },
     status: 0,
     boost: energizers,
-    freightMode,
+    frightMode,
     count,
   };
 };

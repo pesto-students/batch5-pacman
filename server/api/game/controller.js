@@ -29,9 +29,9 @@ class Game {
       players: { [playerId]: {} },
       gridState: [],
       status: 0,
-      energizers: getEnergizers(),
-      freight: false,
-      freightCount: 0,
+      energizers: [],
+      fright: false,
+      frightCount: 0,
     };
     this.available = true;
     this.roomId = uuidv1();
@@ -44,6 +44,7 @@ class Game {
       this.gameState.players[playerId] = { ...pacmans[index] };
     });
     this.gameState.gridState = initSquareGridState();
+    this.gameState.energizers = getEnergizers();
     this.gameState.ghosts = getGhosts().map(([x, y, direction]) => ({
       x, y, direction,
     }));
@@ -78,10 +79,10 @@ class Game {
   }
 
   moveGhosts = ({
-    ghosts, gridState, scatterStart, freight,
+    ghosts, gridState, scatterStart, fright,
   }) => {
     let { moveGhostsCount, scatterGhostspath } = this.gameState;
-    if (!freight) moveGhostsCount += 1;
+    if (!fright) moveGhostsCount += 1;
     const scatterEnd = scatterStart + 55;
     if (moveGhostsCount === scatterStart) {
       const gridWithWeights = getGridwithWeights(boardTranspose);
@@ -110,7 +111,7 @@ class Game {
 
     const ghostsUpdated = ghosts.map(
       ({ x, y, direction }) => {
-        if (freight) {
+        if (fright) {
           const pacmanOnGhost = this.ifPacmanOnGhost({ x, y });
           if (pacmanOnGhost) return { x: 13, y: 15, direction: 'LEFT' };
         }
@@ -124,31 +125,29 @@ class Game {
 
   calculateNextGameState = () => {
     const {
-      ghosts, gridState, scatterStart, players, energizers, freight, freightCount,
+      ghosts, gridState, scatterStart, players, energizers, fright, frightCount,
     } = this.gameState;
 
     const { ghostsUpdated, moveGhostsCount } = this.moveGhosts({
-      ghosts, gridState, scatterStart, freight,
+      ghosts, gridState, scatterStart, fright,
     });
 
     Object.keys(players).forEach((player) => {
       const pacman = players[player];
       const {
-        pacmanUpdated, boost, freightMode, count,
+        pacmanUpdated, boost, frightMode, count,
       } = movePacman({
-        pacman, ghostsUpdated, gridState, energizers, freight, freightCount,
+        pacman, ghostsUpdated, gridState, energizers, fright, frightCount,
       });
-      if (!freight) {
-        const isDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
-        if (isDead) this.endGame();
-      }
+      const isDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated, fright });
+      if (isDead) this.endGame();
       const {
         score,
         gridStateAfterEatingFood,
       } = eatFood({ pacman, gridState });
 
-      this.gameState.freightCount = count;
-      this.gameState.freight = freightMode;
+      this.gameState.frightCount = count;
+      this.gameState.fright = frightMode;
       this.gameState.energizers = boost;
       this.gameState.players[player] = { ...pacman, ...pacmanUpdated, score };
       this.gameState.gridState = gridStateAfterEatingFood;
