@@ -70,10 +70,10 @@ export const entityToCode = (entity) => {
 
 export const getPacmans = () => ([
   {
-    x: 13, y: 14, direction: 'RIGHT', score: 0,
+    x: 13, y: 14, direction: 'RIGHT', score: 0, alive: true,
   },
   {
-    x: 12, y: 14, direction: 'RIGHT', score: 0,
+    x: 12, y: 14, direction: 'RIGHT', score: 0, alive: true,
   },
 ]);
 
