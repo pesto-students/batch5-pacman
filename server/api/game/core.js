@@ -102,15 +102,14 @@ export const dieIfOnGhost = ({ ghosts, pacman, fright }) => {
   return false;
 };
 
+
 export const movePacman = ({
-  pacman, ghostsUpdated, gridState, energizers, fright, frightCount,
+  pacman, ghostsUpdated, gridState, fright, frightCount,
 }) => {
   const { x, y, direction } = pacman;
   let frightMode = fright;
   let count = frightCount;
-  const eatenEnergizerIndex = energizers.findIndex(energy => (energy.x === x) && (energy.y === y));
-  if (eatenEnergizerIndex !== -1) {
-    energizers.splice(eatenEnergizerIndex, 1);
+  if (gridState[x][y] === codeToEntity('energizer')) {
     frightMode = true;
   }
   if (count > 100) {
@@ -124,12 +123,10 @@ export const movePacman = ({
     return {
       status: 2,
       pacmanUpdated: pacman,
-      boost: energizers,
       frightMode,
       count,
     };
   }
-
 
   let newLocation = moveInDirection({ x, y, direction });
 
@@ -137,7 +134,6 @@ export const movePacman = ({
   return {
     pacmanUpdated: { ...pacman, ...newLocation },
     status: 0,
-    boost: energizers,
     frightMode,
     count,
   };

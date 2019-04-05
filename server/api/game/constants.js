@@ -82,6 +82,3 @@ export const newGhostValues = [
   { x: 23, y: 1, direction: 'LEFT' },
   { x: 1, y: 23, direction: 'LEFT' },
   { x: 23, y: 23, direction: 'LEFT' }];
-
-export const getEnergizers = () => [{ x: 3, y: 3 },
-  { x: 21, y: 3 }, { x: 3, y: 21 }, { x: 21, y: 21 }];
