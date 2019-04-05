@@ -29,7 +29,7 @@ export const getBoard = () => [
 export const boardTranspose = getBoard()[0].map((col, i) => getBoard().map(row => row[i]));
 
 
-const framesPerSecond = 3;
+const framesPerSecond = 2;
 
 export const advanceFrameAfterTime = 1000 / framesPerSecond;
 
