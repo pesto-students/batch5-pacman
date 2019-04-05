@@ -19,3 +19,12 @@ exports.save = (req, res) => {
     })
     .catch(() => logger('Error', 'creating user'));
 };
+
+exports.update = (req, res) => {
+  const { username, score } = req.body;
+  User.findOneAndUpdate({ username }, { score })
+    .then(() => {
+      res.send({ message: 'success', status: 201 });
+    })
+    .catch(() => logger('Error', 'creating user'));
+};

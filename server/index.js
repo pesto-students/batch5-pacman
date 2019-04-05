@@ -6,6 +6,7 @@ import mongoose from 'mongoose';
 import {} from 'dotenv/config';
 import config from './config/config';
 import routes from './api/api';
+import userroutes from './api/user/routes';
 import authRoutes from './api/auth';
 import socketService from './api/socketService';
 import middleware from './middleware/appMiddleware';
@@ -20,6 +21,7 @@ middleware(app);
 
 app.use('/api', routes);
 app.use('/', authRoutes);
+app.use('/', userroutes);
 
 app.use((req, res, next) => {
   next(createError(404));
