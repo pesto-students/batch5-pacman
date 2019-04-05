@@ -8,6 +8,7 @@ const channels = {
   GAME_UPDATE: 'game-update',
   ROOM_FULL: 'room-full',
   GAME_OVER: 'game-over',
+  PING: 'pinging',
 };
 
 export default channels;

@@ -148,7 +148,7 @@ class Game {
   startGame = () => {
     this.setInitialGameState();
     // eslint-disable-next-line no-console
-    console.log('Game started');
+    console.log(`[${new Date().toLocaleTimeString()}]`, 'Game started');
     this.gameState.interval = setInterval(() => {
       this.calculateNextGameState();
       const gameEndStatus = this.hasGameEnded();

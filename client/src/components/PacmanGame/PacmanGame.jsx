@@ -5,6 +5,7 @@ import {
   getGameUpdate,
   updateNewDirection,
   gameOver,
+  findClientToServerLatencyTime,
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import { arrowKeysDirections } from './constants';
@@ -56,6 +57,24 @@ class PacmanGame extends Component {
 
   startGame = () => {
     const { userContext } = this.props;
+    const { status } = this.state;
+    const { playerId } = userContext;
+    if (status === 1) {
+      let { score } = this.state;
+      clearInterval(this.animationHandler);
+      score -= 10;
+      this.setState({ status: 0, score });
+      return;
+    }
+    if (status === 2) {
+      this.setInitialGameState();
+      this.setState({
+        score: 0,
+      });
+      this.setState({ status: 1 });
+    }
+    if (status === 0) this.setState({ status: 1 });
+    findClientToServerLatencyTime({ playerId });
     getGameUpdate(this.animateGame);
     gameOver(userContext);
     document.addEventListener('keydown', this.setDirection);
