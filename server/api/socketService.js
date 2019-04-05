@@ -7,6 +7,7 @@ import {
   CONNECTED,
   ROOM_FULL,
   ROOM_CREATED,
+  PING,
 } from './channels';
 import gameResultsController from './game-results/controller';
 
@@ -15,6 +16,13 @@ import Game from './game/controller';
 const games = {};
 
 const socketService = (socket) => {
+  socket.on(PING, ({ playerId, clientTime }) => {
+    const serverTime = new Date().getTime();
+    const latencyTimeInMilliSeconds = serverTime - clientTime;
+    // eslint-disable-next-line no-console
+    console.log(playerId, 'Client to Server Latency Time', latencyTimeInMilliSeconds);
+  });
+
   socket.on(JOIN_GAME, ({ playerId }) => {
     let roomId;
     const gameList = Object.values(games);

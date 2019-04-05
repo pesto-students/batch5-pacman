@@ -1,5 +1,6 @@
 import openSocket from 'socket.io-client';
 import channels from './constants';
+import { getBoard } from '../components/PacmanGame/constants';
 
 const {
   JOIN_GAME,
@@ -10,6 +11,7 @@ const {
   ROOM_FULL,
   ROOM_CREATED,
   GAME_OVER,
+  PING,
 } = channels;
 
 const socket = openSocket(process.env.REACT_APP_SERVER_URL);
@@ -37,8 +39,16 @@ const foundBothPlayer = (ref) => {
   });
 };
 
+const findClientToServerLatencyTime = ({ playerId = 0 }) => {
+  socket.emit(PING, { playerId, clientTime: new Date().getTime(), dummyData: getBoard() });
+};
+
 const getGameUpdate = (cb) => {
+  const getConstantLatencyLogs = true;
   socket.on(GAME_UPDATE, (newState) => {
+    if (getConstantLatencyLogs) {
+      findClientToServerLatencyTime({ clientTime: new Date().getTime() });
+    }
     cb({ newState });
   });
 };
@@ -64,4 +74,5 @@ export {
   foundBothPlayer,
   updateNewDirection,
   gameOver,
+  findClientToServerLatencyTime,
 };

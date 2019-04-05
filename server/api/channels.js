@@ -7,3 +7,4 @@ export const GAME_UPDATE = 'game-update';
 export const ROOM_FULL = 'room-full';
 export const ROOM_CREATED = 'room-created';
 export const GAME_OVER = 'game-over';
+export const PING = 'pinging';
