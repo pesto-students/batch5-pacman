@@ -32,7 +32,7 @@ class PacmanRouter extends React.Component {
   startMultiPlayerGame = () => {
     const { playerId } = this.state;
     createSocketConnection((roomId) => {
-      // eslint-disable-next-line no-consoles
+      // eslint-disable-next-line no-console
       console.log('Connected to room: ', roomId);
     });
     joinGame({ playerId });
