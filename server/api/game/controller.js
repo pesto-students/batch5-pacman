@@ -7,7 +7,6 @@ import {
   getPacmans,
   boardTranspose,
   newGhostValues,
-  getEnergizers,
 } from './constants';
 import {
   getRandomAdjacentAvailableCell,
@@ -30,7 +29,6 @@ class Game {
       players: { [playerId]: {} },
       gridState: [],
       status: 0,
-      energizers: [],
       fright: false,
       frightCount: 0,
     };
@@ -45,7 +43,6 @@ class Game {
       this.gameState.players[playerId] = { ...pacmans[index] };
     });
     this.gameState.gridState = initSquareGridState();
-    this.gameState.energizers = getEnergizers();
     this.gameState.ghosts = getGhosts().map(([x, y, direction]) => ({
       x, y, direction,
     }));
@@ -126,7 +123,7 @@ class Game {
 
   calculateNextGameState = () => {
     const {
-      ghosts, gridState, scatterStart, players, energizers, fright, frightCount,
+      ghosts, gridState, scatterStart, players, fright, frightCount,
     } = this.gameState;
 
     const { ghostsUpdated, moveGhostsCount } = this.moveGhosts({
@@ -136,9 +133,9 @@ class Game {
     Object.keys(players).forEach((player) => {
       const pacman = players[player];
       const {
-        pacmanUpdated, boost, frightMode, count,
+        pacmanUpdated, frightMode, count,
       } = movePacman({
-        pacman, ghostsUpdated, gridState, energizers, fright, frightCount,
+        pacman, ghostsUpdated, gridState, fright, frightCount,
       });
       const isDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated, fright });
       if (isDead) {
@@ -152,7 +149,6 @@ class Game {
 
       this.gameState.frightCount = count;
       this.gameState.fright = frightMode;
-      this.gameState.energizers = boost;
       this.gameState.players[player] = { ...pacman, ...pacmanUpdated, score };
       this.gameState.gridState = gridStateAfterEatingFood;
     });
