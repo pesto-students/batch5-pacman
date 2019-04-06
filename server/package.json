@@ -6,11 +6,9 @@
   "scripts": {
     "start": "nodemon index.js --exec babel-node",
     "test": "jest --no-cache",
-    "pretest": "yarn",
-    "build": "yarn start"
+    "pretest": "yarn"
   },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
@@ -32,6 +30,7 @@
     "@babel/core": "^7.4.0",
     "@babel/node": "^7.2.2",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/preset-env": "^7.4.2",
     "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^24.5.0",
