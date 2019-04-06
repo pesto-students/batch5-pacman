@@ -1,5 +1,5 @@
 import uuidv1 from 'uuid/v1';
-import { GAME_UPDATE } from '../channels';
+import { GAME_UPDATE, GAME_OVER } from '../channels';
 import {
   advanceFrameAfterTime,
   boardCorners,
@@ -17,6 +17,7 @@ import {
   movePacman,
   dieIfOnGhost,
   addPositionsToArray,
+  hasFoodFinished,
 } from './core';
 
 class Game {
@@ -137,7 +138,10 @@ class Game {
         pacman, ghostsUpdated, gridState, fright, frightCount,
       });
       const isDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated, fright });
-      if (isDead) this.endGame();
+      if (isDead) {
+        pacman.alive = false;
+        this.endGame();
+      }
       const {
         score,
         gridStateAfterEatingFood,
@@ -157,12 +161,24 @@ class Game {
     this.gameState.players[playerId].direction = direction;
   };
 
+  hasGameEnded = () => {
+    const { players } = this.gameState;
+    const playerStatus = Object.keys(players).map(player => player.alive);
+    const { isPlayerOneAlive, isPlayerTwoAlive } = playerStatus;
+    return hasFoodFinished(this.gameState) || (!isPlayerOneAlive && !isPlayerTwoAlive);
+  };
+
   startGame = () => {
     this.setInitialGameState();
     // eslint-disable-next-line no-console
     console.log('Game started');
     this.gameState.interval = setInterval(() => {
       this.calculateNextGameState();
+      const gameEndStatus = this.hasGameEnded();
+      if (gameEndStatus) {
+        // eslint-disable-next-line no-undef
+        io.in(this.roomId).emit(GAME_OVER);
+      }
       // eslint-disable-next-line no-undef
       io.in(this.roomId).emit(GAME_UPDATE, this.currentGameState());
     }, advanceFrameAfterTime);

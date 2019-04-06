@@ -6,14 +6,17 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
-  password: {
-    type: String,
+  score: {
+    type: Number,
+    required: true,
+  },
+  googleId: {
+    type: Number,
     required: true,
   },
   email: {
     type: String,
     required: true,
-    unique: true,
   },
 });
 

@@ -138,3 +138,15 @@ export const movePacman = ({
     count,
   };
 };
+
+export const hasFoodFinished = ({ gridState }) => {
+  let food = false;
+  gridState.forEach((row) => {
+    row.forEach((cell) => {
+      if (cell === entityToCode('food')) {
+        food = true;
+      }
+    });
+  });
+  return food;
+};

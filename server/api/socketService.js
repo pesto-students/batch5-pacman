@@ -46,7 +46,6 @@ const socketService = (socket) => {
     socket.on(UPDATE_DIRECTION, games[socket.room].updateDirection);
   });
 
-
   socket.on(GAME_END, () => {
     const gameResult = games[socket.room].getGameResult();
     gameResultsController.saveGame(gameResult);
