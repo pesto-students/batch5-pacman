@@ -17,7 +17,6 @@ class PacmanGame extends Component {
     pacmans: {},
     ghosts: [],
     score: 0,
-    status: 0, // 0 - Not-started, 1 - Progress, 2 - Restart
     gridState: [],
   };
 
@@ -57,37 +56,12 @@ class PacmanGame extends Component {
 
   startGame = () => {
     const { userContext } = this.props;
-    const { status } = this.state;
     const { playerId } = userContext;
-    if (status === 1) {
-      let { score } = this.state;
-      clearInterval(this.animationHandler);
-      score -= 10;
-      this.setState({ status: 0, score });
-      return;
-    }
-    if (status === 2) {
-      this.setInitialGameState();
-      this.setState({
-        score: 0,
-      });
-      this.setState({ status: 1 });
-    }
-    findClientToServerLatencyTime({ playerId });
-    if (status === 0) this.setState({ status: 1 });
     findClientToServerLatencyTime({ playerId });
     getGameUpdate(this.animateGame);
     gameOver(userContext);
     document.addEventListener('keydown', this.setDirection);
   };
-
-  setGameStatus = (status) => {
-    if (status === 'finish') {
-      leaveGame();
-      clearInterval(this.animationHandler);
-      this.setState({ status: 2 });
-    }
-  }
 
   animateGame = ({ newState }) => {
     const {
@@ -121,15 +95,15 @@ class PacmanGame extends Component {
     const gridSize = canvasWidth / cellsInEachRow;
     const { playerId } = userContext;
     const {
-      gridState, pacmans, score, status, ghosts,
+      gridState, pacmans, score, ghosts,
     } = this.state;
     return (
       <GamePage
         startGame={this.startGame}
         score={score}
-        status={status}
         playerId={playerId}
         pacmans={pacmans}
+        status={1}
         render={() => (
           <PacmanBoard
             {...{
