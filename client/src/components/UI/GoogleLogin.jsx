@@ -19,8 +19,8 @@ class GoogleLogin extends Component {
     const { location, history, userContext } = this.props;
     const query = queryString.parse(location.search);
     if (query.token) {
-      const { token, name } = query;
-      userContext.login(name);
+      const { token, name, score } = query;
+      userContext.login(name, score);
       window.localStorage.setItem('jwt', token);
       history.push('/');
     }
@@ -35,7 +35,7 @@ class GoogleLogin extends Component {
 
   render() {
     const { classes, userContext } = this.props;
-    const isLogIn = !!userContext.name;
+    const isLogIn = userContext.username.length > 0;
     const username = localStorage.getItem('username');
     return (
       <>

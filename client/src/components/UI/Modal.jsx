@@ -34,7 +34,7 @@ const styles = theme => ({
 });
 
 class SimpleModal extends React.Component {
-  state = { open: true, mode: 'button' };
+  state = { open: true, btnMode: 'button' };
 
   closeModal = () => {
     this.setState({ open: false });
@@ -54,10 +54,11 @@ class SimpleModal extends React.Component {
     const gameStart = 'GameStart';
     const isGameStart = mode === gameStart;
     const isLoggedIn = userContext.isLogIn;
+    const { score } = userContext;
     return (
       <>
         <Typography variant="h4" id="simple-modal-description">
-          {isGameStart ? 'Welcome to Pacman' : 'Your Final Score is: 454'}
+          {isGameStart ? 'Welcome to Pacman' : `Your Final Score is: ${score}`}
         </Typography>
         <Typography variant="subtitle1" id="simple-modal-description">
           {(!isGameStart && !isLoggedIn) ? 'SignIn to save your score ' : ''}
@@ -83,7 +84,7 @@ class SimpleModal extends React.Component {
   }
 
   toLoaderMode = () => {
-    this.setState({ mode: 'loader' });
+    this.setState({ btnMode: 'loader' });
   }
 
   getLoader = () => {
@@ -98,7 +99,7 @@ class SimpleModal extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { open, mode } = this.state;
+    const { open, btnMode } = this.state;
     const loaderMode = 'loader';
     return (
       <div>
@@ -110,7 +111,7 @@ class SimpleModal extends React.Component {
           <div className={classes.paper}>
             {this.pacManImage()}
             {this.modalLabel()}
-            {mode === loaderMode ? this.getLoader() : this.buttonGroup()}
+            {btnMode === loaderMode ? this.getLoader() : this.buttonGroup()}
 
           </div>
         </Modal>

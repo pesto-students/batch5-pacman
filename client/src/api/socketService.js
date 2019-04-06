@@ -32,7 +32,7 @@ const foundBothPlayer = (ref) => {
   socket.on(ROOM_FULL, (roomID) => {
     // eslint-disable-next-line no-console
     console.log('room full', roomID);
-    ref.setState({ isGameStarted: true });
+    ref.setState({ isGameStarted: true, isGameEnd: false });
   });
 };
 

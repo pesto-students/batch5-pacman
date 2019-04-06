@@ -19,7 +19,10 @@ class PacmanGame extends Component {
     gridState: [],
   };
 
+  mount = false;
+
   componentDidMount() {
+    this.mount = true;
     this.startGame();
   }
 
@@ -46,26 +49,11 @@ class PacmanGame extends Component {
   }
 
   componentWillUnmount() {
+    this.mount = false;
     leaveGame();
   }
 
   startGame = () => {
-    const { status } = this.state;
-    if (status === 1) {
-      let { score } = this.state;
-      clearInterval(this.animationHandler);
-      score -= 10;
-      this.setState({ status: 0, score });
-      return;
-    }
-    if (status === 2) {
-      this.setInitialGameState();
-      this.setState({
-        score: 0,
-      });
-      this.setState({ status: 1 });
-    }
-    if (status === 0) this.setState({ status: 1 });
     getGameUpdate(this.animateGame);
     document.addEventListener('keydown', this.setDirection);
   };
@@ -79,24 +67,25 @@ class PacmanGame extends Component {
   }
 
   animateGame = ({ newState }) => {
-    try {
-      const {
-        players, ghosts, gridState,
-      } = newState;
-
-
-      this.setState({
-        gridState,
-        ghosts,
-        pacmans: players,
-      });
-    } catch (e) {
-      clearInterval(this.animationHandler);
+    const { userContext } = this.props;
+    const { playerId } = userContext;
+    const {
+      players, ghosts, gridState, status,
+    } = newState;
+    const newScore = players[playerId].score;
+    this.setState({
+      gridState,
+      ghosts,
+      pacmans: players,
+    });
+    if (status === 2) {
+      userContext.setScore(newScore);
     }
   }
 
   setDirection = ({ key }) => {
-    const { playerId } = this.props;
+    const { userContext } = this.props;
+    const { playerId } = userContext;
     const newDirection = arrowKeysDirections[key];
     if (newDirection !== undefined) {
       const { pacmans } = this.state;
@@ -137,7 +126,7 @@ class PacmanGame extends Component {
 PacmanGame.propTypes = {
   width: PropTypes.number.isRequired,
   numberofCells: PropTypes.number.isRequired,
-  playerId: PropTypes.string.isRequired,
+  userContext: PropTypes.shape().isRequired,
 };
 
 export default PacmanGame;

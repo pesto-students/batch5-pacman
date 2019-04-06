@@ -50,7 +50,9 @@ class ButtonGroup extends React.Component {
   }
 
   getButtonsEndGame = () => {
-    const { classes, history, location } = this.props;
+    const {
+      classes, history, location, userContext,
+    } = this.props;
     const { displayPlayButton } = this.state;
     if (displayPlayButton) {
       return (
@@ -74,7 +76,7 @@ class ButtonGroup extends React.Component {
     }
     return (
       <>
-        <GoogleLogin history={history} location={location} />
+        <GoogleLogin history={history} location={location} userContext={userContext} />
         <Button
           variant="contained"
           className={classes.button}

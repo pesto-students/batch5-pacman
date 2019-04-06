@@ -13,13 +13,13 @@ const App = ({ history, location }) => (
       <>
         <NavBar userContext={context} />
         <div className="container">
-          {!context.isGameStarted
-            ? <SimpleModal history={history} location={location} mode="GameStart" userContext={context} />
+          {context.isGameEnd || !context.isGameStarted
+            ? <SimpleModal history={history} location={location} mode={context.isGameEnd ? 'GameEnd' : 'GameStart'} userContext={context} />
             : (
               <PacmanGame
                 width={boardEdgeInPixel}
                 numberofCells={getBoard().length}
-                playerId={context.playerId}
+                userContext={context}
               />
             )
           }
