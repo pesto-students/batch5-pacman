@@ -61,13 +61,32 @@ const scoreHeader = {
 };
 const ScoreCard = (props) => {
   // eslint-disable-next-line react/prop-types
-  const { classes, isDetailed, score: rows2 } = props;
+  const {
+    classes,
+    isDetailed,
+    playerId,
+    pacmans,
+  } = props;
   const rows = [
     { name: 'Food', playerOne: 320, playerTwo: 230 },
     { name: 'Energizer', playerOne: 320, playerTwo: 230 },
     { name: 'Ghosts', playerOne: 320, playerTwo: 230 },
     { name: 'Total', playerOne: 320, playerTwo: 230 },
   ];
+
+  const hasPlayer = Object.keys(pacmans).length > 0;
+  let playerScores = [];
+  if (hasPlayer) {
+    playerScores = Object.keys(pacmans).map((key) => {
+      if (key === playerId) {
+        pacmans[key].isHost = true;
+      }
+      return pacmans[key];
+    });
+  }
+
+  const [player1, player2] = playerScores;
+
   return (
     <Card className={classes.card}>
       <CardContent className={classes.cardContent}>
@@ -103,18 +122,28 @@ const ScoreCard = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows2.map(({
-                  name, score, isAlive, isHost,
-                }) => (
-                  <TableRow className={classes.row} key={`${name}+${score}`}>
-                    <CustomTableCell component="th" scope="row">
-                      <span>{name}</span>
-                      <span>{isHost ? (<span className="blink" />) : null}</span>
-                      <span style={skullLogo}>{isAlive ? null : (<img alt="Dead" src={skull} />)}</span>
-                    </CustomTableCell>
-                    <CustomTableCell align="right" className={classes.score}>{score}</CustomTableCell>
-                  </TableRow>
-                ))}
+                {hasPlayer
+                  ? (
+                    <>
+                      <TableRow className={classes.row} key={`PLayer 1 ${player1.score}`}>
+                        <CustomTableCell component="th" scope="row">
+                          <span>{player1.isHost ? 'You' : 'PLayer 2'}</span>
+                          <span>{player1.isHost ? (<span className="blink" />) : null}</span>
+                          <span style={skullLogo}>{player1.isAlive ? null : (<img alt="Dead" src={skull} />)}</span>
+                        </CustomTableCell>
+                        <CustomTableCell align="right" className={classes.score}>{player1.score}</CustomTableCell>
+                      </TableRow>
+                      <TableRow className={classes.row} key={`Player 2 ${player2.score}`}>
+                        <CustomTableCell component="th" scope="row">
+                          <span>{player2.isHost ? 'You' : 'PLayer 2'}</span>
+                          <span>{player2.isHost ? (<span className="blink" />) : null}</span>
+                          <span style={skullLogo}>{player2.isAlive ? null : (<img alt="Dead" src={skull} />)}</span>
+                        </CustomTableCell>
+                        <CustomTableCell align="right" className={classes.score}>{player2.score}</CustomTableCell>
+                      </TableRow>
+                    </>
+                  )
+                  : <TableRow><CustomTableCell component="th" scope="row"><span>loading...</span></CustomTableCell></TableRow>}
               </TableBody>
             </Table>
           )
@@ -127,6 +156,8 @@ const ScoreCard = (props) => {
 ScoreCard.propTypes = {
   classes: PropTypes.shape().isRequired,
   isDetailed: PropTypes.bool,
+  pacmans: PropTypes.shape().isRequired,
+  playerId: PropTypes.string.isRequired,
 };
 
 ScoreCard.defaultProps = {
