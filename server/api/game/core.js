@@ -94,22 +94,37 @@ export const addPositionsToArray = (arr, index) => {
   return arr;
 };
 
-export const dieIfOnGhost = ({ ghosts, pacman }) => {
+export const dieIfOnGhost = ({ ghosts, pacman, fright }) => {
+  if (fright) return false;
   if (ifAtGhosts({ ghosts, pacman })) {
     return true;
   }
   return false;
 };
 
-export const movePacman = ({ pacman, ghostsUpdated, gridState }) => {
+
+export const movePacman = ({
+  pacman, ghostsUpdated, gridState, fright, frightCount,
+}) => {
   const { x, y, direction } = pacman;
+  let frightMode = fright;
+  let count = frightCount;
+  if (gridState[x][y] === entityToCode('energizer')) {
+    frightMode = true;
+  }
+  if (count > 100) {
+    frightMode = false;
+    count = 0;
+  }
+  if (frightMode) count += 1;
 
-  const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman });
-
+  const pacmanDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman, frightMode });
   if (pacmanDead) {
     return {
       status: 2,
       pacmanUpdated: pacman,
+      frightMode,
+      count,
     };
   }
 
@@ -119,6 +134,8 @@ export const movePacman = ({ pacman, ghostsUpdated, gridState }) => {
   return {
     pacmanUpdated: { ...pacman, ...newLocation },
     status: 0,
+    frightMode,
+    count,
   };
 };
 

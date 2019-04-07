@@ -29,6 +29,8 @@ class Game {
       players: { [playerId]: {} },
       gridState: [],
       status: 0,
+      fright: false,
+      frightCount: 0,
     };
     this.available = true;
     this.roomId = uuidv1();
@@ -62,11 +64,23 @@ class Game {
 
   endGame = () => {
     clearInterval(this.gameState.interval);
+    this.gameState.status = 2;
   };
 
-  moveGhosts = ({ ghosts, gridState, scatterStart }) => {
+  ifPacmanOnGhost = (ghost) => {
+    const { players } = this.gameState;
+    const { x, y } = ghost;
+    const canConsumeGhost = Object.values(players)
+      .findIndex(player => (player.x === x) && (player.y === y));
+    if (canConsumeGhost !== -1) return true;
+    return false;
+  }
+
+  moveGhosts = ({
+    ghosts, gridState, scatterStart, fright,
+  }) => {
     let { moveGhostsCount, scatterGhostspath } = this.gameState;
-    moveGhostsCount += 1;
+    if (!fright) moveGhostsCount += 1;
     const scatterEnd = scatterStart + 55;
     if (moveGhostsCount === scatterStart) {
       const gridWithWeights = getGridwithWeights(boardTranspose);
@@ -94,7 +108,13 @@ class Game {
     }
 
     const ghostsUpdated = ghosts.map(
-      ({ x, y, direction }) => getRandomAdjacentAvailableCell(gridState, { x, y, direction }),
+      ({ x, y, direction }) => {
+        if (fright) {
+          const pacmanOnGhost = this.ifPacmanOnGhost({ x, y });
+          if (pacmanOnGhost) return { x: 13, y: 15, direction: 'LEFT' };
+        }
+        return getRandomAdjacentAvailableCell(gridState, { x, y, direction });
+      },
     );
     return {
       ghostsUpdated, moveGhostsCount,
@@ -103,18 +123,21 @@ class Game {
 
   calculateNextGameState = () => {
     const {
-      ghosts, gridState, scatterStart, players,
+      ghosts, gridState, scatterStart, players, fright, frightCount,
     } = this.gameState;
 
-    const { ghostsUpdated, moveGhostsCount } = this.moveGhosts({ ghosts, gridState, scatterStart });
+    const { ghostsUpdated, moveGhostsCount } = this.moveGhosts({
+      ghosts, gridState, scatterStart, fright,
+    });
 
     Object.keys(players).forEach((player) => {
       const pacman = players[player];
-      const { pacmanUpdated } = movePacman({
-        pacman, ghostsUpdated, gridState,
+      const {
+        pacmanUpdated, frightMode, count,
+      } = movePacman({
+        pacman, ghostsUpdated, gridState, fright, frightCount,
       });
-
-      const isDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
+      const isDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated, fright });
       if (isDead) {
         pacman.alive = false;
       }
@@ -123,7 +146,8 @@ class Game {
           score,
           gridStateAfterEatingFood,
         } = eatFood({ pacman, gridState });
-
+        this.gameState.frightCount = count;
+        this.gameState.fright = frightMode;
         this.gameState.players[player] = { ...pacman, ...pacmanUpdated, score };
         this.gameState.gridState = gridStateAfterEatingFood;
         this.gameState.status = isDead ? 2 : 0;
