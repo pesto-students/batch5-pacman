@@ -9,6 +9,7 @@ const {
   GAME_UPDATE,
   ROOM_FULL,
   ROOM_CREATED,
+  GAME_OVER,
 } = channels;
 
 const socket = openSocket(process.env.REACT_APP_SERVER_URL);
@@ -42,6 +43,15 @@ const getGameUpdate = (cb) => {
   });
 };
 
+const gameOver = (context) => {
+  socket.on(GAME_OVER, (newState) => {
+    const { playerId } = context;
+    const { players } = newState;
+    const newScore = players[playerId].score;
+    context.setScore(newScore);
+  });
+};
+
 const updateNewDirection = ({ playerId, direction }) => {
   socket.emit(UPDATE_DIRECTION, { playerId, direction });
 };
@@ -53,4 +63,5 @@ export {
   getGameUpdate,
   foundBothPlayer,
   updateNewDirection,
+  gameOver,
 };
