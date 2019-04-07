@@ -4,6 +4,7 @@ import {
   leaveGame,
   getGameUpdate,
   updateNewDirection,
+  gameOver,
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import { arrowKeysDirections } from './constants';
@@ -54,7 +55,9 @@ class PacmanGame extends Component {
   }
 
   startGame = () => {
+    const { userContext } = this.props;
     getGameUpdate(this.animateGame);
+    gameOver(userContext);
     document.addEventListener('keydown', this.setDirection);
   };
 
@@ -67,19 +70,15 @@ class PacmanGame extends Component {
   }
 
   animateGame = ({ newState }) => {
-    const { userContext } = this.props;
-    const { playerId } = userContext;
     const {
-      players, ghosts, gridState, status,
+      players, ghosts, gridState,
     } = newState;
-    const newScore = players[playerId].score;
-    this.setState({
-      gridState,
-      ghosts,
-      pacmans: players,
-    });
-    if (status === 2) {
-      userContext.setScore(newScore);
+    if (this.mount) {
+      this.setState({
+        gridState,
+        ghosts,
+        pacmans: players,
+      });
     }
   }
 

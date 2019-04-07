@@ -7,6 +7,7 @@ const channels = {
   ROOM_CREATED: 'room-created',
   GAME_UPDATE: 'game-update',
   ROOM_FULL: 'room-full',
+  GAME_OVER: 'game-over',
 };
 
 export default channels;

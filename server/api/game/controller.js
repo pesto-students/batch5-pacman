@@ -117,16 +117,17 @@ class Game {
       const isDead = dieIfOnGhost({ ghosts: ghostsUpdated, pacman: pacmanUpdated });
       if (isDead) {
         pacman.alive = false;
-        this.endGame();
       }
-      const {
-        score,
-        gridStateAfterEatingFood,
-      } = eatFood({ pacman, gridState });
+      if (pacman.alive) {
+        const {
+          score,
+          gridStateAfterEatingFood,
+        } = eatFood({ pacman, gridState });
 
-      this.gameState.players[player] = { ...pacman, ...pacmanUpdated, score };
-      this.gameState.gridState = gridStateAfterEatingFood;
-      this.gameState.status = isDead ? 2 : 0;
+        this.gameState.players[player] = { ...pacman, ...pacmanUpdated, score };
+        this.gameState.gridState = gridStateAfterEatingFood;
+        this.gameState.status = isDead ? 2 : 0;
+      }
     });
 
     this.gameState.moveGhostsCount = moveGhostsCount;
@@ -139,9 +140,9 @@ class Game {
 
   hasGameEnded = () => {
     const { players } = this.gameState;
-    const playerStatus = Object.keys(players).map(player => player.alive);
-    const { isPlayerOneAlive, isPlayerTwoAlive } = playerStatus;
-    return hasFoodFinished(this.gameState) || (!isPlayerOneAlive && !isPlayerTwoAlive);
+    const playerStatus = Object.keys(players).map(player => players[player].alive);
+    const [isPlayerOneAlive, isPlayerTwoAlive] = playerStatus;
+    return !hasFoodFinished(this.gameState) || (!isPlayerOneAlive && !isPlayerTwoAlive);
   };
 
   startGame = () => {
@@ -153,7 +154,8 @@ class Game {
       const gameEndStatus = this.hasGameEnded();
       if (gameEndStatus) {
         // eslint-disable-next-line no-undef
-        io.in(this.roomId).emit(GAME_OVER);
+        io.in(this.roomId).emit(GAME_OVER, this.currentGameState());
+        this.endGame();
       }
       // eslint-disable-next-line no-undef
       io.in(this.roomId).emit(GAME_UPDATE, this.currentGameState());
