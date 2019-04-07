@@ -111,7 +111,7 @@ class Game {
       ({ x, y, direction }) => {
         if (fright) {
           const pacmanOnGhost = this.ifPacmanOnGhost({ x, y });
-          if (pacmanOnGhost) return { x: 13, y: 15, direction: 'LEFT' };
+          if (pacmanOnGhost) return { x: 12, y: 12, direction: 'LEFT' };
         }
         return getRandomAdjacentAvailableCell(gridState, { x, y, direction });
       },
