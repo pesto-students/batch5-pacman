@@ -13,16 +13,17 @@ describe('<ScoreCard />', () => {
       name: 'player 2', score: 0, isAlive: false, isHost: false,
     },
   ];
+  const pacmans = {};
   it('should render just one Table at a time', () => {
-    const wrapper = shallow(<ScoreCard score={score} />);
+    const wrapper = shallow(<ScoreCard score={score} pacmans={pacmans} />);
     expect(wrapper.dive().find(Table).length).toBe(1);
   });
   it('should render three Rows if its not detailed scorecard', () => {
-    const wrapper = shallow(<ScoreCard score={score} />);
-    expect(wrapper.dive().find(TableRow).length).toBe(3);
+    const wrapper = shallow(<ScoreCard score={score} pacmans={pacmans} />);
+    expect(wrapper.dive().find(TableRow).length).toBe(2);
   });
   it('should render five Rows if its detailed scorecard', () => {
-    const wrapper = shallow(<ScoreCard score={score} isDetailed />);
+    const wrapper = shallow(<ScoreCard score={score} isDetailed pacmans={pacmans} />);
     expect(wrapper.dive().find(TableRow).length).toBe(5);
   });
 });

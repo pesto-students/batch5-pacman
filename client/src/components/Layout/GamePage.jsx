@@ -17,7 +17,7 @@ const styles = () => ({
 
 const GamePage = (props) => {
   const {
-    render, classes, startGame, score, status,
+    render, classes, startGame, score, status, playerId, pacmans,
   } = props;
   const gameScore = [
     {
@@ -40,7 +40,7 @@ const GamePage = (props) => {
           {render()}
         </Grid>
         <Grid item container direction="column" alignItems="center" xs={12} sm={4} md={3} lg={3}>
-          <ScoreCard score={gameScore} />
+          <ScoreCard score={gameScore} playerId={playerId} pacmans={pacmans} />
           <Card className={classes.card}>
             <CardContent>
               <Button variant="outlined" size="medium" color="primary" onClick={startGame}>
@@ -64,6 +64,8 @@ GamePage.propTypes = {
   render: PropTypes.func.isRequired,
   startGame: PropTypes.func.isRequired,
   classes: PropTypes.shape().isRequired,
+  pacmans: PropTypes.shape().isRequired,
+  playerId: PropTypes.string.isRequired,
 };
 
 GamePage.defaultTypes = {

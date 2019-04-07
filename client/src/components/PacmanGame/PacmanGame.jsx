@@ -116,8 +116,9 @@ class PacmanGame extends Component {
   }
 
   render() {
-    const { width: canvasWidth, numberofCells: cellsInEachRow } = this.props;
+    const { width: canvasWidth, numberofCells: cellsInEachRow, userContext } = this.props;
     const gridSize = canvasWidth / cellsInEachRow;
+    const { playerId } = userContext;
     const {
       gridState, pacmans, score, status, ghosts,
     } = this.state;
@@ -126,6 +127,8 @@ class PacmanGame extends Component {
         startGame={this.startGame}
         score={score}
         status={status}
+        playerId={playerId}
+        pacmans={pacmans}
         render={() => (
           <PacmanBoard
             {...{
