@@ -44,7 +44,7 @@ class SimpleModal extends React.Component {
     const { classes } = this.props;
     return (
       <Grid container justify="center" alignItems="center">
-        <Avatar alt="Remy Sharp" src="/images/pac.png" className={classes.bigAvatar} />
+        <Avatar alt="Pacman Image" src="/images/pac.svg" className={classes.bigAvatar} />
       </Grid>
     );
   }
