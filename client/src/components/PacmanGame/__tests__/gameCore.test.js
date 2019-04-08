@@ -1,4 +1,3 @@
-import { entityApplier } from '../gameCore';
 import { entityToCode, codeToEntity } from '../constants';
 
 describe('codeToEntity', () => {
@@ -40,20 +39,5 @@ describe('entityToCode', () => {
   });
   it('should be 5 for entity pacman', () => {
     expect(entityToCode('pacman')).toEqual(5);
-  });
-});
-
-describe('entityApplier', () => {
-  it('should should apply entityCode at correct location', () => {
-    const grid = [
-      [0, 0],
-      [0, 0],
-    ];
-    const entityLocation = [[1, 1]];
-    const finalGrid = [
-      [0, 0],
-      [0, 2],
-    ];
-    expect(entityApplier(grid, entityLocation, 2)).toEqual(finalGrid);
   });
 });
