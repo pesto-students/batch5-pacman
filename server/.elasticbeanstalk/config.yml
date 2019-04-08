@@ -2,5 +2,5 @@ global:
   application_name: pacman
   default_ec2_keyname: XXXXXX
   default_platform: Node.js running on 64bit Amazon Linux/4.8.2
-  default_region: us-east-2
+  default_region: ap-south-1
   sc: git
