@@ -12,6 +12,7 @@ const PacmanBoard = ({
   players,
   clientPrediction,
   playerId: myId,
+  fright,
 }) => {
   const nonMovingCells = gridState
     .map((row, rowIndex) => (row.map((_, columnIndex) => {
@@ -48,6 +49,7 @@ const PacmanBoard = ({
             gridSize={gridSize}
             ghostIndex={index}
             entity="ghost"
+            fright={fright}
           />
         ))}
       </Layer>
@@ -68,6 +70,7 @@ PacmanBoard.propTypes = {
   }).isRequired,
   clientPrediction: PropTypes.bool.isRequired,
   playerId: PropTypes.string.isRequired,
+  fright: PropTypes.bool.isRequired,
 };
 
 export default PacmanBoard;

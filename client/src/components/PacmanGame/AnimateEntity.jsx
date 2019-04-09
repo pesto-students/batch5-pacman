@@ -13,9 +13,9 @@ class AnimateEntity extends Component {
   }
 
   killerCell = ({
-    entity, gridSize, ghostIndex,
+    gridSize, ghostIndex, fright,
   }) => {
-    const src = (entity === 'scatterGhost') ? ghostImages[4] : ghostImages[ghostIndex];
+    const src = (fright) ? ghostImages[4] : ghostImages[ghostIndex];
     const image = makeSquareImgWithSrc({ src, size: gridSize });
     return (
       <Image
@@ -63,12 +63,12 @@ class AnimateEntity extends Component {
   render() {
     const {
       location: { x: gridX, y: gridY, direction },
-      gridSize, entity, ghostIndex, clientPrediction, self,
+      gridSize, entity, ghostIndex, clientPrediction, self, fright,
     } = this.props;
 
     if (entity === 'ghost' || entity === 'scatterGhost') {
       return this.killerCell({
-        gridX, gridY, gridSize, entity, ghostIndex,
+        gridX, gridY, gridSize, entity, ghostIndex, fright,
       });
     }
     return this.pacmanCell({
@@ -84,6 +84,7 @@ AnimateEntity.propTypes = {
   entity: PropTypes.string.isRequired,
   self: PropTypes.bool,
   clientPrediction: PropTypes.bool,
+  fright: PropTypes.bool,
 };
 
 AnimateEntity.defaultProps = {
@@ -92,6 +93,7 @@ AnimateEntity.defaultProps = {
     y: 0,
   },
   self: false,
+  fright: false,
   clientPrediction: false,
   ghostIndex: 0,
 };
