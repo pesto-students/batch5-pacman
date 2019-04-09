@@ -58,7 +58,7 @@ class PacmanRouter extends React.Component {
     const { score, isLogIn } = this.state;
     const updatedScore = Number(score) > Number(newScore) ? Number(score) : Number(newScore);
     this.setState({
-      score: updatedScore,
+      score: newScore,
       isGameEnd: true,
       isGameStarted: false,
       isMulti: false,
