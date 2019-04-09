@@ -127,7 +127,7 @@ const ScoreCard = (props) => {
                     <>
                       <TableRow className={classes.row} key={`PLayer 1 ${player1.score}`}>
                         <CustomTableCell component="th" scope="row">
-                          <span>{player1.isHost ? 'You' : 'PLayer 2'}</span>
+                          <span>PLayer 1</span>
                           <span>{player1.isHost ? (<span className="blink" />) : null}</span>
                           <span style={skullLogo}>{player1.alive ? null : (<img alt="Dead" src={skull} />)}</span>
                         </CustomTableCell>
@@ -135,7 +135,7 @@ const ScoreCard = (props) => {
                       </TableRow>
                       <TableRow className={classes.row} key={`Player 2 ${player2.score}`}>
                         <CustomTableCell component="th" scope="row">
-                          <span>{player2.isHost ? 'You' : 'PLayer 2'}</span>
+                          <span>PLayer 2</span>
                           <span>{player2.isHost ? (<span className="blink" />) : null}</span>
                           <span style={skullLogo}>{player2.alive ? null : (<img alt="Dead" src={skull} />)}</span>
                         </CustomTableCell>
