@@ -14,10 +14,9 @@ Build the Multiplayer PacMan game which would work smoothly with various fun fea
  - There are four Ghosts in total.
  - Ghosts are initially in the “monster pen”  which is at the center of the maze, emerging from it.
  - On every intersection, ghost direction is computed pseudorandomly.
- - If PacMan gets captured by a ghost, a life is lost and then the ghosts are returned to their pen.
  - There are 244 dots in the maze, 240 normal dots with ten points each and four energizers with 50 points each.
  - When the PacMan consumes the ghosts, 200 points are added.
- - Bonus Symbols (fruits) - Two in total.
+ - Bonus Symbols (fruits) - Four in total.
 
 
 ### Features:
@@ -36,7 +35,7 @@ Build the Multiplayer PacMan game which would work smoothly with various fun fea
 
 - Project management: GitHub Projects
 - Game Rendering: Canvas
-- Deployment: Heroku (Backend), Netlify(Frontend)
+- Deployment: AWS (Backend), Netlify(Frontend)
 - Authentication: Token based (JWT) / Passport.js
 - Database: Mongodb (mlab)
 - CI/CD: CircleCI
@@ -44,5 +43,4 @@ Build the Multiplayer PacMan game which would work smoothly with various fun fea
 ### URLS: 
 
 - Game-staging: https://youthful-dubinsky-b46f9a.netlify.com/
-- Server URL production: https://batch5-pacman.herokuapp.com/
-- Server URL staging: https://pacman-staging.herokuapp.com/
+- Server URL: http://pacman.us-east-2.elasticbeanstalk.com/
