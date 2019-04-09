@@ -28,8 +28,12 @@ class AnimateEntity extends Component {
     );
   }
 
-  pacmanCell = ({ gridSize, direction }) => {
-    const image = makeSquareImgWithSrc({ src: pacmanImages[direction], size: gridSize });
+  pacmanCell = ({
+    gridSize, direction, clientPrediction, self,
+  }) => {
+    let src = (self) ? pacmanImages.SELF[direction] : pacmanImages[direction];
+    src = (clientPrediction && self) ? pacmanImages.PREDICT[direction] : src;
+    const image = makeSquareImgWithSrc({ src, size: gridSize });
     return (
       <Image
         ref={(node) => {
@@ -58,7 +62,8 @@ class AnimateEntity extends Component {
 
   render() {
     const {
-      location: { x: gridX, y: gridY, direction }, gridSize, entity, ghostIndex,
+      location: { x: gridX, y: gridY, direction },
+      gridSize, entity, ghostIndex, clientPrediction, self,
     } = this.props;
 
     if (entity === 'ghost' || entity === 'scatterGhost') {
@@ -67,7 +72,7 @@ class AnimateEntity extends Component {
       });
     }
     return this.pacmanCell({
-      gridSize, entity, direction,
+      gridSize, entity, direction, clientPrediction, self,
     });
   }
 }
@@ -77,6 +82,8 @@ AnimateEntity.propTypes = {
   gridSize: PropTypes.number.isRequired,
   ghostIndex: PropTypes.number,
   entity: PropTypes.string.isRequired,
+  self: PropTypes.bool,
+  clientPrediction: PropTypes.bool,
 };
 
 AnimateEntity.defaultProps = {
@@ -84,6 +91,8 @@ AnimateEntity.defaultProps = {
     x: 0,
     y: 0,
   },
+  self: false,
+  clientPrediction: false,
   ghostIndex: 0,
 };
 

@@ -10,6 +10,17 @@ import pacmanUp from '../../sprites/pacman/up.png';
 import pacmanDown from '../../sprites/pacman/down.png';
 import pacmanRight from '../../sprites/pacman/right.png';
 import pacmanLeft from '../../sprites/pacman/left.png';
+
+import myPacmanUp from '../../sprites/pacman/myUp.png';
+import myPacmanDown from '../../sprites/pacman/myDown.png';
+import myPacmanRight from '../../sprites/pacman/myRight.png';
+import myPacmanLeft from '../../sprites/pacman/myLeft.png';
+
+import predictPacmanUp from '../../sprites/pacman/predictUp.png';
+import predictPacmanDown from '../../sprites/pacman/predictDown.png';
+import predictPacmanRight from '../../sprites/pacman/predictRight.png';
+import predictPacmanLeft from '../../sprites/pacman/predictLeft.png';
+
 import pacmanClose from '../../sprites/pacman/close.png';
 
 export const ghostImages = [
@@ -25,6 +36,18 @@ export const pacmanImages = {
   DOWN: pacmanDown,
   RIGHT: pacmanRight,
   LEFT: pacmanLeft,
+  SELF: {
+    UP: myPacmanUp,
+    DOWN: myPacmanDown,
+    RIGHT: myPacmanRight,
+    LEFT: myPacmanLeft,
+  },
+  PREDICT: {
+    UP: predictPacmanUp,
+    DOWN: predictPacmanDown,
+    RIGHT: predictPacmanRight,
+    LEFT: predictPacmanLeft,
+  },
   CLOSE: pacmanClose,
 };
 
@@ -106,7 +129,8 @@ export const getPacman = () => [13, 14, 'RIGHT'];
 
 export const boardEdgeInPixel = Math.min(window.innerWidth, window.innerHeight) * 0.65;
 
-export const advanceFrameAfterTime = 0.70 * 1000;
+// export const advanceFrameAfterTime = 1.0 * 1000;
+export const advanceFrameAfterTime = 0.50 * 1000;
 
 export const entitiesAnimationDurationInSecond = 0.50;
 
