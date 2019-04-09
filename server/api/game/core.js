@@ -86,7 +86,7 @@ export const ifAtGhosts = ({ ghosts, pacman }) => {
 };
 
 export const addPositionsToArray = (arr, index) => {
-  const scatterTime = 55;
+  const scatterTime = 25;
   if (arr.length < scatterTime) {
     arr.push(boardCorners[index]);
     return addPositionsToArray(arr, index);
@@ -112,7 +112,7 @@ export const movePacman = ({
   if (gridState[x][y] === entityToCode('energizer')) {
     frightMode = true;
   }
-  if (count > 100) {
+  if (count > 70) {
     frightMode = false;
     count = 0;
   }
