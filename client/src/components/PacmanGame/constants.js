@@ -36,7 +36,7 @@ export const pacmanImages = {
   DOWN: pacmanDown,
   RIGHT: pacmanRight,
   LEFT: pacmanLeft,
-  SELF: {
+  OTHER: {
     UP: myPacmanUp,
     DOWN: myPacmanDown,
     RIGHT: myPacmanRight,
