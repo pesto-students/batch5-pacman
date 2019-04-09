@@ -129,7 +129,7 @@ const ScoreCard = (props) => {
                         <CustomTableCell component="th" scope="row">
                           <span>{player1.isHost ? 'You' : 'PLayer 2'}</span>
                           <span>{player1.isHost ? (<span className="blink" />) : null}</span>
-                          <span style={skullLogo}>{player1.isAlive ? null : (<img alt="Dead" src={skull} />)}</span>
+                          <span style={skullLogo}>{player1.alive ? null : (<img alt="Dead" src={skull} />)}</span>
                         </CustomTableCell>
                         <CustomTableCell align="right" className={classes.score}>{player1.score}</CustomTableCell>
                       </TableRow>
@@ -137,7 +137,7 @@ const ScoreCard = (props) => {
                         <CustomTableCell component="th" scope="row">
                           <span>{player2.isHost ? 'You' : 'PLayer 2'}</span>
                           <span>{player2.isHost ? (<span className="blink" />) : null}</span>
-                          <span style={skullLogo}>{player2.isAlive ? null : (<img alt="Dead" src={skull} />)}</span>
+                          <span style={skullLogo}>{player2.alive ? null : (<img alt="Dead" src={skull} />)}</span>
                         </CustomTableCell>
                         <CustomTableCell align="right" className={classes.score}>{player2.score}</CustomTableCell>
                       </TableRow>
