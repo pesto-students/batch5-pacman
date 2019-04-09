@@ -31,7 +31,7 @@ class AnimateEntity extends Component {
   pacmanCell = ({
     gridSize, direction, clientPrediction, self,
   }) => {
-    let src = (self) ? pacmanImages.SELF[direction] : pacmanImages[direction];
+    let src = (self) ? pacmanImages[direction] : pacmanImages.OTHER[direction];
     src = (clientPrediction && self) ? pacmanImages.PREDICT[direction] : src;
     const image = makeSquareImgWithSrc({ src, size: gridSize });
     return (
