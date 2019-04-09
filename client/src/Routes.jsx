@@ -4,12 +4,15 @@ import axios from 'axios';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import uuid from 'uuid';
 import App from './App';
-import { Provider } from './api/userContext';
+import Leaderboard from './components/Layout/LeaderBoard';
+import NavBar from './components/UI/NavBar';
+import { Provider, Consumer } from './api/userContext';
 import {
   createSocketConnection,
   joinGame,
   foundBothPlayer,
 } from './api/socketService';
+
 
 const serverUrl = process.env.REACT_APP_SERVER_URL || 'http://localhost:9000';
 
@@ -76,17 +79,27 @@ class PacmanRouter extends React.Component {
       username,
       score,
     })
-      .then(() => {})
-      .catch(() => {});
+      .then(() => { })
+      .catch(() => { });
   };
 
   render() {
     return (
       <Provider value={this.state}>
         <BrowserRouter>
-          <Switch>
-            <Route path="/" component={App} />
-          </Switch>
+          <Consumer>
+            {context => (
+              <div>
+                <NavBar userContext={context} />
+                <Switch>
+                  <Route path="/leaderboard" component={Leaderboard} />
+                  <Route path="/" render={routeProps => (<App {...routeProps} context={context} />)} />
+                </Switch>
+              </div>
+            )
+            }
+          </Consumer>
+
         </BrowserRouter>
       </Provider>
     );
