@@ -106,11 +106,9 @@ export const getPacman = () => [13, 14, 'RIGHT'];
 
 export const boardEdgeInPixel = Math.min(window.innerWidth, window.innerHeight) * 0.65;
 
-const framesPerSecond = 2;
+export const advanceFrameAfterTime = 0.70 * 1000;
 
-export const advanceFrameAfterTime = 1000 / framesPerSecond;
-
-export const entitiesAnimationDurationInSecond = 1 / framesPerSecond;
+export const entitiesAnimationDurationInSecond = 0.50;
 
 export const arrowKeysDirections = {
   ArrowLeft: 'LEFT',

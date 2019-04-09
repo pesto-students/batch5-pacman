@@ -6,15 +6,18 @@ import {
   updateNewDirection,
   gameOver,
   findClientToServerLatencyTime,
+  syncUpdates,
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
-import { arrowKeysDirections } from './constants';
-import { getObjectDiffs } from './gameCore';
+import { arrowKeysDirections, advanceFrameAfterTime } from './constants';
+import {
+  getObjectDiffs, predictPacmanMove, predictFoodEat,
+} from './gameCore';
 import PacmanBoard from './PacmanBoard';
 
 class PacmanGame extends Component {
   state = {
-    pacmans: {},
+    players: {},
     ghosts: [],
     score: 0,
     gridState: [],
@@ -24,6 +27,7 @@ class PacmanGame extends Component {
 
   componentDidMount() {
     this.mount = true;
+    syncUpdates({ syncFn: this.predictPacman, frameRate: advanceFrameAfterTime });
     this.startGame();
   }
 
@@ -54,25 +58,64 @@ class PacmanGame extends Component {
     leaveGame();
   }
 
+  predictPacman = () => {
+    const { userContext: { playerId } } = this.props;
+    const { players, gridState, ghosts } = this.state;
+    if (players[playerId] === undefined) {
+      return;
+    }
+    const { pacmanUpdated } = predictPacmanMove({ pacman: players[playerId], gridState });
+    players[playerId] = pacmanUpdated;
+
+    const { gridStateAfterEating } = predictFoodEat({ pacmanUpdated, gridState });
+
+    // render the new gridState and pacman
+    // console.log('triggerPredictionAt', new Date().getTime());
+    const newState = {
+      players,
+      gridState: gridStateAfterEating,
+      // gridState,
+      ghosts,
+    };
+    this.animateGame({ newState });
+
+    // For server reconciliation,
+    // onsocket update, compare and update to correct state
+    // then animate
+  }
+
   startGame = () => {
     const { userContext } = this.props;
     const { playerId } = userContext;
     findClientToServerLatencyTime({ playerId });
     getGameUpdate(this.animateGame);
+
     gameOver(userContext);
     document.addEventListener('keydown', this.setDirection);
+    // setInterval(this.predictPacman, advanceFrameAfterTime);
   };
 
   animateGame = ({ newState }) => {
-    const {
-      players, ghosts, gridState,
-    } = newState;
     if (this.mount) {
-      this.setState({
-        gridState,
-        ghosts,
-        pacmans: players,
-      });
+      try {
+        const {
+          players, ghosts, gridState,
+        } = newState;
+
+        this.setState({
+          gridState,
+          ghosts,
+          players,
+        });
+      } catch (e) {
+        clearInterval(this.predictPacman);
+        // eslint-disable-next-line no-console
+        console.log('Error', e.stack);
+        // eslint-disable-next-line no-console
+        console.log('Error', e.name);
+        // eslint-disable-next-line no-console
+        console.log('Error', e.message);
+      }
     }
   }
 
@@ -81,11 +124,14 @@ class PacmanGame extends Component {
     const { playerId } = userContext;
     const newDirection = arrowKeysDirections[key];
     if (newDirection !== undefined) {
-      const { pacmans } = this.state;
-      const { direction: oldDirection } = pacmans[playerId] !== undefined
-        ? pacmans[playerId] : { direction: { x: 13, y: 14, direction: 'RIGHT' } };
+      const { players } = this.state;
+      const { direction: oldDirection } = players[playerId] !== undefined
+        ? players[playerId] : { direction: { x: 13, y: 14, direction: 'RIGHT' } };
       if (newDirection !== oldDirection) {
         updateNewDirection({ playerId, direction: newDirection });
+        players[playerId].direction = newDirection;
+        this.setState({ players });
+        // this.predictPacman();
       }
     }
   }
@@ -95,21 +141,21 @@ class PacmanGame extends Component {
     const gridSize = canvasWidth / cellsInEachRow;
     const { playerId } = userContext;
     const {
-      gridState, pacmans, score, ghosts,
+      gridState, players, score, ghosts,
     } = this.state;
     return (
       <GamePage
         startGame={this.startGame}
         score={score}
         playerId={playerId}
-        pacmans={pacmans}
+        players={players}
         status={1}
         render={() => (
           <PacmanBoard
             {...{
               gridSize,
               gridState,
-              pacmans,
+              players,
               ghosts,
             }}
           />

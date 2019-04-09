@@ -12,6 +12,7 @@ const {
   ROOM_CREATED,
   GAME_OVER,
   PING,
+  SYNC,
 } = channels;
 
 const socket = openSocket(process.env.REACT_APP_SERVER_URL);
@@ -44,12 +45,23 @@ const findClientToServerLatencyTime = ({ playerId = 0 }) => {
 };
 
 const getGameUpdate = (cb) => {
-  const getConstantLatencyLogs = true;
+  const getConstantLatencyLogs = false;
   socket.on(GAME_UPDATE, (newState) => {
     if (getConstantLatencyLogs) {
       findClientToServerLatencyTime({ clientTime: new Date().getTime() });
     }
     cb({ newState });
+  });
+};
+
+const syncUpdates = ({ syncFn, frameRate }) => {
+  socket.on(SYNC, ({ serverStartTime }) => {
+    const clientStartTime = new Date().getTime();
+    const diff = clientStartTime - serverStartTime;
+    const fireAfterTime = frameRate - (diff % frameRate);
+    // eslint-disable-next-line no-console
+    // console.log('fire at', clientStartTime + fireAfterTime);
+    setTimeout(syncFn, fireAfterTime / 2);
   });
 };
 
@@ -75,4 +87,5 @@ export {
   updateNewDirection,
   gameOver,
   findClientToServerLatencyTime,
+  syncUpdates,
 };
