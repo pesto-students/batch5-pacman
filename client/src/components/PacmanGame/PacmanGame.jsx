@@ -21,6 +21,7 @@ class PacmanGame extends Component {
     gridState: [],
     lastClientDirection: '',
     clientPrediction: false,
+    fright: false,
   };
 
   mount = false;
@@ -157,13 +158,16 @@ class PacmanGame extends Component {
   animateGame = ({ newState, clientPrediction = false }) => {
     if (this.mount) {
       try {
-        const { players, ghosts, gridState } = newState;
+        const {
+          players, ghosts, gridState, fright,
+        } = newState;
 
         this.setState({
           gridState,
           ghosts,
           players,
           clientPrediction,
+          fright,
         });
       } catch (e) {
         clearInterval(this.predictPacman);
@@ -205,7 +209,7 @@ class PacmanGame extends Component {
     const gridSize = canvasWidth / cellsInEachRow;
     const { playerId } = userContext;
     const {
-      gridState, players, score, ghosts, clientPrediction,
+      gridState, players, score, ghosts, clientPrediction, fright,
     } = this.state;
     return (
       <GamePage
@@ -223,6 +227,7 @@ class PacmanGame extends Component {
               ghosts,
               clientPrediction,
               playerId,
+              fright,
             }}
           />
         )}
