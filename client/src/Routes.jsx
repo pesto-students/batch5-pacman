@@ -41,7 +41,12 @@ class PacmanRouter extends React.Component {
     this.setState({ username: user, isLogIn: true, score });
   };
 
-  logout = () => this.setState({ username: '', isLogIn: false, score: null });
+  logout = () => this.setState({
+    username: '',
+    isLogIn: false,
+    score: null,
+    isGameStarted: true,
+  });
 
   startMultiPlayerGame = () => {
     const { playerId } = this.state;
