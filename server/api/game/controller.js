@@ -61,8 +61,11 @@ class Game {
   }
 
   currentGameState = () => {
-    // eslint-disable-next-line no-console
-    console.log('triggerNextStateAt', new Date().getTime());
+    const logTriggerTime = false;
+    if (logTriggerTime) {
+      // eslint-disable-next-line no-console
+      console.log('triggerNextStateAt', new Date().getTime());
+    }
     return this.gameState;
   }
 

@@ -10,6 +10,8 @@ const PacmanBoard = ({
   gridSize,
   ghosts,
   players,
+  clientPrediction,
+  playerId: myId,
 }) => {
   const nonMovingCells = gridState
     .map((row, rowIndex) => (row.map((_, columnIndex) => {
@@ -35,6 +37,8 @@ const PacmanBoard = ({
             location={players[playerId]}
             gridSize={gridSize}
             entity="pacman"
+            self={myId === playerId}
+            clientPrediction={clientPrediction}
           />
         ))}
         {ghosts.map((ghostLocation, index) => (
@@ -62,6 +66,8 @@ PacmanBoard.propTypes = {
   players: PropTypes.shape({
     [PropTypes.string.isRequired]: locationIn2D,
   }).isRequired,
+  clientPrediction: PropTypes.bool.isRequired,
+  playerId: PropTypes.string.isRequired,
 };
 
 export default PacmanBoard;
