@@ -79,7 +79,11 @@ class Game {
     const { x, y } = ghost;
     const canConsumeGhost = Object.values(players)
       .findIndex(player => (player.x === x) && (player.y === y));
-    if (canConsumeGhost !== -1) return true;
+    if (canConsumeGhost !== -1) {
+      const playerId = Object.keys(players)[canConsumeGhost];
+      this.gameState.players[playerId].score += 100;
+      return true;
+    }
     return false;
   }
 
@@ -88,7 +92,7 @@ class Game {
   }) => {
     let { moveGhostsCount, scatterGhostspath } = this.gameState;
     if (!fright) moveGhostsCount += 1;
-    const scatterEnd = scatterStart + 55;
+    const scatterEnd = scatterStart + 25;
     if (moveGhostsCount === scatterStart) {
       const gridWithWeights = getGridwithWeights(boardTranspose);
       const ghostsPath = ghosts
