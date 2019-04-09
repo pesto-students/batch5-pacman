@@ -54,11 +54,11 @@ class SimpleModal extends React.Component {
     const gameStart = 'GameStart';
     const isGameStart = mode === gameStart;
     const isLoggedIn = userContext.isLogIn;
-    const { score } = userContext;
+    const { score, isGameStarted } = userContext;
     return (
       <>
         <Typography variant="h4" id="simple-modal-description">
-          {isGameStart ? 'Welcome to Pacman' : `Your Final Score is: ${score}`}
+          {isGameStart || isGameStarted ? 'Welcome to Pacman' : `Your Final Score is: ${score}`}
         </Typography>
         <Typography variant="subtitle1" id="simple-modal-description">
           {(!isGameStart && !isLoggedIn) ? 'SignIn to save your score ' : ''}
