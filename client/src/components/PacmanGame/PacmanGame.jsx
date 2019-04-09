@@ -125,6 +125,7 @@ class PacmanGame extends Component {
         if (
           currentPlayers[playerId].direction !== newPlayers[playerId].direction
         ) {
+          // eslint-disable-next-line no-console
           console.log(Object.keys(reconcileServer).length === 0);
         }
         if (Object.keys(reconcileServer).length === 0) {
@@ -138,6 +139,7 @@ class PacmanGame extends Component {
           // eslint-disable-next-line no-param-reassign
           newState.players[playerId].direction = currentPlayers[playerId].direction;
         }
+        // eslint-disable-next-line no-console
         console.log('reconcileServer', JSON.stringify(reconcileServer));
       }
     }

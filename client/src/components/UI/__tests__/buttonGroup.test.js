@@ -45,16 +45,16 @@ describe('<ButtonGroup />', () => {
     expect(wrapper.find(Button).last().props().children).toBe(buttonText2);
   });
 
-  it('should render button name Replay after login and when the game ends', () => {
+  it('should render two button Replay and Leaderboard after login and when the game ends', () => {
     props = createProps({ userContext: { isLogIn: true }, mode: 'GameEnds' });
     wrapper = shallow(<ButtonGroup {...props} />);
-    expect(wrapper.find(Button).length).toBe(1);
+    expect(wrapper.find(Button).length).toBe(2);
   });
 
   it('should render 2 buttons with name single player and multi player after click on replay button', () => {
     props = createProps({ userContext: { isLogIn: true }, mode: 'GameEnds' });
     wrapper = shallow(<ButtonGroup {...props} />);
-    wrapper.find(Button).simulate('click');
+    wrapper.find(Button).at(0).simulate('click');
     const buttonText1 = 'Single Player';
     const buttonText2 = 'Multi Player';
     expect(wrapper.find(Button).length).toBe(2);

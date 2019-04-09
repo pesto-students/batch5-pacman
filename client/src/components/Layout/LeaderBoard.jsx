@@ -92,26 +92,28 @@ class LeaderBoard extends Component {
     const { leaderBoardList } = this.state;
     const { classes } = this.props;
     return (
-      <Paper className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <CustomTableCell>Rank</CustomTableCell>
-              <CustomTableCell>Username</CustomTableCell>
-              <CustomTableCell>Score</CustomTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {leaderBoardList.map(row => (
-              <TableRow key={row.rank}>
-                <CustomTableCell component="th" scope="row">{row.rank}</CustomTableCell>
-                <CustomTableCell>{row.username}</CustomTableCell>
-                <CustomTableCell>{row.score}</CustomTableCell>
+      <React.Fragment>
+        <Paper className={classes.root}>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <CustomTableCell>Rank</CustomTableCell>
+                <CustomTableCell>Username</CustomTableCell>
+                <CustomTableCell>Score</CustomTableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Paper>
+            </TableHead>
+            <TableBody>
+              {leaderBoardList.map(row => (
+                <TableRow key={row.rank}>
+                  <CustomTableCell component="th" scope="row">{row.rank}</CustomTableCell>
+                  <CustomTableCell>{row.username}</CustomTableCell>
+                  <CustomTableCell>{row.score}</CustomTableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </React.Fragment>
     );
   }
 }
