@@ -10,9 +10,7 @@ import {
 } from '../../api/socketService';
 import GamePage from '../Layout/GamePage';
 import { arrowKeysDirections, advanceFrameAfterTime } from './constants';
-import {
-  getObjectDiffs, predictPacmanMove, predictFoodEat,
-} from './gameCore';
+import { getObjectDiffs, predictPacmanMove, predictFoodEat } from './gameCore';
 import PacmanBoard from './PacmanBoard';
 
 class PacmanGame extends Component {
@@ -27,9 +25,18 @@ class PacmanGame extends Component {
 
   mount = false;
 
+  shouldReconcileServerState = false;
+
+  shouldClientPredict = false;
+
   componentDidMount() {
     this.mount = true;
-    syncUpdates({ syncFn: this.predictPacman, frameRate: advanceFrameAfterTime });
+    if (this.shouldReconcileServerState) {
+      syncUpdates({
+        syncFn: this.predictPacman,
+        frameRate: advanceFrameAfterTime,
+      });
+    }
     this.startGame();
   }
 
@@ -37,12 +44,12 @@ class PacmanGame extends Component {
     const printDiffs = (objDiffs, debug) => {
       if (debug && Object.keys(objDiffs).length > 0) {
         // eslint-disable-next-line no-console
-        console.log('Diff is', (objDiffs));
+        console.log('Diff is', objDiffs);
       }
     };
 
-    const onlyGhostMoveCountChange = objDiffs => (
-      Object.keys(objDiffs).length === 1 && objDiffs.moveGhostsCount);
+    const onlyGhostMoveCountChange = objDiffs => Object.keys(objDiffs).length === 1
+      && objDiffs.moveGhostsCount;
 
     const objDiffs = getObjectDiffs({ oldObj: this.state, newObj: newState });
 
@@ -61,76 +68,81 @@ class PacmanGame extends Component {
   }
 
   predictPacman = () => {
-    const { userContext: { playerId } } = this.props;
+    const {
+      userContext: { playerId },
+    } = this.props;
     const { players, gridState, ghosts } = this.state;
     if (players[playerId] === undefined) {
       return;
     }
-    const { pacmanUpdated } = predictPacmanMove({ pacman: players[playerId], gridState });
+    const { pacmanUpdated } = predictPacmanMove({
+      pacman: players[playerId],
+      gridState,
+    });
     players[playerId] = pacmanUpdated;
 
-    const { gridStateAfterEating } = predictFoodEat({ pacmanUpdated, gridState });
+    const { gridStateAfterEating } = predictFoodEat({
+      pacmanUpdated,
+      gridState,
+    });
 
-    // render the new gridState and pacman
-    // console.log('triggerPredictionAt', new Date().getTime());
     const newState = {
       players,
       gridState: gridStateAfterEating,
-      // gridState,
       ghosts,
     };
     this.animateGame({ newState, clientPrediction: true });
-
-    // For server reconciliation,
-    // onsocket update, compare and update to correct state
-    // then animate
-
-    // store last client direction
-    // if last dir on server received pos === current pos
-    // ignore
-  }
+  };
 
   reconcileServer = ({ newState }) => {
-    const { userContext } = this.props;
-    const { playerId } = userContext;
-    const { players: currentPlayers, lastClientDirection } = this.state;
-    const { players: newPlayers } = newState;
+    if (this.shouldReconcileServerState) {
+      const { userContext } = this.props;
+      const { playerId } = userContext;
+      const { players: currentPlayers, lastClientDirection } = this.state;
+      const { players: newPlayers } = newState;
 
-    if (currentPlayers[playerId] !== undefined && newPlayers[playerId] !== undefined) {
-      const myPacmanCurrentPosition = { ...currentPlayers[playerId], score: 0 };
-      const myPacmanNewPosition = newPlayers[playerId];
-      // myPacmanNewPosition.direction = lastClientDirection;
-      const myPacmanNewPositionWithLastClientDir = {
-        ...myPacmanNewPosition,
-        direction: lastClientDirection,
-        score: 0,
-      };
+      if (
+        currentPlayers[playerId] !== undefined
+        && newPlayers[playerId] !== undefined
+      ) {
+        const myPacmanCurrentPosition = {
+          ...currentPlayers[playerId],
+          score: 0,
+        };
+        const myPacmanNewPosition = newPlayers[playerId];
+        // myPacmanNewPosition.direction = lastClientDirection;
+        const myPacmanNewPositionWithLastClientDir = {
+          ...myPacmanNewPosition,
+          direction: lastClientDirection,
+          score: 0,
+        };
 
-      const reconcileServer = getObjectDiffs({
-        oldObj: myPacmanCurrentPosition,
-        newObj: myPacmanNewPositionWithLastClientDir,
-      });
-      if (currentPlayers[playerId].direction !== newPlayers[playerId].direction) {
-        console.log(Object.keys(reconcileServer).length === 0);
+        const reconcileServer = getObjectDiffs({
+          oldObj: myPacmanCurrentPosition,
+          newObj: myPacmanNewPositionWithLastClientDir,
+        });
+        if (
+          currentPlayers[playerId].direction !== newPlayers[playerId].direction
+        ) {
+          console.log(Object.keys(reconcileServer).length === 0);
+        }
+        if (Object.keys(reconcileServer).length === 0) {
+          // console.log('server reconciliated. Bitch!');
+          // return;
+
+          // eslint-disable-next-line no-param-reassign
+          newState.players[playerId].x = currentPlayers[playerId].x;
+          // eslint-disable-next-line no-param-reassign
+          newState.players[playerId].y = currentPlayers[playerId].y;
+          // eslint-disable-next-line no-param-reassign
+          newState.players[playerId].direction = currentPlayers[playerId].direction;
+        }
+        console.log('reconcileServer', JSON.stringify(reconcileServer));
       }
-      if (Object.keys(reconcileServer).length === 0) {
-        // console.log('server reconciliated. Bitch!');
-        // return;
-
-        // eslint-disable-next-line no-param-reassign
-        newState.players[playerId].x = currentPlayers[playerId].x;
-        // eslint-disable-next-line no-param-reassign
-        newState.players[playerId].y = currentPlayers[playerId].y;
-        // eslint-disable-next-line no-param-reassign
-        newState.players[playerId].direction = currentPlayers[playerId].direction;
-      }
-      console.log('reconcileServer', JSON.stringify(reconcileServer));
     }
 
-    // console.log(newState.players[playerId]);
-
     this.animateGame({ newState });
-  }
+  };
 
   startGame = () => {
     const { userContext } = this.props;
@@ -140,15 +152,12 @@ class PacmanGame extends Component {
 
     gameOver(userContext);
     document.addEventListener('keydown', this.setDirection);
-    // setInterval(this.predictPacman, advanceFrameAfterTime);
   };
 
   animateGame = ({ newState, clientPrediction = false }) => {
     if (this.mount) {
       try {
-        const {
-          players, ghosts, gridState,
-        } = newState;
+        const { players, ghosts, gridState } = newState;
 
         this.setState({
           gridState,
@@ -166,7 +175,7 @@ class PacmanGame extends Component {
         console.log('Error', e.message);
       }
     }
-  }
+  };
 
   setDirection = ({ key }) => {
     const { userContext } = this.props;
@@ -175,18 +184,24 @@ class PacmanGame extends Component {
     if (newDirection !== undefined) {
       const { players } = this.state;
       const { direction: oldDirection } = players[playerId] !== undefined
-        ? players[playerId] : { direction: { x: 13, y: 14, direction: 'RIGHT' } };
+        ? players[playerId]
+        : { direction: { x: 13, y: 14, direction: 'RIGHT' } };
       if (newDirection !== oldDirection) {
         updateNewDirection({ playerId, direction: newDirection });
-        players[playerId].direction = newDirection;
-        this.setState({ players, lastClientDirection: newDirection });
-        // this.predictPacman();
+        if (this.shouldClientPredict) {
+          players[playerId].direction = newDirection;
+          this.setState({ players, lastClientDirection: newDirection });
+        }
       }
     }
-  }
+  };
 
   render() {
-    const { width: canvasWidth, numberofCells: cellsInEachRow, userContext } = this.props;
+    const {
+      width: canvasWidth,
+      numberofCells: cellsInEachRow,
+      userContext,
+    } = this.props;
     const gridSize = canvasWidth / cellsInEachRow;
     const { playerId } = userContext;
     const {
