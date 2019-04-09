@@ -65,7 +65,7 @@ const ScoreCard = (props) => {
     classes,
     isDetailed,
     playerId,
-    pacmans,
+    players,
   } = props;
   const rows = [
     { name: 'Food', playerOne: 320, playerTwo: 230 },
@@ -74,14 +74,14 @@ const ScoreCard = (props) => {
     { name: 'Total', playerOne: 320, playerTwo: 230 },
   ];
 
-  const hasPlayer = Object.keys(pacmans).length > 0;
+  const hasPlayer = Object.keys(players).length > 0;
   let playerScores = [];
   if (hasPlayer) {
-    playerScores = Object.keys(pacmans).map((key) => {
+    playerScores = Object.keys(players).map((key) => {
       if (key === playerId) {
-        pacmans[key].isHost = true;
+        players[key].isHost = true;
       }
-      return pacmans[key];
+      return players[key];
     });
   }
 
@@ -156,7 +156,7 @@ const ScoreCard = (props) => {
 ScoreCard.propTypes = {
   classes: PropTypes.shape().isRequired,
   isDetailed: PropTypes.bool,
-  pacmans: PropTypes.shape().isRequired,
+  players: PropTypes.shape().isRequired,
   playerId: PropTypes.string.isRequired,
 };
 

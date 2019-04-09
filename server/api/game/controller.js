@@ -60,7 +60,11 @@ class Game {
     }, {});
   }
 
-  currentGameState = () => this.gameState;
+  currentGameState = () => {
+    // eslint-disable-next-line no-console
+    console.log('triggerNextStateAt', new Date().getTime());
+    return this.gameState;
+  }
 
   endGame = () => {
     clearInterval(this.gameState.interval);
@@ -180,7 +184,10 @@ class Game {
         // eslint-disable-next-line no-undef
         io.in(this.roomId).emit(GAME_OVER, this.currentGameState());
         this.endGame();
+        return;
       }
+      // eslint-disable-next-line no-undef
+      io.in(this.roomId).emit('sync', { serverStartTime: new Date().getTime() });
       // eslint-disable-next-line no-undef
       io.in(this.roomId).emit(GAME_UPDATE, this.currentGameState());
     }, advanceFrameAfterTime);
