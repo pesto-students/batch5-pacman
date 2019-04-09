@@ -28,3 +28,10 @@ exports.update = (req, res) => {
     })
     .catch(() => logger('Error', 'creating user'));
 };
+
+exports.fetchAll = (req, res) => {
+  User.find({}).then((response) => {
+    res.send(response);
+  })
+    .catch(() => logger('Error', 'getting all users'));
+};
