@@ -16,6 +16,7 @@ const {
 } = channels;
 
 const socket = openSocket(process.env.REACT_APP_SERVER_URL);
+const getConstantLatencyLogs = false;
 
 const createSocketConnection = (cb) => {
   socket.on(CONNECTED, data => cb(data));
@@ -45,7 +46,6 @@ const findClientToServerLatencyTime = ({ playerId = 0 }) => {
 };
 
 const getGameUpdate = (cb) => {
-  const getConstantLatencyLogs = false;
   socket.on(GAME_UPDATE, (newState) => {
     if (getConstantLatencyLogs) {
       findClientToServerLatencyTime({ clientTime: new Date().getTime() });
@@ -61,7 +61,7 @@ const syncUpdates = ({ syncFn, frameRate }) => {
     const fireAfterTime = frameRate - (diff % frameRate);
     // eslint-disable-next-line no-console
     // console.log('fire at', clientStartTime + fireAfterTime);
-    setTimeout(syncFn, fireAfterTime / 2);
+    setTimeout(syncFn, fireAfterTime);
   });
 };
 

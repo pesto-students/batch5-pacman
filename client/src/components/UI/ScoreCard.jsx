@@ -157,11 +157,12 @@ ScoreCard.propTypes = {
   classes: PropTypes.shape().isRequired,
   isDetailed: PropTypes.bool,
   players: PropTypes.shape().isRequired,
-  playerId: PropTypes.string.isRequired,
+  playerId: PropTypes.string,
 };
 
 ScoreCard.defaultProps = {
   isDetailed: false,
+  playerId: '',
 };
 
 export default withStyles(styles)(ScoreCard);
