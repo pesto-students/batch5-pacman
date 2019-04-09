@@ -6,6 +6,7 @@ const UserContext = createContext({
   isGameStarted: false,
   isGameEnd: false,
   score: null,
+  isMulti: false,
   login: () => { },
   logout: () => { },
   startMultiPlayerGame: () => { },

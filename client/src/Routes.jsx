@@ -22,6 +22,7 @@ class PacmanRouter extends React.Component {
       isGameEnd: false,
       score: null,
       username: '',
+      isMulti: false,
       playerId: uuid.v1(),
       login: this.login,
       logout: this.logout,
@@ -60,6 +61,7 @@ class PacmanRouter extends React.Component {
       score: updatedScore,
       isGameEnd: true,
       isGameStarted: false,
+      isMulti: false,
     });
     if (isLogIn) this.saveScore(updatedScore);
   };
