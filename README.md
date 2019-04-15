@@ -42,5 +42,5 @@ Build the Multiplayer PacMan game which would work smoothly with various fun fea
 
 ### URLS: 
 
-- Game-staging: https://youthful-dubinsky-b46f9a.netlify.com/
-- Server URL: http://pacman.us-east-2.elasticbeanstalk.com/
+- Game-staging: https://mc-pacman.netlify.com/
+- Server URL: https://pacman.us-east-2.elasticbeanstalk.com/
